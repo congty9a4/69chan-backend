@@ -16,10 +16,10 @@ DROP TABLE IF EXISTS users ;
 
 
 -- Drop ENUM Types if they exist
-DROP TYPE IF EXISTS friendship_status ;
-DROP TYPE IF EXISTS post_visibility ;
-DROP TYPE IF EXISTS notification_type ;
-DROP TYPE IF EXISTS likeable_type ;
+DROP TYPE IF EXISTS friendship_status;
+DROP TYPE IF EXISTS post_visibility;
+DROP TYPE IF EXISTS notification_type;
+DROP TYPE IF EXISTS likeable_type;
 
 -- ===========================
 -- ENUMS
