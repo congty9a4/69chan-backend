@@ -5,14 +5,14 @@
 DROP FUNCTION IF EXISTS update_updated_at() CASCADE;
 
 -- Drop Tables if they exist (use CASCADE to drop dependent objects like indexes, constraints, triggers, etc.)
-DROP TABLE IF EXISTS notifications ;
-DROP TABLE IF EXISTS messages ;
-DROP TABLE IF EXISTS likes ;
-DROP TABLE IF EXISTS comments ;
-DROP TABLE IF EXISTS posts ;
-DROP TABLE IF EXISTS friendships ;
-DROP TABLE IF EXISTS profiles ;
-DROP TABLE IF EXISTS users ;
+DROP TABLE IF EXISTS notifications CASCADE;
+DROP TABLE IF EXISTS messages CASCADE;
+DROP TABLE IF EXISTS likes CASCADE;
+DROP TABLE IF EXISTS comments CASCADE;
+DROP TABLE IF EXISTS posts CASCADE;
+DROP TABLE IF EXISTS friendships CASCADE;
+DROP TABLE IF EXISTS profiles CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
 
 
 -- Drop ENUM Types if they exist
