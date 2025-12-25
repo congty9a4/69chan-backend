@@ -5,6 +5,9 @@ spring:
   config:
     import: optional:file:.env[.properties]
 
+  data:
+    mongodb:
+      uri: "mongodb+srv://mikuAdmin:TDKtNVb0PwRgwlaK@miku-dit-bu.upgqdbq.mongodb.net/69chan?appName=Miku-Dit-Bu"
   datasource:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
