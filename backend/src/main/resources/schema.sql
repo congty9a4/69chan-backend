@@ -14,12 +14,11 @@ DROP TABLE IF EXISTS friendships CASCADE;
 DROP TABLE IF EXISTS profiles CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
-
 -- Drop ENUM Types if they exist
-DROP TYPE IF EXISTS friendship_status;
-DROP TYPE IF EXISTS post_visibility;
-DROP TYPE IF EXISTS notification_type;
-DROP TYPE IF EXISTS likeable_type;
+DROP TYPE IF EXISTS friendship_status CASCADE;
+DROP TYPE IF EXISTS post_visibility CASCADE;
+DROP TYPE IF EXISTS notification_type CASCADE;
+DROP TYPE IF EXISTS likeable_type CASCADE;
 
 -- ===========================
 -- ENUMS
