@@ -5,17 +5,35 @@ spring:
   config:
     import: optional:file:.env[.properties]
 
+  data:
+    mongodb:
+      uri: "mongodb+srv://${MONGO_DB_USERNAME}:${MONGO_DB_PASSWORD}@${MONGO_DB_HOST}/${MONGO_DB_NAME}?appName=Miku-Dit-Bu"
+
   datasource:
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    url: "jdbc:postgresql://${DB_HOST}:${DB_PORT}/postgres?user=${DB_USERNAME}&password=${DB_PASSWORD}"
+    username: ${POSTGRE_DB_USERNAME}
+    password: ${POSTGRE_DB_PASSWORD}
+    url: "jdbc:postgresql://${POSTGRE_DB_HOST}:${POSTGRE_DB_PORT}/postgres?user=${POSTGRE_DB_USERNAME}&password=${POSTGRE_DB_PASSWORD}"
     driver-class-name: org.postgresql.Driver
+    hikari:
+      transaction-isolation:
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
   sql:
     init:
       mode: always
+
+  cloud:
+    gcp:
+      project-id: first-project-444717
+      credentials:
+        location: classpath:gcs_credentials.json
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+      file-size-threshold: 0
 
 logging:
   level:
@@ -24,3 +42,6 @@ logging:
         web:
           filter:
             CommonsRequestLoggingFilter: DEBUG
+gcs:
+  bucket-name: 69chan-dev-store-media-files
+  sub-directory: images
