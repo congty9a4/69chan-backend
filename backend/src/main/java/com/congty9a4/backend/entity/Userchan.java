@@ -39,4 +39,5 @@ public class Userchan {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
+
 }
