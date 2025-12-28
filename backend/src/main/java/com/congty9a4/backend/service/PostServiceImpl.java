@@ -1,7 +1,7 @@
 package com.congty9a4.backend.service;
 
 import com.congty9a4.backend.entity.Post;
-import com.congty9a4.backend.repository.PostRepository;
+import com.congty9a4.backend.repository.mongo.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
