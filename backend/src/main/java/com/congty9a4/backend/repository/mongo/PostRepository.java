@@ -1,4 +1,4 @@
-package com.congty9a4.backend.repository;
+package com.congty9a4.backend.repository.mongo;
 
 import com.congty9a4.backend.entity.Post;
 import org.springframework.data.mongodb.repository.MongoRepository;

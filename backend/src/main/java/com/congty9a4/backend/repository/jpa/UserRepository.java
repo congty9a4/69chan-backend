@@ -1,4 +1,4 @@
-package com.congty9a4.backend.repository;
+package com.congty9a4.backend.repository.jpa;
 
 import com.congty9a4.backend.entity.Userchan;
 import java.util.UUID;

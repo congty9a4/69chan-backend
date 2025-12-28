@@ -1,7 +1,7 @@
 package com.congty9a4.backend.service;
 
 import com.congty9a4.backend.entity.Userchan;
-import com.congty9a4.backend.repository.UserRepository;
+import com.congty9a4.backend.repository.jpa.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
