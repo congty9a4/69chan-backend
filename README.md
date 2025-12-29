@@ -2,4 +2,4 @@
 community for lowkey
 
 # backend
--> [check link here :)](./backend/README.md) 
+-> [check link here :)](./backend) 
