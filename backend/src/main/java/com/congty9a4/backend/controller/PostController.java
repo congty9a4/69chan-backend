@@ -1,6 +1,6 @@
 package com.congty9a4.backend.controller;
 
-import com.congty9a4.backend.entity.Post;
+import com.congty9a4.backend.entity.nosql.Post;
 import com.congty9a4.backend.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -30,7 +29,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable UUID id) {
+    public ResponseEntity<Post> getPostById(@PathVariable String id) {
         Post post = postService.getPostById(id);
         if (post != null) {
             return new ResponseEntity<>(post, HttpStatus.OK);
@@ -40,7 +39,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable UUID id, @RequestBody Post post) {
+    public ResponseEntity<Post> updatePost(@PathVariable String id, @RequestBody Post post) {
         Post updatedPost = postService.updatePost(id, post);
         if (updatedPost != null) {
             return new ResponseEntity<>(updatedPost, HttpStatus.OK);
@@ -50,7 +49,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable UUID id) {
+    public ResponseEntity<Void> deletePost(@PathVariable String id) {
         postService.deletePost(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

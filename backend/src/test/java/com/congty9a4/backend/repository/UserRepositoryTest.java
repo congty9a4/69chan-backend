@@ -2,6 +2,9 @@ package com.congty9a4.backend.repository;
 
 import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.repository.jpa.UserRepository;
+import com.congty9a4.backend.util.JsonLogging;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +18,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@Slf4j
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UserRepositoryTest {
@@ -47,5 +51,7 @@ public class UserRepositoryTest {
         assertNotNull(savedUser);
         assertEquals(testUser.getId(), savedUser.getId());
         assertEquals(testUser.getUsername(), savedUser.getUsername());
+        assertNotNull(savedUser.getCreatedAt());
+        assertNotNull(savedUser.getUpdatedAt());
     }
 }

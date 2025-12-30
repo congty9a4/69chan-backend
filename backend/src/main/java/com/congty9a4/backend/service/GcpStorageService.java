@@ -1,6 +1,6 @@
 package com.congty9a4.backend.service;
 
-import com.congty9a4.backend.config.BucketConfig;
+import com.congty9a4.backend.config.ggcloud.BucketConfig;
 import com.google.cloud.storage.Acl;
 
 import com.google.cloud.storage.BlobId;

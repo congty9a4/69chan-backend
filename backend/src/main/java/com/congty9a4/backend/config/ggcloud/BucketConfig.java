@@ -1,4 +1,4 @@
-package com.congty9a4.backend.config;
+package com.congty9a4.backend.config.ggcloud;
 
 
 import lombok.Data;

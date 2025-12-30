@@ -1,6 +1,6 @@
 package com.congty9a4.backend.service;
 
-import com.congty9a4.backend.entity.Post;
+import com.congty9a4.backend.entity.nosql.Post;
 import com.congty9a4.backend.repository.mongo.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post createPost(Post post) {
-        post.setId(UUID.randomUUID());
         return postRepository.save(post);
     }
 
@@ -26,12 +25,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post getPostById(UUID id) {
+    public Post getPostById(String id) {
         return postRepository.findById(id).orElse(null);
     }
 
     @Override
-    public Post updatePost(UUID id, Post post) {
+    public Post updatePost(String id, Post post) {
         if (postRepository.existsById(id)) {
             post.setId(id);
             return postRepository.save(post);
@@ -40,7 +39,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePost(UUID id) {
+    public void deletePost(String id) {
         postRepository.deleteById(id);
     }
 }

@@ -17,10 +17,10 @@ public class ApiResponse<T> {
     String message;
     T data;
 
-    public static <T> ApiResponse<T> success(T body) {
+    public static <T> ApiResponse<T> success(String message, T body) {
         return ApiResponse.<T>builder()
                 .status(200)
-                .message("Success")
+                .message(!message.isBlank() ? message : "Success")
                 .data(body)
                 .build();
     }
