@@ -19,8 +19,6 @@ public class UserResponse {
     UUID id;
     String username;
     String email;
-
     OffsetDateTime createdAt;
-
     OffsetDateTime updatedAt;
 }

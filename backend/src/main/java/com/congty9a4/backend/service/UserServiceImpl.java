@@ -1,10 +1,11 @@
 package com.congty9a4.backend.service;
 
-import com.congty9a4.backend.entity.Userchan;
+import com.congty9a4.backend.entity.relational.Userchan;
 import com.congty9a4.backend.repository.jpa.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 

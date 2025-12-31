@@ -1,7 +1,8 @@
 package com.congty9a4.backend.controller;
 
-import com.congty9a4.backend.entity.Userchan;
+import com.congty9a4.backend.entity.relational.Userchan;
 import com.congty9a4.backend.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping
-    public Userchan createUser(@RequestBody Userchan user) {
+    public Userchan createUser(@RequestBody @Valid Userchan user) {
         return userService.createUser(user);
     }
 

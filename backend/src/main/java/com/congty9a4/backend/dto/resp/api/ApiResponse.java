@@ -1,9 +1,12 @@
 package com.congty9a4.backend.dto.resp.api;
 
 
+import com.congty9a4.backend.constant.CustomLocale;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.OffsetDateTime;
 
 @Setter
 @Getter
@@ -13,14 +16,17 @@ import lombok.experimental.FieldDefaults;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApiResponse<T> {
-    int status;
-    String message;
+
+    @Builder.Default
+    boolean isSuccess = true;
+
     T data;
 
-    public static <T> ApiResponse<T> success(String message, T body) {
+    @Builder.Default
+    OffsetDateTime timestamp = CustomLocale.now;
+
+    public static <T> ApiResponse<T> success(T body) {
         return ApiResponse.<T>builder()
-                .status(200)
-                .message(!message.isBlank() ? message : "Success")
                 .data(body)
                 .build();
     }

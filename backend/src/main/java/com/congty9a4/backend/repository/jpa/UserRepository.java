@@ -1,6 +1,6 @@
 package com.congty9a4.backend.repository.jpa;
 
-import com.congty9a4.backend.entity.Userchan;
+import com.congty9a4.backend.entity.relational.Userchan;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

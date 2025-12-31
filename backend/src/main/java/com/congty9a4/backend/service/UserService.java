@@ -1,6 +1,6 @@
 package com.congty9a4.backend.service;
 
-import com.congty9a4.backend.entity.Userchan;
+import com.congty9a4.backend.entity.relational.Userchan;
 
 import java.util.List;
 import java.util.UUID;

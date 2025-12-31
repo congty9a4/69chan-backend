@@ -1,9 +1,8 @@
 package com.congty9a4.backend.controller;
 
-import com.congty9a4.backend.constant.CustomLocale;
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
 import com.congty9a4.backend.dto.resp.user.UserResponse;
-import com.congty9a4.backend.entity.Userchan;
+import com.congty9a4.backend.entity.relational.Userchan;
 import com.congty9a4.backend.mapper.UserMapper;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +35,6 @@ public class SampleController {
     @GetMapping("/user")
     public ApiResponse<UserResponse> getSampleUser() {
         return ApiResponse.success(
-                "Sample user data",
                 userMapper.toUserResponse(
                         Userchan.builder()
                                 .id(UUID.randomUUID())

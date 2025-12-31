@@ -11,7 +11,7 @@ public enum ErrorCode {
     // --- BAD REQUEST (400) ---
 
     // General
-    INVALID_INPUT(40000, "Invalid input. Please check your data.", HttpStatus.BAD_REQUEST),
+    INVALID_INPUT(40000, "Invalid input. Please check your data", HttpStatus.BAD_REQUEST),
 
     // Authentication & User
     INVALID_CREDENTIALS(40001, "Invalid credentials. Please check your username and password.", HttpStatus.BAD_REQUEST),

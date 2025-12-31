@@ -1,7 +1,7 @@
 package com.congty9a4.backend.repository;
 
 import com.congty9a4.backend.config.mongodb.MongoConfig;
-import com.congty9a4.backend.entity.Userchan;
+import com.congty9a4.backend.entity.relational.Userchan;
 import com.congty9a4.backend.entity.enums.PostVisibility;
 import com.congty9a4.backend.entity.nosql.Post;
 import com.congty9a4.backend.repository.mongo.PostRepository;
@@ -34,7 +34,7 @@ public class PostRepositoryTest {
         Userchan userchan = Userchan.builder()
                 .id(UUID.randomUUID())
                 .username("postUser")
-                .passwordHash("postPassword")
+                .password("postPassword")
                 .email("postEmail")
                 .isActive(true)
                 .build();

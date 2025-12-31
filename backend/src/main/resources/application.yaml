@@ -2,6 +2,9 @@ spring:
   application:
     name: backend
 
+  jackson:
+    date-format: yyyy-MM-dd
+
   config:
     import: optional:file:.env[.properties]
 
@@ -16,17 +19,20 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       transaction-isolation:
+
+
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
+
+  sql:
+    init:
+      mode: never
+
     properties:
       hibernate:
         jdbc:
           time_zone: UTC+7
-
-  sql:
-    init:
-      mode: always
 
   cloud:
     gcp:
