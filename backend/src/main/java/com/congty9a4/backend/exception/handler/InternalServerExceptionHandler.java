@@ -20,4 +20,11 @@ public class InternalServerExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(Exception.class)
+    public ErrorApiResponse handleException(Exception ex) {
+        return ErrorApiResponse.builder()
+                .message("Internal Server Error")
+                .build();
+    }
+
 }

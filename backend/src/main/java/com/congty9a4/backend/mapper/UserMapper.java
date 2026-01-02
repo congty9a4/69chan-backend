@@ -1,9 +1,11 @@
 package com.congty9a4.backend.mapper;
 
+import com.congty9a4.backend.dto.req.user.UserUpdationRequest;
 import com.congty9a4.backend.dto.resp.user.UserResponse;
 import com.congty9a4.backend.entity.relational.Userchan;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring",
@@ -14,4 +16,7 @@ public interface UserMapper {
     @Mapping(source = "email", target = "email")
     @Mapping(source = "username", target = "username")
     UserResponse toUserResponse(Userchan user);
+
+    void update(@MappingTarget Userchan userchan, UserUpdationRequest updatedUserchan);
+
 }

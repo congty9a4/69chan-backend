@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: backend
+
+  jackson:
+    date-format: yyyy-MM-dd
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  sql:
+    init:
+      mode: never
+
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC+7
+
+  cloud:
+    gcp:
+      project-id: first-project-444717
+      credentials:
+        location: classpath:gcs_credentials.json
+
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+      file-size-threshold: 0
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          filter:
+            CommonsRequestLoggingFilter: DEBUG
+gcs:
+  bucket-name: 69chan-dev-store-media-files
+  sub-directory: images
+
+server:
+  address: localhost
+

@@ -1,58 +1,6 @@
 spring:
-  application:
-    name: backend
-
-  jackson:
-    date-format: yyyy-MM-dd
-
-  config:
-    import: optional:file:.env[.properties]
-
-  data:
-    mongodb:
-      uri: "mongodb+srv://${MONGO_DB_USERNAME}:${MONGO_DB_PASSWORD}@${MONGO_DB_HOST}/${MONGO_DB_NAME}?appName=Miku-Dit-Bu"
-
-  datasource:
-    username: ${POSTGRE_DB_USERNAME}
-    password: ${POSTGRE_DB_PASSWORD}
-    url: "jdbc:postgresql://${POSTGRE_DB_HOST}:${POSTGRE_DB_PORT}/postgres?user=${POSTGRE_DB_USERNAME}&password=${POSTGRE_DB_PASSWORD}"
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      transaction-isolation:
-
-
-  jpa:
-    hibernate:
-      ddl-auto: create
-
-  sql:
-    init:
-      mode: never
-
-    properties:
-      hibernate:
-        jdbc:
-          time_zone: UTC+7
-
-  cloud:
-    gcp:
-      project-id: first-project-444717
-      credentials:
-        location: classpath:gcs_credentials.json
-
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
-      file-size-threshold: 0
-
-logging:
-  level:
-    org:
-      springframework:
-        web:
-          filter:
-            CommonsRequestLoggingFilter: DEBUG
-gcs:
-  bucket-name: 69chan-dev-store-media-files
-  sub-directory: images
+  profiles:
+    group:
+      "dev": "dev,common"
+      "local": "local,common"
+    active: '@spring.profiles.active@'

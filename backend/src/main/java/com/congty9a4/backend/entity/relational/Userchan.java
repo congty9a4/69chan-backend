@@ -36,7 +36,6 @@ public class Userchan {
     String username;
 
     @NotBlank
-    @Size(min = 8, max = 50)
     @Column(name = "password", nullable = false)
     String password;
 
@@ -49,7 +48,7 @@ public class Userchan {
     @Column(name = "phone")
     String phoneNumber;
 
-    @Column(name = "is_active")
+    @Column(name = "is_active", columnDefinition = "boolean default true")
     boolean isActive;
 
     @CreationTimestamp

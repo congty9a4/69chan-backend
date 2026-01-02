@@ -3,6 +3,7 @@ package com.congty9a4.backend.exception.handler;
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
 import com.congty9a4.backend.dto.resp.api.ErrorApiResponse;
 import com.congty9a4.backend.exception.ErrorCode;
+import com.congty9a4.backend.exception.error.AppException;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,13 +23,25 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionalHandler {
 
+
+    @ExceptionHandler(value = AppException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ErrorApiResponse handlingAppException(AppException ex) {
+        ErrorCode errorCode = ex.getErrorCode();
+        log.error(ex.getMessage());
+        return ErrorApiResponse.builder()
+                .message(errorCode.getDetailedMessage())
+                .detail(ex.getMessage())
+                .build();
+    }
+
     @ExceptionHandler(value = NoResourceFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ErrorApiResponse handlingNoResourceFound(NoResourceFoundException ex) {
         ErrorCode errorCode = ErrorCode.RESOURCE_NOT_FOUND;
         return ErrorApiResponse.builder()
                 .message("Resource Not Found")
-                .detail(errorCode.getDetailedMessage())
+                .detail(errorCode.getDetailedMessage() + " - " + ex.getResourcePath())
                 .build();
 
 
