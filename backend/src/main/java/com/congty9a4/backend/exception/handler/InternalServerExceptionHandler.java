@@ -16,7 +16,13 @@ public class InternalServerExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ErrorApiResponse handleRuntimeException(RuntimeException ex) {
         return ErrorApiResponse.builder()
-                .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message("Internal Server Error")
+                .build();
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ErrorApiResponse handleException(Exception ex) {
+        return ErrorApiResponse.builder()
                 .message("Internal Server Error")
                 .build();
     }

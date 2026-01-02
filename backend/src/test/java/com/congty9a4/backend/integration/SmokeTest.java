@@ -1,6 +1,7 @@
 package com.congty9a4.backend.integration;
 
 import com.congty9a4.backend.controller.UserController;
+import com.congty9a4.backend.controller.UserControllerUnitTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

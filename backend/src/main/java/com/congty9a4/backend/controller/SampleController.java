@@ -1,19 +1,24 @@
 package com.congty9a4.backend.controller;
 
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
-import com.congty9a4.backend.entity.Userchan;
-import com.congty9a4.backend.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.congty9a4.backend.dto.resp.user.UserResponse;
+import com.congty9a4.backend.entity.relational.Userchan;
+import com.congty9a4.backend.mapper.UserMapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/sample")
 public class SampleController {
+
+    private final UserMapper userMapper;
+
+    public SampleController(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
 
     @GetMapping("/endpoint")
     public Map<String, String> getSample() {
@@ -28,11 +33,16 @@ public class SampleController {
     }
 
     @GetMapping("/user")
-    public ApiResponse<Userchan> getSampleUser() {
-        return ApiResponse.<Userchan>builder()
-                .data(new Userchan())
-                .message("Sample user data")
-                .build();
+    public ApiResponse<UserResponse> getSampleUser() {
+        return ApiResponse.success(
+                userMapper.toUserResponse(
+                        Userchan.builder()
+                                .id(UUID.randomUUID())
+                                .email("testEmail")
+                                .username("testUser")
+                                .build()
+                )
+        );
     }
 }
 

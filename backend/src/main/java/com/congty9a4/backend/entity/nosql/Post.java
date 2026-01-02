@@ -1,4 +1,4 @@
-package com.congty9a4.backend.entity;
+package com.congty9a4.backend.entity.nosql;
 
 import com.congty9a4.backend.entity.enums.PostVisibility;
 import lombok.*;
@@ -8,7 +8,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,7 +22,7 @@ import java.util.UUID;
 @Document("posts")
 public class Post {
     @Id
-    private UUID id;
+    private String id;
 
     @Field("author_id")
     private UUID authorId;
@@ -40,9 +42,9 @@ public class Post {
 
     @CreatedDate
     @Field("created_at")
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @LastModifiedDate
     @Field("updated_at")
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 }

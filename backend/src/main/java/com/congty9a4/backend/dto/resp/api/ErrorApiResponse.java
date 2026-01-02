@@ -1,12 +1,13 @@
 package com.congty9a4.backend.dto.resp.api;
 
 
+import com.congty9a4.backend.constant.CustomLocale;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
+import java.util.Map;
 
 @Setter
 @Getter
@@ -18,10 +19,14 @@ import java.time.ZonedDateTime;
 public class ErrorApiResponse {
 
     @Builder.Default
-    ZonedDateTime timestamp = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
-    // HTTP Status Code
-    int code;
+    boolean isSuccess = false;
+
     String message;
+
     String detail;
 
+    Map<String, String> errors;
+
+    @Builder.Default
+    OffsetDateTime timestamp = CustomLocale.now;
 }
