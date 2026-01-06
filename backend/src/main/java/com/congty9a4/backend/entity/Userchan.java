@@ -1,4 +1,4 @@
-package com.congty9a4.backend.entity.relational;
+package com.congty9a4.backend.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -48,8 +48,12 @@ public class Userchan {
     @Column(name = "phone")
     String phoneNumber;
 
+    @Builder.Default
     @Column(name = "is_active", columnDefinition = "boolean default true")
-    boolean isActive;
+    boolean isActive = true;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    Profile profile;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

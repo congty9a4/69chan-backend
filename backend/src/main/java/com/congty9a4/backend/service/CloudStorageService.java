@@ -13,14 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-
 import java.util.Collections;
 
 
 
 @Slf4j
 @Service
-public class GcpStorageService {
+public class CloudStorageService {
 
     @Autowired
     private Storage storage;
@@ -28,14 +27,18 @@ public class GcpStorageService {
     @Autowired
     private BucketConfig bucketConfig;
 
-    public String uploadFile(MultipartFile file) throws IOException {
-        String fileName = String.join("/", bucketConfig.getSubDirectory(), file.getOriginalFilename());
+    public String uploadFile(MultipartFile file, String _fileName) {
+        String fileName = String.join("/", bucketConfig.getSubDirectory(), _fileName);
         BlobId blobId = BlobId.of(bucketConfig.getBucketName(), fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
                 .setContentType(file.getContentType())
                 .setAcl(Collections.singletonList(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER)))
                 .build();
-        storage.create(blobInfo, file.getBytes());
+        try {
+            storage.create(blobInfo, file.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         String publicUrl = "https://storage.googleapis.com/" + bucketConfig.getBucketName() + "/" + fileName;
 

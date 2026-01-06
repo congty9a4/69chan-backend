@@ -1,46 +1,105 @@
 package com.congty9a4.backend.service;
 
-import com.congty9a4.backend.entity.nosql.Post;
+import com.congty9a4.backend.constant.LOCALE;
+import com.congty9a4.backend.constant.MEDIA;
+import com.congty9a4.backend.dto.req.post.PostCreationRequest;
+import com.congty9a4.backend.dto.resp.PostResponse;
+import com.congty9a4.backend.entity.enums.PostVisibility;
+import com.congty9a4.backend.entity.post.Infochan;
+import com.congty9a4.backend.entity.post.Post;
+import com.congty9a4.backend.entity.Userchan;
+import com.congty9a4.backend.entity.post.PostMedia;
+import com.congty9a4.backend.exception.ErrorCode;
+import com.congty9a4.backend.exception.error.AppException;
+import com.congty9a4.backend.mapper.PostMapper;
+import com.congty9a4.backend.mapper.UserMapper;
+import com.congty9a4.backend.repository.jpa.UserRepository;
 import com.congty9a4.backend.repository.mongo.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class PostServiceImpl implements PostService {
 
     @Autowired
+    PostMapper postMapper;
+
+    @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private CloudStorageService cloudStorageService;
 
     @Override
-    public Post createPost(Post post) {
-        return postRepository.save(post);
+    public PostResponse createPost(PostCreationRequest req, List<MultipartFile> files) {
+        Post postEntity = postMapper.toPost(req);
+        postEntity.setVisibility(req.isPublic() ? PostVisibility.PUBLIC : PostVisibility.FRIENDS);
+
+        // fake user
+        Userchan user = Userchan.builder()
+                .id(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"))
+                .username("sampleuser")
+                .build();
+        postEntity.setUserId(user.getId().toString());
+        postEntity.setMediaFiles(convertMediaFiles(files));
+        var savedPost = postRepository.save(postEntity);
+        return postMapper.toPostResponse(savedPost);
     }
 
     @Override
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public List<PostResponse> getAllPosts() {
+        return List.of();
     }
 
     @Override
-    public Post getPostById(String id) {
-        return postRepository.findById(id).orElse(null);
+    public PostResponse getPostById(String id) {
+            var post = postRepository.findById(id).orElseThrow(
+                () -> new AppException(ErrorCode.POST_NOT_FOUND, "Post not found with id: " + id));
+            var postResponse = postMapper.toPostResponse(post);
+            postResponse.setInfochan(userInfo(post.getUserId()));
+
+            return postResponse;
     }
 
     @Override
-    public Post updatePost(String id, Post post) {
-        if (postRepository.existsById(id)) {
-            post.setId(id);
-            return postRepository.save(post);
-        }
+    public PostResponse updatePost(String id, Post post) {
         return null;
     }
 
     @Override
     public void deletePost(String id) {
-        postRepository.deleteById(id);
+
     }
+
+   private Infochan userInfo(String userId) {
+       Userchan user = userRepository.findById(UUID.fromString(userId)).orElseThrow(
+               () -> new AppException(ErrorCode.POST_NOT_FOUND, "User of this post not found with id: " + userId)
+       );
+       return userMapper.toInfochan(user);
+   }
+
+   private Set<PostMedia> convertMediaFiles(List<MultipartFile> files){
+       Set<PostMedia> mediaFiles = new HashSet<>();
+        for (MultipartFile file : files){
+            String fileName = String.join("-", UUID.randomUUID().toString(), file.getOriginalFilename());
+            String url = cloudStorageService.uploadFile(file, fileName);
+            String type = MEDIA.getType(fileName);
+            mediaFiles.add(PostMedia.builder()
+                    .url(url)
+                    .uploadedAt(LOCALE.now)
+                    .mediaType(type)
+                    .build());
+        }
+        return mediaFiles;
+   }
 }
 

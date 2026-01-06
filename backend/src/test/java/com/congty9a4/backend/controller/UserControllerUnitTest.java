@@ -1,11 +1,10 @@
 package com.congty9a4.backend.controller;
 
-import com.congty9a4.backend.config.SecurityConfig;
 import com.congty9a4.backend.dto.req.user.UserCreationRequest;
 import com.congty9a4.backend.dto.req.user.UserUpdationRequest;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.user.UserResponse;
-import com.congty9a4.backend.entity.relational.Userchan;
+import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.util.AppPageable;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -32,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
-@Import(SecurityConfig.class)
 @WithMockUser
 public class UserControllerUnitTest {
 

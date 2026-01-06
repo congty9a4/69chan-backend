@@ -1,7 +1,7 @@
 package com.congty9a4.backend.dto.resp.api;
 
 
-import com.congty9a4.backend.constant.CustomLocale;
+import com.congty9a4.backend.constant.LOCALE;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -28,5 +28,5 @@ public class ErrorApiResponse {
     Map<String, String> errors;
 
     @Builder.Default
-    OffsetDateTime timestamp = CustomLocale.now;
+    OffsetDateTime timestamp = LOCALE.now;
 }

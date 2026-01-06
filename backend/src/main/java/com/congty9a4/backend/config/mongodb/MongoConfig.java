@@ -1,6 +1,6 @@
 package com.congty9a4.backend.config.mongodb;
 
-import com.congty9a4.backend.constant.CustomLocale;
+import com.congty9a4.backend.constant.LOCALE;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.auditing.DateTimeProvider;
@@ -18,7 +18,7 @@ public class MongoConfig {
 
     @Bean(name = "auditingDateTimeProvider")
     public DateTimeProvider dateTimeProvider() {
-        return () -> Optional.of(CustomLocale.now);
+        return () -> Optional.of(LOCALE.now);
     }
 
 

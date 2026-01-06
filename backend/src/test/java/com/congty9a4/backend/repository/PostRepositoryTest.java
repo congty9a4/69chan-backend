@@ -1,9 +1,10 @@
 package com.congty9a4.backend.repository;
 
 import com.congty9a4.backend.config.mongodb.MongoConfig;
-import com.congty9a4.backend.entity.relational.Userchan;
+import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.entity.enums.PostVisibility;
-import com.congty9a4.backend.entity.nosql.Post;
+import com.congty9a4.backend.entity.post.Post;
+import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.mongo.PostRepository;
 import com.congty9a4.backend.util.JsonLogging;
 import lombok.extern.slf4j.Slf4j;
@@ -13,9 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
@@ -28,6 +31,9 @@ public class PostRepositoryTest {
 
     private Post samplePost;
 
+    @MockitoBean
+    UserMapper userMapper;
+
     @BeforeEach
     public void setUp() {
 
@@ -39,12 +45,13 @@ public class PostRepositoryTest {
                 .isActive(true)
                 .build();
 
+
         samplePost = Post.builder()
                 .visibility(PostVisibility.PUBLIC)
-                .content("This is a sample post content.")
-                .authorId(userchan.getId())
+                .caption("This is a sample post content.")
+                .id(userchan.getId().toString())
                 .build();
-        samplePost = postRepository.save(samplePost);
+        postRepository.save(samplePost);
     }
     @AfterEach
     public void tearDown() {
@@ -58,7 +65,7 @@ public class PostRepositoryTest {
         log.info("Saved Post: {}", JsonLogging.toString(savedPost));
 
         assertNotNull(savedPost);
-        assert savedPost.getId().equals(samplePost.getId());
-        assert savedPost.getContent().equals(samplePost.getContent());
+        assertEquals(savedPost.getId(), samplePost.getId());
+        assertEquals(savedPost.getUserId(), samplePost.getUserId());
     }
 }

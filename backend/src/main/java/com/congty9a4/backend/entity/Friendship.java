@@ -1,4 +1,4 @@
-package com.congty9a4.backend.entity.relational;
+package com.congty9a4.backend.entity;
 
 import com.congty9a4.backend.entity.enums.FriendStatus;
 import jakarta.persistence.*;

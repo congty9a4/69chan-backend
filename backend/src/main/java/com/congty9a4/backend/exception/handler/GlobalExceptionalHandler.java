@@ -12,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.HashMap;
@@ -63,6 +64,17 @@ public class GlobalExceptionalHandler {
                 .message("Invalid Request Data")
                 .detail(errorCode.getDetailedMessage())
                 .errors(errors)
+                .build();
+    }
+
+    @ExceptionHandler(value = MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ErrorApiResponse handlingMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+        ErrorCode errorCode = ErrorCode.FILE_TOO_LARGE;
+
+        return ErrorApiResponse.builder()
+                .message("Invalid request data")
+                .detail(errorCode.getDetailedMessage())
                 .build();
     }
 }

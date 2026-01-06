@@ -2,6 +2,10 @@ spring:
   application:
     name: backend
 
+  h2:
+    console:
+      enabled: false
+
   jackson:
     date-format: yyyy-MM-dd
 
@@ -22,7 +26,7 @@ spring:
     gcp:
       project-id: first-project-444717
       credentials:
-        location: classpath:gcs_credentials.json
+        location: file:gcs_credentials.json
 
 
   servlet:
@@ -40,8 +44,11 @@ logging:
             CommonsRequestLoggingFilter: DEBUG
 gcs:
   bucket-name: 69chan-dev-store-media-files
-  sub-directory: images
+  sub-directory: media
 
 server:
   address: localhost
+
+jwt:
+  secret: ${JWT_SECRET}
 

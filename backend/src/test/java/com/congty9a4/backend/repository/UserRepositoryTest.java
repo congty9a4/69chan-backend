@@ -1,30 +1,28 @@
 package com.congty9a4.backend.repository;
 
-import com.congty9a4.backend.config.JpaConfig;
-import com.congty9a4.backend.entity.relational.Userchan;
+import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.repository.jpa.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Filter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 
+// Using @DataJpaTest to test JPA repositories with an in-memory database
 @Slf4j
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DataJpaTest(
+        properties = {
+                "spring.datasource.url=jdbc:h2:mem:testdb",
+                "spring.jpa.hibernate.ddl-auto=create-drop",
+                "sql.init.mode=never"
+        }
+)
 public class UserRepositoryTest {
 
     @Autowired
@@ -39,7 +37,7 @@ public class UserRepositoryTest {
         testUser = Userchan.builder()
                 .username("testUser")
                 .password("testPassword")
-                .email("testEmail")
+                .email("test@example.com")
                 .isActive(true)
                 .build();
 
