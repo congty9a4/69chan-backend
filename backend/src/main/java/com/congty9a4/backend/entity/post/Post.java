@@ -1,18 +1,16 @@
-package com.congty9a4.backend.entity.nosql;
+package com.congty9a4.backend.entity.post;
 
 import com.congty9a4.backend.entity.enums.PostVisibility;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -20,31 +18,36 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document("posts")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Post {
     @Id
-    private String id;
+    String id;
 
-    @Field("author_id")
-    private UUID authorId;
+    @Field("user_id")
+    String userId;
 
-    private String content;
+    @Field("caption")
+    String caption;
 
-    @Field("image_urls")
-    private Set<String> imageUrls;
+    @Field("tags")
+    Set<String> tags;
 
-    @Field("video_url")
-    private Set<String> videoUrls;
+    @Field("media")
+    Set<PostMedia> mediaFiles;
 
-    private PostVisibility visibility;
+    @Builder.Default
+    @Field("visibility")
+    PostVisibility visibility = PostVisibility.FRIENDS;
 
     @Field("is_deleted")
-    private Boolean isDeleted;
+    @Builder.Default
+    boolean isDeleted = false;
 
     @CreatedDate
     @Field("created_at")
-    private OffsetDateTime createdAt;
+    OffsetDateTime createdAt;
 
     @LastModifiedDate
     @Field("updated_at")
-    private OffsetDateTime updatedAt;
+    OffsetDateTime updatedAt;
 }

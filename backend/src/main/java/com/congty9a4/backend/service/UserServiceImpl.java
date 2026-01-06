@@ -5,7 +5,7 @@ import com.congty9a4.backend.dto.req.user.UserCreationRequest;
 import com.congty9a4.backend.dto.req.user.UserUpdationRequest;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.user.UserResponse;
-import com.congty9a4.backend.entity.relational.Userchan;
+import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.exception.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.UserMapper;

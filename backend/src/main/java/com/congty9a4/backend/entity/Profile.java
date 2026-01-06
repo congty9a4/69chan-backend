@@ -1,6 +1,5 @@
-package com.congty9a4.backend.entity.relational;
+package com.congty9a4.backend.entity;
 
-import com.congty9a4.backend.entity.relational.Userchan;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

@@ -1,11 +1,12 @@
 package com.congty9a4.backend.controller;
 
-import com.congty9a4.backend.entity.nosql.Post;
+import com.congty9a4.backend.dto.req.post.PostCreationRequest;
+import com.congty9a4.backend.dto.resp.PostResponse;
+import com.congty9a4.backend.dto.resp.api.ApiResponse;
 import com.congty9a4.backend.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,42 +17,24 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody Post post) {
-        Post createdPost = postService.createPost(post);
-        return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
+    @PostMapping(value = "/create", consumes = "multipart/form-data")
+    public ApiResponse<PostResponse> createPost(
+            @RequestPart("file") List<MultipartFile> mediaFiles,
+            @RequestPart("post") PostCreationRequest post) {
+        var result = postService.createPost(post, mediaFiles);
+        return ApiResponse.success(result);
     }
 
-    @GetMapping
+ /*   @GetMapping
     public ResponseEntity<List<Post>> getAllPosts() {
         List<Post> posts = postService.getAllPosts();
         return new ResponseEntity<>(posts, HttpStatus.OK);
-    }
+   }*/
 
     @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable String id) {
-        Post post = postService.getPostById(id);
-        if (post != null) {
-            return new ResponseEntity<>(post, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable String id, @RequestBody Post post) {
-        Post updatedPost = postService.updatePost(id, post);
-        if (updatedPost != null) {
-            return new ResponseEntity<>(updatedPost, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable String id) {
-        postService.deletePost(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ApiResponse<PostResponse> getPostById(@PathVariable String id) {
+        var result = postService.getPostById(id);
+        return ApiResponse.success(result);
     }
 }
 
