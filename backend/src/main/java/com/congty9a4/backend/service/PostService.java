@@ -3,7 +3,6 @@ package com.congty9a4.backend.service;
 import com.congty9a4.backend.dto.req.post.PostCreationRequest;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
-import com.congty9a4.backend.entity.post.Post;
 import com.congty9a4.backend.util.AppPageable;
 import org.springframework.web.multipart.MultipartFile;
 

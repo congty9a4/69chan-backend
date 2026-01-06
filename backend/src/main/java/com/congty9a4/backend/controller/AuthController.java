@@ -6,7 +6,6 @@ import com.congty9a4.backend.dto.resp.api.ApiResponse;
 import com.congty9a4.backend.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
