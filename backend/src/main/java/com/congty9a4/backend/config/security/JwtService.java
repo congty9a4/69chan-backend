@@ -16,6 +16,7 @@ import java.util.UUID;
 @Service
 public class JwtService {
 
+
     @Value("${jwt.secret}")
     private String jwtSecret;
 

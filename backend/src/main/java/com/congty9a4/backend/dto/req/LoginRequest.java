@@ -1,12 +1,11 @@
-package com.congty9a4.backend.dto.resp.user;
+package com.congty9a4.backend.dto.req;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @Setter
 @Getter
@@ -15,10 +14,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
-    UUID id;
-    String username;
+public class LoginRequest {
+
+    @Email
+    @NotBlank
     String email;
-    OffsetDateTime createdAt;
-    OffsetDateTime updatedAt;
+
+    @NotBlank
+    String password;
 }

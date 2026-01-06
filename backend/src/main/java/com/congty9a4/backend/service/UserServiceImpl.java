@@ -4,7 +4,7 @@ import com.congty9a4.backend.config.TrackExecutionTime;
 import com.congty9a4.backend.dto.req.user.UserCreationRequest;
 import com.congty9a4.backend.dto.req.user.UserUpdationRequest;
 import com.congty9a4.backend.dto.resp.PageResponse;
-import com.congty9a4.backend.dto.resp.user.UserResponse;
+import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.exception.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
@@ -12,6 +12,7 @@ import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.jpa.UserRepository;
 import com.congty9a4.backend.util.AppPageable;
 import com.congty9a4.backend.util.ServerUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -53,9 +55,7 @@ public class UserServiceImpl implements UserService {
     @TrackExecutionTime
     @Override
     public Userchan getUserById(UUID id) {
-        return userRepository.findById(id).orElseThrow(() ->
-                new AppException(ErrorCode.USER_NOT_FOUND, "User not found with id: " + id)
-        );
+        return userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, "User not found with id: " + id));
     }
 
     @Override
@@ -89,6 +89,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(UUID id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public Userchan getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(()
+                -> new AppException(ErrorCode.USER_NOT_FOUND, "User not found with email: " + email));
     }
 }
 

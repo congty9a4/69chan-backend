@@ -4,7 +4,7 @@ import com.congty9a4.backend.dto.req.user.UserCreationRequest;
 import com.congty9a4.backend.dto.req.user.UserUpdationRequest;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
-import com.congty9a4.backend.dto.resp.user.UserResponse;
+import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.util.AppPageable;
@@ -51,7 +51,7 @@ public class UserController {
         );
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest userReq) {
         var userchan = userService.createUser(userReq);
         return ApiResponse.success(

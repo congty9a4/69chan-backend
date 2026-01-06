@@ -3,6 +3,7 @@ package com.congty9a4.backend.service;
 import com.congty9a4.backend.constant.LOCALE;
 import com.congty9a4.backend.constant.MEDIA;
 import com.congty9a4.backend.dto.req.post.PostCreationRequest;
+import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.entity.enums.PostVisibility;
 import com.congty9a4.backend.entity.post.Infochan;
@@ -15,6 +16,9 @@ import com.congty9a4.backend.mapper.PostMapper;
 import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.jpa.UserRepository;
 import com.congty9a4.backend.repository.mongo.PostRepository;
+import com.congty9a4.backend.util.AppPageable;
+import com.congty9a4.backend.util.SecurityUtils;
+import com.congty9a4.backend.util.ServerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +35,9 @@ public class PostServiceImpl implements PostService {
     PostMapper postMapper;
 
     @Autowired
+    ServerUtils serverUtils;
+
+    @Autowired
     private PostRepository postRepository;
     @Autowired
     private UserRepository userRepository;
@@ -45,20 +52,14 @@ public class PostServiceImpl implements PostService {
         postEntity.setVisibility(req.isPublic() ? PostVisibility.PUBLIC : PostVisibility.FRIENDS);
 
         // fake user
-        Userchan user = Userchan.builder()
-                .id(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"))
-                .username("sampleuser")
-                .build();
-        postEntity.setUserId(user.getId().toString());
+        if (!userRepository.existsById(UUID.fromString(SecurityUtils.getCurrentUserId())))
+            throw new AppException(ErrorCode.USER_NOT_FOUND, "Can't create post due to user not found");
+        postEntity.setUserId(SecurityUtils.getCurrentUserId());
         postEntity.setMediaFiles(convertMediaFiles(files));
         var savedPost = postRepository.save(postEntity);
         return postMapper.toPostResponse(savedPost);
     }
 
-    @Override
-    public List<PostResponse> getAllPosts() {
-        return List.of();
-    }
 
     @Override
     public PostResponse getPostById(String id) {
@@ -66,21 +67,36 @@ public class PostServiceImpl implements PostService {
                 () -> new AppException(ErrorCode.POST_NOT_FOUND, "Post not found with id: " + id));
             var postResponse = postMapper.toPostResponse(post);
             postResponse.setInfochan(userInfo(post.getUserId()));
-
             return postResponse;
     }
 
-    @Override
-    public PostResponse updatePost(String id, Post post) {
-        return null;
-    }
 
     @Override
     public void deletePost(String id) {
-
+        postRepository.deleteById(id);
     }
 
-   private Infochan userInfo(String userId) {
+    @Override
+    public PageResponse<List<PostResponse>> getAllPosts(AppPageable pageable) {
+        String userId = SecurityUtils.getCurrentUserId();
+        var currentPage = postRepository.findAllByUserId(userId, pageable.getPageable());
+        var postResponses = currentPage.getContent().stream()
+                .map(postMapper::toPostResponse)
+                .toList();
+
+        return PageResponse.<List<PostResponse>>builder()
+                .content(postResponses)
+                .page(currentPage.getNumber() + 1)
+                .size(postResponses.size())
+                .totalItems(currentPage.getTotalElements())
+                .totalPages(currentPage.getTotalPages())
+                .next(pageable.nextOrPrevPage(currentPage, true, serverUtils.getServerUrl()))
+                .prev(pageable.nextOrPrevPage(currentPage, false, serverUtils.getServerUrl()))
+                .build();
+    }
+
+
+    private Infochan userInfo(String userId) {
        Userchan user = userRepository.findById(UUID.fromString(userId)).orElseThrow(
                () -> new AppException(ErrorCode.POST_NOT_FOUND, "User of this post not found with id: " + userId)
        );

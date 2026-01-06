@@ -2,6 +2,18 @@ spring:
   application:
     name: backend
 
+  data:
+    mongodb:
+      uri: "mongodb+srv://${MONGO_DB_USERNAME}:${MONGO_DB_PASSWORD}@${MONGO_DB_HOST}/${MONGO_DB_NAME}?appName=Miku-Dit-Bu"
+
+  datasource:
+    username: ${POSTGRE_DB_USERNAME}
+    password: ${POSTGRE_DB_PASSWORD}
+    url: "jdbc:postgresql://${POSTGRE_DB_HOST}:${POSTGRE_DB_PORT}/postgres?user=${POSTGRE_DB_USERNAME}&password=${POSTGRE_DB_PASSWORD}"
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      transaction-isolation:
+
   h2:
     console:
       enabled: false
@@ -12,6 +24,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: true
 
   sql:
     init:
