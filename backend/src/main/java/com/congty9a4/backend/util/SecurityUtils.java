@@ -6,17 +6,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
-@Service
+
 public class SecurityUtils {
 
-    public static String getCurrentUserLogin(){
+    public static String getCurrentUserId(){
         SecurityContext context = SecurityContextHolder.getContext();
         return extractPrincipal(context.getAuthentication());
-
     }
-    // retrieve email
+    // retrieve id
     private static String extractPrincipal(Authentication authentication){
         if (authentication == null)
             throw new AppException(ErrorCode.UNAUTHENTICATED);

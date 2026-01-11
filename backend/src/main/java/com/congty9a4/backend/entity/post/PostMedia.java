@@ -18,7 +18,7 @@ import java.time.OffsetDateTime;
 public class PostMedia {
     String url;
 
-    @JsonProperty("media_type")
+    @JsonProperty("type")
     String mediaType;
 
     @JsonProperty("uploaded_at")

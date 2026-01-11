@@ -1,7 +1,7 @@
 package com.congty9a4.backend.mapper;
 
 import com.congty9a4.backend.dto.req.user.UserUpdationRequest;
-import com.congty9a4.backend.dto.resp.user.UserResponse;
+import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.entity.post.Infochan;
 import com.congty9a4.backend.entity.Userchan;
 import org.mapstruct.Mapper;
@@ -19,6 +19,7 @@ public interface UserMapper {
 
     @Mapping(source = "profile.fullName", target = "fullname")
     @Mapping(source = "profile.avatarUrl", target = "profilePicture")
+    @Mapping(source = "id", target = "userId")
     Infochan toInfochan(Userchan userchan);
 
 }

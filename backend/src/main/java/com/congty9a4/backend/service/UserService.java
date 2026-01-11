@@ -3,7 +3,7 @@ package com.congty9a4.backend.service;
 import com.congty9a4.backend.dto.req.user.UserCreationRequest;
 import com.congty9a4.backend.dto.req.user.UserUpdationRequest;
 import com.congty9a4.backend.dto.resp.PageResponse;
-import com.congty9a4.backend.dto.resp.user.UserResponse;
+import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.util.AppPageable;
 
@@ -16,5 +16,6 @@ public interface UserService {
     Userchan createUser(UserCreationRequest user);
     Userchan updateUser(UUID id, UserUpdationRequest user);
     void deleteUser(UUID id);
+    Userchan getUserByEmail(String email);
 }
 

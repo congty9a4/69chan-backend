@@ -20,14 +20,14 @@ public class ApiResponse<T> {
     @Builder.Default
     boolean isSuccess = true;
 
-    T data;
+    T body;
 
     @Builder.Default
     OffsetDateTime timestamp = LOCALE.now;
 
     public static <T> ApiResponse<T> success(T body) {
         return ApiResponse.<T>builder()
-                .data(body)
+                .body(body)
                 .build();
     }
 

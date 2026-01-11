@@ -1,7 +1,7 @@
 package com.congty9a4.backend.controller;
 
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
-import com.congty9a4.backend.dto.resp.user.UserResponse;
+import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.mapper.UserMapper;
 import org.springframework.web.bind.annotation.*;

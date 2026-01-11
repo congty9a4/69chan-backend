@@ -52,8 +52,9 @@ public class Userchan {
     @Column(name = "is_active", columnDefinition = "boolean default true")
     boolean isActive = true;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Profile profile;
+
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

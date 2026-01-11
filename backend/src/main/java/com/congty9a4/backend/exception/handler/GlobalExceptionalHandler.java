@@ -42,7 +42,7 @@ public class GlobalExceptionalHandler {
         ErrorCode errorCode = ErrorCode.RESOURCE_NOT_FOUND;
         return ErrorApiResponse.builder()
                 .message("Resource Not Found")
-                .detail(errorCode.getDetailedMessage() + " - " + ex.getResourcePath())
+                .detail(String.format("%s [%s -> %s]", errorCode.getDetailedMessage(), ex.getHttpMethod().name().toUpperCase(), ex.getResourcePath()))
                 .build();
 
 
