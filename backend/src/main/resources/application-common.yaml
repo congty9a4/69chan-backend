@@ -37,10 +37,9 @@ spring:
 
   cloud:
     gcp:
-      project-id: first-project-444717
+      project-id: ${GOOGLE_PROJECT_ID}
       credentials:
         location: file:gcs_credentials.json
-
 
   servlet:
     multipart:

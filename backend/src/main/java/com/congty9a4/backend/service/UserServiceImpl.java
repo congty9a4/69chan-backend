@@ -40,7 +40,6 @@ public class UserServiceImpl implements UserService {
                 .map(userMapper::toUserResponse)
                 .toList();
 
-
         return PageResponse.<List<UserResponse>>builder()
                 .content(userResponses)
                 .page(currentPage.getNumber() + 1)

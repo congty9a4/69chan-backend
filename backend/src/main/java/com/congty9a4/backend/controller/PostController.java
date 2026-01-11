@@ -22,7 +22,7 @@ public class PostController {
 
     @PostMapping(value = "/create", consumes = "multipart/form-data")
     public ApiResponse<PostResponse> createPost(
-            @RequestPart("file") List<MultipartFile> mediaFiles,
+            @RequestPart(value = "file", required = false) List<MultipartFile> mediaFiles,
             @RequestPart("post") PostCreationRequest post) {
         var result = postService.createPost(post, mediaFiles);
         return ApiResponse.success(result);
@@ -34,7 +34,7 @@ public class PostController {
         return new ResponseEntity<>(posts, HttpStatus.OK);
    }*/
 
-    @GetMapping("/me")
+    @GetMapping()
     public ApiResponse<PageResponse<List<PostResponse>>> getAllPosts(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,

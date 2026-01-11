@@ -1,7 +1,9 @@
 package com.congty9a4.backend.controller;
 
 import com.congty9a4.backend.dto.req.LoginRequest;
+import com.congty9a4.backend.dto.req.user.UserCreationRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
+import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
 import com.congty9a4.backend.service.AuthService;
 import jakarta.validation.Valid;
@@ -26,5 +28,6 @@ public class AuthController {
     public ApiResponse<AuthResponse> loginAsGuest() {
         return ApiResponse.success(authService.guest());
     }
+
 }
 

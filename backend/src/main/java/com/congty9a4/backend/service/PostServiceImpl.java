@@ -45,6 +45,8 @@ public class PostServiceImpl implements PostService {
     private UserMapper userMapper;
     @Autowired
     private CloudStorageService cloudStorageService;
+    @Autowired
+    private UserService userService;
 
     @Override
     public PostResponse createPost(PostCreationRequest req, List<MultipartFile> files) {
@@ -78,10 +80,15 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PageResponse<List<PostResponse>> getAllPosts(AppPageable pageable) {
+
         String userId = SecurityUtils.getCurrentUserId();
+        var userchan = userService.getUserById(UUID.fromString(userId));
+        var infochan = userMapper.toInfochan(userchan);
+
         var currentPage = postRepository.findAllByUserId(userId, pageable.getPageable());
         var postResponses = currentPage.getContent().stream()
                 .map(postMapper::toPostResponse)
+                .peek(p -> p.setInfochan(infochan))
                 .toList();
 
         return PageResponse.<List<PostResponse>>builder()
@@ -105,7 +112,10 @@ public class PostServiceImpl implements PostService {
 
    private Set<PostMedia> convertMediaFiles(List<MultipartFile> files){
        Set<PostMedia> mediaFiles = new HashSet<>();
-        for (MultipartFile file : files){
+
+       if (files == null || files.isEmpty()) return mediaFiles;
+
+       for (MultipartFile file : files){
             String fileName = String.join("-", UUID.randomUUID().toString(), file.getOriginalFilename());
             String url = cloudStorageService.uploadFile(file, fileName);
             String type = MEDIA.getType(fileName);

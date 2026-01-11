@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 public class Infochan {
 
-    @JsonProperty("profile_picture")
+    @JsonProperty("avatar")
     String profilePicture;
 
     String username;

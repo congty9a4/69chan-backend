@@ -51,7 +51,7 @@ public enum ErrorCode {
     FORBIDDEN(40300, "You do not have permission to access this resource.", HttpStatus.FORBIDDEN),
 
     // --- NOT FOUND (404) ---
-    RESOURCE_NOT_FOUND(40400, "The requested API endpoint does not exist", HttpStatus.NOT_FOUND),
+    RESOURCE_NOT_FOUND(40400, "No endpoint found for this request", HttpStatus.NOT_FOUND),
     PROFILE_NOT_FOUND(40401, "The user profile you are looking for could not be found.", HttpStatus.NOT_FOUND),
     VERIFICATION_TOKEN_NOT_FOUND(40404, "The verification token is invalid or has expired.", HttpStatus.NOT_FOUND)
     ;
