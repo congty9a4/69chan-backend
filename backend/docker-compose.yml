@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  # Spring Boot Backend Application
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./gcp-credentials.base64:/app/gcp-credentials.base64:ro
+    network_mode: host

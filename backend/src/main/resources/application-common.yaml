@@ -35,12 +35,6 @@ spring:
         jdbc:
           time_zone: UTC+7
 
-  cloud:
-    gcp:
-      project-id: ${GOOGLE_PROJECT_ID}
-      credentials:
-        location: file:gcs_credentials.json
-
   servlet:
     multipart:
       max-file-size: 10MB
