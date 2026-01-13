@@ -35,6 +35,9 @@ public class Post {
     @Field("media")
     Set<PostMedia> mediaFiles;
 
+    @Field("likes")
+    Set<String> likes;
+
     @Builder.Default
     @Field("visibility")
     PostVisibility visibility = PostVisibility.FRIENDS;

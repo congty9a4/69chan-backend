@@ -15,6 +15,12 @@ public interface PostMapper {
     Post toPost(PostCreationRequest req);
 
     @Mapping(target = "scope", expression = "java(post.getVisibility().toString().toLowerCase())")
-    PostResponse toPostResponse(Post post);
+    @Mapping(target = "likes", expression = "java(post.getLikes() != null ? post.getLikes().size() : 0)")
+    @Mapping(target = "isLiked", expression = "java(post.getLikes() != null && userId != null && post.getLikes().contains(userId))")
+    PostResponse toPostResponse(Post post, String userId);
+
+    default PostResponse toPostResponse(Post post) {
+        return toPostResponse(post, null);
+    }
 
 }

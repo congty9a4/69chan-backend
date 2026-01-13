@@ -29,7 +29,7 @@ public class CorsConfigurationn {
         config.setAllowedOrigins(
                 List.of(WHITE_LISTS)
         );
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "x-no-retry", "Access-Control-Allow-Origin"));
         config.setExposedHeaders(List.of("Authorization", "Content-Type"));
 

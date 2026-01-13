@@ -34,6 +34,11 @@ public class PostResponse {
 
     String caption;
 
+    int likes;
+
+    @JsonProperty("is_liked")
+    boolean isLiked;
+
     @JsonProperty("created_at")
     OffsetDateTime createdAt;
 

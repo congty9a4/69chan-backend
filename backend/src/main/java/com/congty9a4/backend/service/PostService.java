@@ -13,4 +13,6 @@ public interface PostService {
     PostResponse getPostById(String id);
     void deletePost(String id);
     PageResponse<List<PostResponse>> getAllPosts(AppPageable of);
+
+    void handlePostLikes(String id);
 }

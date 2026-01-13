@@ -19,6 +19,7 @@ import com.congty9a4.backend.repository.mongo.PostRepository;
 import com.congty9a4.backend.util.AppPageable;
 import com.congty9a4.backend.util.SecurityUtils;
 import com.congty9a4.backend.util.ServerUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class PostServiceImpl implements PostService {
 
@@ -52,7 +54,7 @@ public class PostServiceImpl implements PostService {
     public PostResponse createPost(PostCreationRequest req, List<MultipartFile> files) {
         Post postEntity = postMapper.toPost(req);
         postEntity.setVisibility(req.isPublic() ? PostVisibility.PUBLIC : PostVisibility.FRIENDS);
-
+        postEntity.setLikes(new HashSet<>());
         // fake user
         if (!userRepository.existsById(UUID.fromString(SecurityUtils.getCurrentUserId())))
             throw new AppException(ErrorCode.USER_NOT_FOUND, "Can't create post due to user not found");
@@ -87,7 +89,7 @@ public class PostServiceImpl implements PostService {
 
         var currentPage = postRepository.findAllByUserId(userId, pageable.getPageable());
         var postResponses = currentPage.getContent().stream()
-                .map(postMapper::toPostResponse)
+                .map(post -> postMapper.toPostResponse(post, userId))
                 .peek(p -> p.setInfochan(infochan))
                 .toList();
 
@@ -102,6 +104,23 @@ public class PostServiceImpl implements PostService {
                 .build();
     }
 
+    @Override
+    public void handlePostLikes(String id) {
+        var targetPost = postRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        var currentUser = SecurityUtils.getCurrentUserId();
+
+        if (targetPost.getLikes() == null) targetPost.setLikes(new HashSet<>());
+
+        // Toggle like: if user already liked, remove it; otherwise add it
+        if (targetPost.getLikes().contains(currentUser)) {
+            targetPost.getLikes().remove(currentUser);
+        } else {
+            targetPost.getLikes().add(currentUser);
+        }
+
+        postRepository.save(targetPost);
+
+    }
 
     private Infochan userInfo(String userId) {
        Userchan user = userRepository.findById(UUID.fromString(userId)).orElseThrow(
@@ -115,6 +134,8 @@ public class PostServiceImpl implements PostService {
 
        if (files == null || files.isEmpty()) return mediaFiles;
 
+       log.info("[MEDIA FILES]: ");
+
        for (MultipartFile file : files){
             String fileName = String.join("-", UUID.randomUUID().toString(), file.getOriginalFilename());
             String url = cloudStorageService.uploadFile(file, fileName);
@@ -124,6 +145,7 @@ public class PostServiceImpl implements PostService {
                     .uploadedAt(LOCALE.now)
                     .mediaType(type)
                     .build());
+            log.info(url);
         }
         return mediaFiles;
    }

@@ -22,7 +22,7 @@ public class PostController {
 
     @PostMapping(value = "/create", consumes = "multipart/form-data")
     public ApiResponse<PostResponse> createPost(
-            @RequestPart(value = "file", required = false) List<MultipartFile> mediaFiles,
+            @RequestPart(value = "files", required = false) List<MultipartFile> mediaFiles,
             @RequestPart("post") PostCreationRequest post) {
         var result = postService.createPost(post, mediaFiles);
         return ApiResponse.success(result);
@@ -34,12 +34,12 @@ public class PostController {
         return new ResponseEntity<>(posts, HttpStatus.OK);
    }*/
 
-    @GetMapping()
+    @GetMapping
     public ApiResponse<PageResponse<List<PostResponse>>> getAllPosts(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false, defaultValue = "id") String sortBy,
-            @RequestParam(required = false, defaultValue = "asc") String sortDir,
+            @RequestParam(required = false, defaultValue = "desc") String sortDir,
             HttpServletRequest request
     ) {
 
@@ -61,6 +61,11 @@ public class PostController {
     public ApiResponse<String> deletePost(@PathVariable String id){
         postService.deletePost(id);
         return ApiResponse.success("Post deleted successfully");
+    }
+
+    @PatchMapping("/{id}/like")
+    public void handleLike(@PathVariable String id) {
+        postService.handlePostLikes(id);
     }
 
 }
