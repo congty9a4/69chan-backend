@@ -21,6 +21,8 @@ public class ErrorApiResponse {
     @Builder.Default
     boolean isSuccess = false;
 
+    int status;
+
     String message;
 
     String detail;

@@ -33,6 +33,7 @@ public class GlobalExceptionalHandler {
         return ErrorApiResponse.builder()
                 .message(errorCode.getDetailedMessage())
                 .detail(ex.getMessage())
+                .status(errorCode.getCode())
                 .build();
     }
 

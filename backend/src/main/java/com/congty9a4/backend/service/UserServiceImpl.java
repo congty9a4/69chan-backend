@@ -11,6 +11,7 @@ import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.jpa.UserRepository;
 import com.congty9a4.backend.util.AppPageable;
+import com.congty9a4.backend.util.PaginationHelper;
 import com.congty9a4.backend.util.ServerUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,24 +32,17 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
     @Autowired
-    private ServerUtils serverUtils;
+    private PaginationHelper paginationHelper;
 
     @Override
     public PageResponse<List<UserResponse>> getAllUsers(AppPageable pageable) {
         var currentPage = userRepository.findAll(pageable.getPageable());
-        var userResponses = currentPage.getContent().stream()
-                .map(userMapper::toUserResponse)
-                .toList();
 
-        return PageResponse.<List<UserResponse>>builder()
-                .content(userResponses)
-                .page(currentPage.getNumber() + 1)
-                .size(userResponses.size())
-                .totalItems(currentPage.getTotalElements())
-                .totalPages(currentPage.getTotalPages())
-                .next(pageable.nextOrPrevPage(currentPage, true, serverUtils.getServerUrl()))
-                .prev(pageable.nextOrPrevPage(currentPage, false, serverUtils.getServerUrl()))
-                .build();
+        return paginationHelper.buildPageResponse(
+                currentPage,
+                userMapper::toUserResponse,
+                pageable
+        );
     }
 
     @TrackExecutionTime

@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-public interface PostRepository extends MongoRepository<Post, String> {
+public interface PostRepository extends MongoRepository<Post, String>{
     @Query("{'user_id': ?0}")
     Page<Post> findAllByUserId(String userId, Pageable pageable);
 }

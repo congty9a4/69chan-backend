@@ -30,10 +30,6 @@ spring:
     init:
       mode: never
 
-    properties:
-      hibernate:
-        jdbc:
-          time_zone: UTC+7
 
   servlet:
     multipart:
@@ -48,6 +44,11 @@ logging:
         web:
           filter:
             CommonsRequestLoggingFilter: DEBUG
+app:
+  swagger:
+    server:
+      url: ${SWAGGER_SERVER_URL:}
+
 gcs:
   bucket-name: 69chan-dev-store-media-files
   sub-directory: media

@@ -25,7 +25,8 @@ public class SecurityConfig {
              "/v3/api-docs/**",
              "/api/auth/**",
              "/api/users/create",
-            "/api/sample/**"
+            "/api/sample/**",
+            "/"
      };
 
     @Bean

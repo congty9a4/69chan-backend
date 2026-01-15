@@ -1,11 +1,11 @@
-package com.congty9a4.backend.entity.post;
+package com.congty9a4.backend.entity;
 
-import com.congty9a4.backend.entity.Comment;
-import com.congty9a4.backend.entity.enums.PostVisibility;
+import com.congty9a4.backend.entity.post.Post;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
@@ -19,48 +19,36 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document("posts")
+@Document("comments")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Post {
+public class Comment {
     @Id
     String id;
 
     @Field("user_id")
     String userId;
 
-    @Field("caption")
-    String caption;
+    @DocumentReference
+    Post post;
 
-    @Field("tags")
-    Set<String> tags;
+    @DocumentReference
+    Set<Comment> childComments;
 
-    @Field("media")
-    Set<PostMedia> mediaFiles;
+    String text;
 
-    @Field("likes")
-    Set<String> likes;
-
-    @Field("like_count")
-    @Builder.Default
-    int likeCount = 0;
-
-    @Field("comment_count")
-    @Builder.Default
-    int commentCount = 0;
-
-    @Builder.Default
-    @Field("visibility")
-    PostVisibility visibility = PostVisibility.FRIENDS;
+    @Field("parent_id")
+    String parentId;
 
     @Field("is_deleted")
     @Builder.Default
     boolean isDeleted = false;
 
+
     @CreatedDate
-    @Field("created_at")
+    @JsonProperty("created_at")
     OffsetDateTime createdAt;
 
     @LastModifiedDate
-    @Field("updated_at")
+    @JsonProperty("updated_at")
     OffsetDateTime updatedAt;
 }
