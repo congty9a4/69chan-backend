@@ -2,9 +2,12 @@ package com.congty9a4.backend.service;
 
 import com.congty9a4.backend.constant.LOCALE;
 import com.congty9a4.backend.constant.MEDIA;
+import com.congty9a4.backend.dto.req.CommentRequest;
 import com.congty9a4.backend.dto.req.post.PostCreationRequest;
+import com.congty9a4.backend.dto.resp.CommentResponse;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
+import com.congty9a4.backend.entity.Comment;
 import com.congty9a4.backend.entity.enums.PostVisibility;
 import com.congty9a4.backend.entity.post.Infochan;
 import com.congty9a4.backend.entity.post.Post;
@@ -12,11 +15,14 @@ import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.entity.post.PostMedia;
 import com.congty9a4.backend.exception.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
+import com.congty9a4.backend.mapper.CommentMapper;
 import com.congty9a4.backend.mapper.PostMapper;
 import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.jpa.UserRepository;
+import com.congty9a4.backend.repository.mongo.CommentRepository;
 import com.congty9a4.backend.repository.mongo.PostRepository;
 import com.congty9a4.backend.util.AppPageable;
+import com.congty9a4.backend.util.PaginationHelper;
 import com.congty9a4.backend.util.SecurityUtils;
 import com.congty9a4.backend.util.ServerUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -35,6 +38,12 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     PostMapper postMapper;
+
+    @Autowired
+    CommentMapper commentMapper;
+
+    @Autowired
+    PaginationHelper paginationHelper;
 
     @Autowired
     ServerUtils serverUtils;
@@ -49,6 +58,8 @@ public class PostServiceImpl implements PostService {
     private CloudStorageService cloudStorageService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Override
     public PostResponse createPost(PostCreationRequest req, List<MultipartFile> files) {
@@ -61,14 +72,13 @@ public class PostServiceImpl implements PostService {
         postEntity.setUserId(SecurityUtils.getCurrentUserId());
         postEntity.setMediaFiles(convertMediaFiles(files));
         var savedPost = postRepository.save(postEntity);
-        return postMapper.toPostResponse(savedPost);
+        return postMapper.toPostResponse(savedPost, this::userInfo);
     }
 
 
     @Override
     public PostResponse getPostById(String id) {
-            var post = postRepository.findById(id).orElseThrow(
-                () -> new AppException(ErrorCode.POST_NOT_FOUND, "Post not found with id: " + id));
+            var post = findPost(id);
             var postResponse = postMapper.toPostResponse(post);
             postResponse.setInfochan(userInfo(post.getUserId()));
             return postResponse;
@@ -82,31 +92,26 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PageResponse<List<PostResponse>> getAllPosts(AppPageable pageable) {
-
         String userId = SecurityUtils.getCurrentUserId();
         var userchan = userService.getUserById(UUID.fromString(userId));
         var infochan = userMapper.toInfochan(userchan);
 
         var currentPage = postRepository.findAllByUserId(userId, pageable.getPageable());
-        var postResponses = currentPage.getContent().stream()
-                .map(post -> postMapper.toPostResponse(post, userId))
-                .peek(p -> p.setInfochan(infochan))
-                .toList();
 
-        return PageResponse.<List<PostResponse>>builder()
-                .content(postResponses)
-                .page(currentPage.getNumber() + 1)
-                .size(postResponses.size())
-                .totalItems(currentPage.getTotalElements())
-                .totalPages(currentPage.getTotalPages())
-                .next(pageable.nextOrPrevPage(currentPage, true, serverUtils.getServerUrl()))
-                .prev(pageable.nextOrPrevPage(currentPage, false, serverUtils.getServerUrl()))
-                .build();
+        return paginationHelper.buildPageResponse(
+                currentPage,
+                post -> postMapper.toPostResponse(post, userId),
+                postResponse -> {
+                    postResponse.setInfochan(infochan);
+                    return postResponse;
+                },
+                pageable
+        );
     }
 
     @Override
     public void handlePostLikes(String id) {
-        var targetPost = postRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        var targetPost = findPost(id);
         var currentUser = SecurityUtils.getCurrentUserId();
 
         if (targetPost.getLikes() == null) targetPost.setLikes(new HashSet<>());
@@ -117,9 +122,72 @@ public class PostServiceImpl implements PostService {
         } else {
             targetPost.getLikes().add(currentUser);
         }
+        targetPost.setLikeCount(targetPost.getLikes().size());
 
         postRepository.save(targetPost);
 
+    }
+
+    @Override
+    public void handleComment(String postId, CommentRequest request) {
+        Post targetPost = findPost(postId);
+        String currentUserId = SecurityUtils.getCurrentUserId();
+
+        commentRepository.save(
+                Comment.builder()
+                        .userId(currentUserId)
+                        .post(targetPost)
+                        .childComments(new HashSet<>())
+                        .text(request.getText())
+                        .build());
+
+        // init comment set if not exist
+        targetPost.setCommentCount(targetPost.getCommentCount() + 1);
+        postRepository.save(targetPost);
+    }
+
+    @Override
+    public void handleChildComment(String postId, CommentRequest request, String commentId) {
+
+        var currentPost = findPost(postId);
+        String currentUserId = SecurityUtils.getCurrentUserId();
+        Comment parentComment = commentRepository.findById(commentId).orElseThrow( () -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
+        Comment childComment = commentRepository.save(Comment.builder()
+                        .userId(currentUserId)
+                        .text(request.getText())
+                        .childComments(new HashSet<>())
+                        .post(findPost(postId))
+                        .parentId(commentId)
+                        .build());
+
+        if (parentComment.getChildComments() == null) parentComment.setChildComments(new HashSet<>());
+        parentComment.getChildComments().add(childComment);
+
+        currentPost.setCommentCount(currentPost.getCommentCount() + 1);
+        postRepository.save(currentPost);
+        commentRepository.save(parentComment);
+
+    }
+
+    @Override
+    public PageResponse<List<CommentResponse>> getComments(String postId, AppPageable pageable) {
+        // Verify post exists
+        findPost(postId);
+
+        // Get paginated comments
+        var currentPage = commentRepository.findRootCommentsByPostId(postId, pageable.getPageable());
+
+        // Cache for user info to avoid N+1 queries
+        var userInfoCache = new java.util.HashMap<String, Infochan>();
+
+        // Map comments to responses with user info
+        List<CommentResponse> commentResponses = currentPage.getContent().stream()
+                .map(comment -> commentMapper.toCommentResponse(comment, userId ->
+                    userInfoCache.computeIfAbsent(userId, this::userInfo)
+                ))
+                .toList();
+
+        return paginationHelper.buildPageResponse(currentPage, commentResponses, pageable);
     }
 
     private Infochan userInfo(String userId) {
@@ -127,6 +195,10 @@ public class PostServiceImpl implements PostService {
                () -> new AppException(ErrorCode.POST_NOT_FOUND, "User of this post not found with id: " + userId)
        );
        return userMapper.toInfochan(user);
+   }
+
+   private Post findPost(String id){
+        return postRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND, "Post not found with id: " + id));
    }
 
    private Set<PostMedia> convertMediaFiles(List<MultipartFile> files){

@@ -1,7 +1,6 @@
 package com.congty9a4.backend.dto.resp;
 
 import com.congty9a4.backend.entity.post.Infochan;
-import com.congty9a4.backend.entity.post.PostMedia;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -17,31 +16,19 @@ import java.util.List;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PostResponse {
+public class CommentResponse {
     String id;
-    // List<Comment> comments;
 
-    List<String> tags;
+    String text;
 
-    @JsonProperty("medias")
-    List<PostMedia> mediaFiles ;
+    @JsonProperty("post_id")
+    String postId;
 
     @JsonProperty("user")
     Infochan infochan;
 
-    @JsonProperty("scope")
-    String scope;
-
-    String caption;
-
-    @JsonProperty("likes")
-    int likeCount;
-
-    @JsonProperty("comments")
-    int commentCount;
-
-    @JsonProperty("is_liked")
-    boolean isLiked;
+    @JsonProperty("children")
+    List<CommentResponse> childComments;
 
     @JsonProperty("created_at")
     OffsetDateTime createdAt;
@@ -49,3 +36,4 @@ public class PostResponse {
     @JsonProperty("updated_at")
     OffsetDateTime updatedAt;
 }
+

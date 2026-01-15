@@ -1,6 +1,8 @@
 package com.congty9a4.backend.service;
 
+import com.congty9a4.backend.dto.req.CommentRequest;
 import com.congty9a4.backend.dto.req.post.PostCreationRequest;
+import com.congty9a4.backend.dto.resp.CommentResponse;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.util.AppPageable;
@@ -15,4 +17,10 @@ public interface PostService {
     PageResponse<List<PostResponse>> getAllPosts(AppPageable of);
 
     void handlePostLikes(String id);
+
+    void handleComment(String postId, CommentRequest request);
+
+    void handleChildComment(String postId, CommentRequest request, String commentId);
+
+    PageResponse<List<CommentResponse>> getComments(String postId, AppPageable pageable);
 }
