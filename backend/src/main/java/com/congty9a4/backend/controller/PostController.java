@@ -1,7 +1,7 @@
 package com.congty9a4.backend.controller;
 
 import com.congty9a4.backend.dto.req.CommentRequest;
-import com.congty9a4.backend.dto.req.post.PostCreationRequest;
+import com.congty9a4.backend.dto.req.post.PostRequest;
 import com.congty9a4.backend.dto.resp.CommentResponse;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
@@ -25,7 +25,7 @@ public class PostController {
     @PostMapping(value = "/create", consumes = "multipart/form-data")
     public ApiResponse<PostResponse> createPost(
             @RequestPart(value = "files", required = false) List<MultipartFile> mediaFiles,
-            @RequestPart("post") PostCreationRequest post) {
+            @RequestPart("post") PostRequest post) {
         var result = postService.createPost(post, mediaFiles);
         return ApiResponse.success(result);
     }
@@ -53,12 +53,13 @@ public class PostController {
         return ApiResponse.success(postService.getPostById(id));
     }
 
-   /*
+
     @PutMapping("/{id}")
-    public ApiResponse<PostResponse> updatePost(@PathVariable String id, @RequestBody PostCreationRequest req){
+    public ApiResponse<PostResponse> updatePost(@PathVariable String id, @RequestBody PostRequest req){
+        return ApiResponse.success( postService.updatePost(id, req));
 
     }
-*/
+
     @DeleteMapping("/{id}")
     public ApiResponse<String> deletePost(@PathVariable String id){
         postService.deletePost(id);

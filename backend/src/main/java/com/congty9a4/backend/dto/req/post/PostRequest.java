@@ -15,21 +15,13 @@ import java.util.Set;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PostCreationRequest {
+public class PostRequest {
 
     String caption;
 
     Set<String> tags;
 
-    @JsonProperty("images")
-    Set<String> imageUrls;
-
-    @JsonProperty("videos")
-    Set<String> videoUrls;
-
     @JsonProperty("is_public")
     boolean isPublic;
-
-
 
 }

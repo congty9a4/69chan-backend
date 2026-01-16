@@ -3,7 +3,7 @@ package com.congty9a4.backend.service;
 import com.congty9a4.backend.constant.LOCALE;
 import com.congty9a4.backend.constant.MEDIA;
 import com.congty9a4.backend.dto.req.CommentRequest;
-import com.congty9a4.backend.dto.req.post.PostCreationRequest;
+import com.congty9a4.backend.dto.req.post.PostRequest;
 import com.congty9a4.backend.dto.resp.CommentResponse;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
@@ -62,7 +62,7 @@ public class PostServiceImpl implements PostService {
     private CommentRepository commentRepository;
 
     @Override
-    public PostResponse createPost(PostCreationRequest req, List<MultipartFile> files) {
+    public PostResponse createPost(PostRequest req, List<MultipartFile> files) {
         Post postEntity = postMapper.toPost(req);
         postEntity.setVisibility(req.isPublic() ? PostVisibility.PUBLIC : PostVisibility.FRIENDS);
         postEntity.setLikes(new HashSet<>());
@@ -188,6 +188,13 @@ public class PostServiceImpl implements PostService {
                 .toList();
 
         return paginationHelper.buildPageResponse(currentPage, commentResponses, pageable);
+    }
+
+    @Override
+    public PostResponse updatePost(String id, PostRequest req) {
+        Post post = findPost(id);
+        postMapper.update(post, req);
+        return postMapper.toPostResponse(postRepository.save(post));
     }
 
     private Infochan userInfo(String userId) {
