@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    group:
+      "dev": "dev,common"
+      "local": "local,common"
+    active: '@spring.profiles.active@'
