@@ -33,3 +33,6 @@ build/
 .vscode/
 
 gcs_credentials.json
+
+.env
+.env.local
