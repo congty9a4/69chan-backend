@@ -7,3 +7,5 @@ spring:
       project-id: ${GOOGLE_PROJECT_ID}
       credentials:
         location: file:gcs_credentials.json
+server:
+  address: localhost

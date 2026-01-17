@@ -2,3 +2,5 @@ spring:
   config:
     import: optional:file:.env[.properties]
 
+server:
+  address: 0.0.0.0
