@@ -49,3 +49,6 @@ src/test/
 *.swp
 *~
 
+gcp-credentials.base64
+gcs_credentials.json
+

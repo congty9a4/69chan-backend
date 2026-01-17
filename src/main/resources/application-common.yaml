@@ -1,6 +1,6 @@
 spring:
   application:
-    name: backend
+    name: 69chan
 
   data:
     mongodb:
@@ -53,9 +53,9 @@ gcs:
   bucket-name: 69chan-dev-store-media-files
   sub-directory: media
 
-server:
-  address: localhost
 
 jwt:
   secret: ${JWT_SECRET}
 
+server:
+  port: 8080
