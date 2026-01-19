@@ -5,7 +5,6 @@ import com.congty9a4.backend.config.security.JwtService;
 import com.congty9a4.backend.constant.USER;
 import com.congty9a4.backend.dto.req.LoginRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
-import com.congty9a4.backend.dto.resp.Infochan;
 import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
