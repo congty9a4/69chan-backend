@@ -1,22 +1,24 @@
-package com.congty9a4.backend.service;
+package com.congty9a4.backend.service.implement;
 
-import com.congty9a4.backend.config.TrackExecutionTime;
+import com.congty9a4.backend.annotation.TrackExecutionTime;
 import com.congty9a4.backend.dto.req.user.UserCreationRequest;
 import com.congty9a4.backend.dto.req.user.UserUpdationRequest;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.UserResponse;
+import com.congty9a4.backend.dto.resp.Infochan;
 import com.congty9a4.backend.entity.Userchan;
-import com.congty9a4.backend.exception.ErrorCode;
+import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.jpa.UserRepository;
+import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.util.AppPageable;
 import com.congty9a4.backend.util.PaginationHelper;
-import com.congty9a4.backend.util.ServerUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -52,7 +54,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public Userchan createUser(UserCreationRequest userReq) {
+
+        if (userRepository.existsByEmail(userReq.getEmail()))
+            throw new AppException(ErrorCode.USER_ALREADY_EXISTS, "User already exists with email: " + userReq.getEmail());
 
         Userchan user = Userchan.builder()
                 .username(userReq.getUsername())
@@ -67,6 +73,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public Userchan updateUser(UUID id, UserUpdationRequest user) {
         return userRepository.findById(id).map(existingUser -> {
             // if exists, update fields
@@ -80,6 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(UUID id) {
         userRepository.deleteById(id);
     }
@@ -88,6 +96,14 @@ public class UserServiceImpl implements UserService {
     public Userchan getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(()
                 -> new AppException(ErrorCode.USER_NOT_FOUND, "User not found with email: " + email));
+    }
+
+    @Override
+    public Infochan userInfo(String userId) {
+        Userchan user = userRepository.findById(UUID.fromString(userId)).orElseThrow(
+                () -> new AppException(ErrorCode.POST_NOT_FOUND, "User of this post not found with id: " + userId)
+        );
+        return userMapper.toInfochan(user);
     }
 }
 

@@ -2,7 +2,7 @@ package com.congty9a4.backend.mapper;
 
 import com.congty9a4.backend.dto.req.post.PostRequest;
 import com.congty9a4.backend.dto.resp.PostResponse;
-import com.congty9a4.backend.entity.post.Infochan;
+import com.congty9a4.backend.dto.resp.Infochan;
 import com.congty9a4.backend.entity.post.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,6 +1,6 @@
 package com.congty9a4.backend.util;
 
-import com.congty9a4.backend.exception.ErrorCode;
+import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;

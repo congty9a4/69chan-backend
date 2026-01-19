@@ -1,4 +1,4 @@
-package com.congty9a4.backend.service;
+package com.congty9a4.backend.service.implement;
 
 import com.congty9a4.backend.constant.LOCALE;
 import com.congty9a4.backend.constant.MEDIA;
@@ -9,11 +9,10 @@ import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.entity.Comment;
 import com.congty9a4.backend.entity.enums.PostVisibility;
-import com.congty9a4.backend.entity.post.Infochan;
+import com.congty9a4.backend.dto.resp.Infochan;
 import com.congty9a4.backend.entity.post.Post;
-import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.entity.post.PostMedia;
-import com.congty9a4.backend.exception.ErrorCode;
+import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.CommentMapper;
 import com.congty9a4.backend.mapper.PostMapper;
@@ -21,6 +20,9 @@ import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.jpa.UserRepository;
 import com.congty9a4.backend.repository.mongo.CommentRepository;
 import com.congty9a4.backend.repository.mongo.PostRepository;
+import com.congty9a4.backend.service.CloudStorageService;
+import com.congty9a4.backend.service.PostService;
+import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.util.AppPageable;
 import com.congty9a4.backend.util.PaginationHelper;
 import com.congty9a4.backend.util.SecurityUtils;
@@ -28,6 +30,7 @@ import com.congty9a4.backend.util.ServerUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -62,6 +65,7 @@ public class PostServiceImpl implements PostService {
     private CommentRepository commentRepository;
 
     @Override
+    @Transactional
     public PostResponse createPost(PostRequest req, List<MultipartFile> files) {
         Post postEntity = postMapper.toPost(req);
         postEntity.setVisibility(req.isPublic() ? PostVisibility.PUBLIC : PostVisibility.FRIENDS);
@@ -72,7 +76,7 @@ public class PostServiceImpl implements PostService {
         postEntity.setUserId(SecurityUtils.getCurrentUserId());
         postEntity.setMediaFiles(convertMediaFiles(files));
         var savedPost = postRepository.save(postEntity);
-        return postMapper.toPostResponse(savedPost, this::userInfo);
+        return postMapper.toPostResponse(savedPost, userService::userInfo);
     }
 
 
@@ -80,11 +84,12 @@ public class PostServiceImpl implements PostService {
     public PostResponse getPostById(String id) {
             var post = findPost(id);
             var postResponse = postMapper.toPostResponse(post);
-            postResponse.setInfochan(userInfo(post.getUserId()));
+            postResponse.setInfochan(userService.userInfo(post.getUserId()));
             return postResponse;
     }
 
 
+    @Transactional
     @Override
     public void deletePost(String id) {
         postRepository.deleteById(id);
@@ -109,6 +114,7 @@ public class PostServiceImpl implements PostService {
         );
     }
 
+    @Transactional
     @Override
     public void handlePostLikes(String id) {
         var targetPost = findPost(id);
@@ -128,6 +134,7 @@ public class PostServiceImpl implements PostService {
 
     }
 
+    @Transactional
     @Override
     public void handleComment(String postId, CommentRequest request) {
         Post targetPost = findPost(postId);
@@ -146,6 +153,7 @@ public class PostServiceImpl implements PostService {
         postRepository.save(targetPost);
     }
 
+    @Transactional
     @Override
     public void handleChildComment(String postId, CommentRequest request, String commentId) {
 
@@ -183,26 +191,20 @@ public class PostServiceImpl implements PostService {
         // Map comments to responses with user info
         List<CommentResponse> commentResponses = currentPage.getContent().stream()
                 .map(comment -> commentMapper.toCommentResponse(comment, userId ->
-                    userInfoCache.computeIfAbsent(userId, this::userInfo)
+                    userInfoCache.computeIfAbsent(userId, userService::userInfo)
                 ))
                 .toList();
 
         return paginationHelper.buildPageResponse(currentPage, commentResponses, pageable);
     }
 
+    @Transactional
     @Override
     public PostResponse updatePost(String id, PostRequest req) {
         Post post = findPost(id);
         postMapper.update(post, req);
         return postMapper.toPostResponse(postRepository.save(post));
     }
-
-    private Infochan userInfo(String userId) {
-       Userchan user = userRepository.findById(UUID.fromString(userId)).orElseThrow(
-               () -> new AppException(ErrorCode.POST_NOT_FOUND, "User of this post not found with id: " + userId)
-       );
-       return userMapper.toInfochan(user);
-   }
 
    private Post findPost(String id){
         return postRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND, "Post not found with id: " + id));

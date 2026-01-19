@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Aspect
 @Slf4j
 public class LoggingExecutionTimeQueryAspect {
-    @Around("@annotation(com.congty9a4.backend.config.TrackExecutionTime)")
+    @Around("@annotation(com.congty9a4.backend.annotation.TrackExecutionTime)")
     public Object trackTime (ProceedingJoinPoint pjp) throws Throwable {
         long startTime = System.currentTimeMillis();
         Object obj = pjp.proceed();

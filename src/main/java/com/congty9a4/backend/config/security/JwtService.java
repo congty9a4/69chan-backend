@@ -1,7 +1,7 @@
 package com.congty9a4.backend.config.security;
 
 import com.congty9a4.backend.constant.LOCALE;
-import com.congty9a4.backend.exception.ErrorCode;
+import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

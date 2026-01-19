@@ -1,4 +1,4 @@
-package com.congty9a4.backend.exception;
+package com.congty9a4.backend.exception.error;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -30,9 +30,15 @@ public enum ErrorCode {
     CANNOT_DELETE_POST(40032, "You do not have permission to delete this post.", HttpStatus.BAD_REQUEST),
     CANNOT_EDIT_POST(40033, "You do not have permission to edit this post.", HttpStatus.BAD_REQUEST),
 
+    // Profile
+    PROFILE_NOT_FOUND(40040, "The profile you are looking for could not be found.", HttpStatus.BAD_REQUEST),
+    PROFILE_ALREADY_EXISTS(40041, "A profile already exists for this user.", HttpStatus.BAD_REQUEST),
+    PROFILE_FULLNAME_ALREADY_EXISTS(40042, "This full name is already taken.", HttpStatus.BAD_REQUEST),
+
     // File Upload
     FILE_TOO_LARGE(40050, "The uploaded file is too large. Please upload a smaller file.", HttpStatus.BAD_REQUEST),
     INVALID_FILE_TYPE(40051, "The uploaded file type is not supported.", HttpStatus.BAD_REQUEST),
+    FILE_UPLOAD_FAILED(40052, "File upload failed. Please try again.", HttpStatus.BAD_REQUEST),
 
     // Friends & Relationships
     FRIEND_REQUEST_ALREADY_SENT(40060, "You have already sent a friend request to this user.", HttpStatus.BAD_REQUEST),
@@ -52,7 +58,6 @@ public enum ErrorCode {
 
     // --- NOT FOUND (404) ---
     RESOURCE_NOT_FOUND(40400, "No endpoint found for this request", HttpStatus.NOT_FOUND),
-    PROFILE_NOT_FOUND(40401, "The user profile you are looking for could not be found.", HttpStatus.NOT_FOUND),
     VERIFICATION_TOKEN_NOT_FOUND(40404, "The verification token is invalid or has expired.", HttpStatus.NOT_FOUND)
     ;
 

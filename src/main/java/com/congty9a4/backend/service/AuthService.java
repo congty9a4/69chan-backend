@@ -5,8 +5,9 @@ import com.congty9a4.backend.config.security.JwtService;
 import com.congty9a4.backend.constant.USER;
 import com.congty9a4.backend.dto.req.LoginRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
+import com.congty9a4.backend.dto.resp.Infochan;
 import com.congty9a4.backend.entity.Userchan;
-import com.congty9a4.backend.exception.ErrorCode;
+import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ public class AuthService {
 
         return AuthResponse.builder()
                 .token(token)
+                .user(userMapper.toInfochan(user))
                 .build();
     }
 
@@ -48,7 +50,7 @@ public class AuthService {
         String token = jwtService.createToken(guest.getId().toString());
         return AuthResponse.builder()
                 .token(token)
-                .user(userMapper.toUserResponse(guest))
+                .user(userMapper.toInfochan(guest))
                 .build();
     }
 }

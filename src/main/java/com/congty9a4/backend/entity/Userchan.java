@@ -44,17 +44,12 @@ public class Userchan {
     @Column(nullable = false)
     String email;
 
-    @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Invalid phone number format")
-    @Column(name = "phone")
-    String phoneNumber;
-
     @Builder.Default
     @Column(name = "is_active", columnDefinition = "boolean default true")
     boolean isActive = true;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Profile profile;
-
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

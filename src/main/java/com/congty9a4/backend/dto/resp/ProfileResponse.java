@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.List;
 
 @Setter
 @Getter
@@ -15,19 +15,26 @@ import java.util.List;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CommentResponse {
-    String id;
+public class ProfileResponse {
 
-    String text;
-
-    @JsonProperty("post_id")
-    String postId;
+    Integer id;
 
     @JsonProperty("user")
     Infochan infochan;
 
-    @JsonProperty("children")
-    List<CommentResponse> childComments;
+    String bio;
+
+    @JsonProperty("avatar_url")
+    String avatarUrl;
+
+    @JsonProperty("cover_photo_url")
+    String coverPhotoUrl;
+
+    String location;
+
+    LocalDate birthday;
+
+    String phone;
 
     @JsonProperty("created_at")
     OffsetDateTime createdAt;

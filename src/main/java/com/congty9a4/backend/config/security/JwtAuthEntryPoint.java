@@ -1,7 +1,7 @@
 package com.congty9a4.backend.config.security;
 
 import com.congty9a4.backend.dto.resp.api.ErrorApiResponse;
-import com.congty9a4.backend.exception.ErrorCode;
+import com.congty9a4.backend.exception.error.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
