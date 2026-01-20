@@ -60,7 +60,10 @@ public class UserSpecification {
                     tsQuery
             );
 
-            root.fetch("profile", JoinType.LEFT);
+            // Apply fetch only for non-count queries
+            if (criteriaQuery.getResultType() != Long.class && criteriaQuery.getResultType() != long.class) {
+                root.fetch("profile", JoinType.LEFT);
+            }
 
             return criteriaBuilder.isTrue(matches);
         };
