@@ -50,6 +50,13 @@ public class Userchan {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Profile profile;
 
+    @Column(name = "fts_document", columnDefinition = "tsvector", insertable = false)
+    @Basic(fetch = FetchType.LAZY)
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    @ToString.Exclude
+    private String ftsDocument;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     OffsetDateTime createdAt;

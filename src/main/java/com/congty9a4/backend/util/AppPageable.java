@@ -15,22 +15,19 @@ public class AppPageable {
 
     private Pageable pageable;
 
-    private String apiUrl;
-
     public static AppPageable of(
-            int page, int size, String sortBy, String sortDir,
-            String apiUrl
+            int page, int size, String sortBy, String sortDir
     ) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
-        return AppPageable.builder().apiUrl(apiUrl).pageable(PageRequest.of(page - 1, size, sort)).build();
+        return AppPageable.builder().pageable(PageRequest.of(page - 1, size, sort)).build();
     }
 
-    public String nextOrPrevPage(Page page, boolean isNext, String serverUrl){
+    public String nextOrPrevPage(Page page, boolean isNext, String endpoint){
 
-        String result = serverUrl + apiUrl;
+        String result = endpoint;
 
         if (isNext){
             if(!page.hasNext()) return null;

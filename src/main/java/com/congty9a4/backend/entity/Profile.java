@@ -32,7 +32,7 @@ public class Profile {
     private Integer id;
 
     @NotNull
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private Userchan user;
 

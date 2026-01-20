@@ -40,7 +40,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     @TrackExecutionTime
-    public SearchResponse searchWithFilter(String query, int page, int size, String filter) {
+    public SearchResponse searchWithFilter(String query, AppPageable pageable, String filter) {
         log.info("Searching with query: '{}' using Specification API (filter: {})", query, filter);
 
         List<Userchan> users = List.of();
@@ -50,15 +50,15 @@ public class SearchServiceImpl implements SearchService {
         if (filter == null) {
             // Search both users and posts
             Specification<Userchan> spec = UserSpecification.searchByFTS(query).and(UserSpecification.orderByRelevance(query));
-            users = userRepository.findAll(spec);
+            users = userRepository.findAll(spec, pageable.getPageable()).getContent();
             posts = postRepository.postByKeywords(query);
             log.info("Standard FTS search returned {} users and {} posts", users.size(), posts.size());
-            
+
         } else if (filter.equalsIgnoreCase("posts")) {
             // Search posts only
             posts = postRepository.postByKeywords(query);
             log.info("Posts search returned {} posts", posts.size());
-            
+
         } else {
             // Default: search users only
             Specification<Userchan> spec = UserSpecification.searchByFTS(query)

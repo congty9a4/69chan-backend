@@ -41,7 +41,7 @@ public class ProfileController {
         log.info("GET /api/v1/profiles - page: {}, size: {}, sortBy: {}, sortDir: {}",
                  page, size, sortBy, sortDir);
 
-        AppPageable pageable = AppPageable.of(page, size, sortBy, sortDir, request.getServletPath());
+        AppPageable pageable = AppPageable.of(page, size, sortBy, sortDir);
         PageResponse<List<ProfileResponse>> profiles = profileService.getAllProfiles(pageable);
 
         return ApiResponse.success(profiles);

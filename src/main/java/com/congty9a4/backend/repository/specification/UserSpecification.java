@@ -60,6 +60,8 @@ public class UserSpecification {
                     tsQuery
             );
 
+            root.fetch("profile", JoinType.LEFT);
+
             return criteriaBuilder.isTrue(matches);
         };
     }
@@ -77,19 +79,11 @@ public class UserSpecification {
         return (root, criteriaQuery, criteriaBuilder) -> {
 
             var query = preprocessQuery(_query);
-            // Create the tsvector expression
-            Expression<String> tsVector = criteriaBuilder.function(
-                    "to_tsvector",
-                    String.class,
-                    criteriaBuilder.literal("english"),
-                    criteriaBuilder.concat(
-                            criteriaBuilder.coalesce(root.get("username"), ""),
-                            criteriaBuilder.concat(
-                                    criteriaBuilder.literal(" "),
-                                    criteriaBuilder.coalesce(root.get("email"), "")
-                            )
-                    )
-            );
+            if (query == null) {
+                return criteriaBuilder.conjunction();
+            }
+            // Use the pre-calculated fts_document column
+            Expression<String> tsVector = root.get("ftsDocument");
 
             // Create the tsquery expression
             Expression<String> tsQuery = criteriaBuilder.function(

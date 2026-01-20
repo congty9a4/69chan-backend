@@ -26,14 +26,19 @@ public class SearchController {
 
     @GetMapping
     public ApiResponse<SearchResponse> search(
-            @Parameter(description = "Search query (keywords or phrases)", example = "john doe")
+            @Parameter(example = "john doe")
             @RequestParam("query") String query,
+
             @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "desc") String sortDir,
             @RequestParam(value = "size", defaultValue = "10") int size,
+
             @Parameter(description = "posts || users", example = "posts")
             @RequestParam(value = "filter", required = false) String filter
     ) {
-        var results = searchService.searchWithFilter(query, page, size, filter);
+        var pageable = AppPageable.of(page, size, sortBy, sortDir);
+        var results = searchService.searchWithFilter(query, pageable, filter);
         return ApiResponse.success(results);
     }
 
