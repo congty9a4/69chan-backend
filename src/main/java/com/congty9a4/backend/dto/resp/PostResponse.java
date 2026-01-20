@@ -39,7 +39,7 @@ public class PostResponse {
     @JsonProperty("comments")
     int commentCount;
 
-    @JsonProperty("is_liked")
+    @JsonProperty("user_liked")
     boolean isLiked;
 
     @JsonProperty("created_at")

@@ -8,7 +8,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,13 +40,5 @@ public interface CommentMapper {
         return response;
     }
 
-    default List<CommentResponse> toCommentResponseList(Set<Comment> comments, Function<String, Infochan> userInfoFetcher) {
-        if (comments == null || comments.isEmpty()) {
-            return null;
-        }
-        return comments.stream()
-                .map(comment -> toCommentResponse(comment, userInfoFetcher))
-                .collect(Collectors.toList());
-    }
 }
 
