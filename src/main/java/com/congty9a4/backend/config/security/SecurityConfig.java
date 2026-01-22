@@ -27,7 +27,9 @@ public class SecurityConfig {
              "/api/users/create",
             "/api/sample/**",
             "/",
-            "/api/v1/**"
+            "/api/v1/**",
+            "/api/search",
+            "/actuator/**"
      };
 
     @Bean

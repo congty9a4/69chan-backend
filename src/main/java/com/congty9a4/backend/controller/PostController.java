@@ -56,11 +56,10 @@ public class PostController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false, defaultValue = "id") String sortBy,
-            @RequestParam(required = false, defaultValue = "desc") String sortDir,
-            HttpServletRequest request
+            @RequestParam(required = false, defaultValue = "desc") String sortDir
     ) {
 
-        var results = postService.getAllPosts(AppPageable.of(page, size, sortBy, sortDir, request.getServletPath()));
+        var results = postService.getAllPosts(AppPageable.of(page, size, sortBy, sortDir));
         return ApiResponse.success(results);
     }
     @GetMapping("/{id}")
@@ -98,10 +97,9 @@ public class PostController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
-            @RequestParam(required = false, defaultValue = "desc") String sortDir,
-            HttpServletRequest request
+            @RequestParam(required = false, defaultValue = "desc") String sortDir
     ) {
-        var results = postService.getComments(postId, AppPageable.of(page, size, sortBy, sortDir, request.getServletPath()));
+        var results = postService.getComments(postId, AppPageable.of(page, size, sortBy, sortDir));
         return ApiResponse.success(results);
     }
 

@@ -34,11 +34,11 @@ public class UserController {
         @RequestParam(defaultValue = "1") int page,
         @RequestParam(defaultValue = "10") int size,
         @RequestParam(required = false, defaultValue = "id") String sortBy,
-        @RequestParam(required = false, defaultValue = "asc") String sortDir,
-        HttpServletRequest request
+        @RequestParam(required = false, defaultValue = "asc") String sortDir
+
     ) {
 
-        var results = userService.getAllUsers(AppPageable.of(page, size, sortBy, sortDir, request.getServletPath()));
+        var results = userService.getAllUsers(AppPageable.of(page, size, sortBy, sortDir));
 
         return ApiResponse.success(
                 results
