@@ -1,6 +1,5 @@
 package com.congty9a4.backend.dto.resp;
 
-import com.congty9a4.backend.entity.post.Infochan;
 import com.congty9a4.backend.entity.post.PostMedia;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

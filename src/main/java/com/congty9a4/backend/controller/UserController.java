@@ -8,6 +8,7 @@ import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.util.AppPageable;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -19,7 +20,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "Users API")
+@Tag(name = "User", description = "User management APIs")
 public class UserController {
 
     @Autowired
@@ -28,6 +29,7 @@ public class UserController {
     private UserMapper userMapper;
 
     @GetMapping
+    @Operation(summary = "Get all users", description = "Retrieve a paginated list of all users")
     public ApiResponse<PageResponse<List<UserResponse>>> getAllUsers(
         @RequestParam(defaultValue = "1") int page,
         @RequestParam(defaultValue = "10") int size,
@@ -44,6 +46,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get user by ID", description = "Retrieve a specific user by their unique identifier")
     public ApiResponse<UserResponse> getUserById(@PathVariable UUID id) {
         var userchan = userService.getUserById(id);
         return ApiResponse.success(
@@ -52,6 +55,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
+    @Operation(summary = "Create user", description = "Create a new user account")
     public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest userReq) {
         var userchan = userService.createUser(userReq);
         return ApiResponse.success(
@@ -60,6 +64,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update user", description = "Update an existing user's information")
     public ApiResponse<UserResponse> updateUser(@PathVariable UUID id, @RequestBody UserUpdationRequest user) {
         var userchan = userService.updateUser(id, user);
         return ApiResponse.success(
@@ -68,6 +73,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete user", description = "Delete a user account by ID")
     public ApiResponse<String> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
         return ApiResponse.success(

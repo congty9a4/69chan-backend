@@ -2,7 +2,7 @@ package com.congty9a4.backend.mapper;
 
 import com.congty9a4.backend.dto.resp.CommentResponse;
 import com.congty9a4.backend.entity.Comment;
-import com.congty9a4.backend.entity.post.Infochan;
+import com.congty9a4.backend.dto.resp.Infochan;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;

@@ -1,6 +1,5 @@
 package com.congty9a4.backend.exception.error;
 
-import com.congty9a4.backend.exception.ErrorCode;
 import lombok.Getter;
 
 @Getter

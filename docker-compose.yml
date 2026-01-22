@@ -2,14 +2,12 @@ version: '3.8'
 
 services:
   # Spring Boot Backend Application
-  backend:
+  69chan:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: backend-app
+    container_name: 69chan-backend
+
     restart: unless-stopped
     ports:
       - "8080:8080"
-    volumes:
-      - ./gcp-credentials.base64:/app/gcp-credentials.base64:ro
-    network_mode: host

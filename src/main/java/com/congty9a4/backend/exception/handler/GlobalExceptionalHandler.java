@@ -1,8 +1,7 @@
 package com.congty9a4.backend.exception.handler;
 
-import com.congty9a4.backend.dto.resp.api.ApiResponse;
 import com.congty9a4.backend.dto.resp.api.ErrorApiResponse;
-import com.congty9a4.backend.exception.ErrorCode;
+import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;

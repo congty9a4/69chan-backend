@@ -3,7 +3,6 @@ package com.congty9a4.backend.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -44,17 +43,12 @@ public class Userchan {
     @Column(nullable = false)
     String email;
 
-    @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Invalid phone number format")
-    @Column(name = "phone")
-    String phoneNumber;
-
     @Builder.Default
     @Column(name = "is_active", columnDefinition = "boolean default true")
     boolean isActive = true;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Profile profile;
-
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

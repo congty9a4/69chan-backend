@@ -1,5 +1,6 @@
 package com.congty9a4.backend.entity;
 
+import com.congty9a4.backend.annotation.profileTagName.ProfileTagName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -12,7 +13,6 @@ import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -28,16 +28,18 @@ import java.util.UUID;
 )
 public class Profile {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @NotNull
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private Userchan user;
 
-    @Size(max = 255)
-    @Column(name = "full_name")
+    // name for tagging
+    @Size(min = 5, max = 255)
+    @ProfileTagName
+    @Column(name = "fullname", unique = true)
     private String fullName;
 
     @Size(max = 500)
@@ -55,13 +57,11 @@ public class Profile {
     @Column(name = "location")
     String location;
 
-    @URL
-    @Column(name = "website")
-    String websiteUrl;
-
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid birthday format, should be YYYY-MM-DD")
     @Column(name = "birth_date")
     LocalDate birthday;
+
+    @Pattern(regexp = "^\\d{10}$", message = "Invalid phone number format")
+    String phone;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -71,4 +71,8 @@ public class Profile {
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
 
+
+    private LocalDate fun(String date){
+        return LocalDate.parse(date);
+    }
 }
