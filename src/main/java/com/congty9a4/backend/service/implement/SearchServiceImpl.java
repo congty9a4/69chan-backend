@@ -49,7 +49,7 @@ public class SearchServiceImpl implements SearchService {
         // Build specification based on filter type
         if (filter == null) {
             // Search both users and posts
-            Specification<Userchan> spec = UserSpecification.searchByFTS(query).and(UserSpecification.orderByRelevance(query));
+            Specification<Userchan> spec = UserSpecification.searchByFTS(query);
             users = userRepository.findAll(spec, pageable.getPageable()).getContent();
             posts = postRepository.postByKeywords(query);
             log.info("Standard FTS search returned {} users and {} posts", users.size(), posts.size());
