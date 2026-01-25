@@ -8,7 +8,7 @@ import com.congty9a4.backend.dto.resp.CommentResponse;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.entity.Comment;
-import com.congty9a4.backend.entity.enums.PostVisibility;
+import com.congty9a4.backend.entity.enums.PostPrivacy;
 import com.congty9a4.backend.dto.resp.Infochan;
 import com.congty9a4.backend.entity.post.Post;
 import com.congty9a4.backend.entity.post.PostMedia;
@@ -68,7 +68,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostResponse createPost(PostRequest req, List<MultipartFile> files) {
         Post postEntity = postMapper.toPost(req);
-        postEntity.setVisibility(req.isPublic() ? PostVisibility.PUBLIC : PostVisibility.FRIENDS);
+        postEntity.setVisibility(req.isPublic() ? PostPrivacy.PUBLIC : PostPrivacy.FRIENDS);
         postEntity.setLikes(new HashSet<>());
         // fake user
         if (!userRepository.existsById(UUID.fromString(SecurityUtils.getCurrentUserId())))
