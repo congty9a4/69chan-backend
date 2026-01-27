@@ -206,7 +206,12 @@ public class PostServiceImpl implements PostService {
         return postMapper.toPostResponse(postRepository.save(post));
     }
 
-   private Post findPost(String id){
+    @Override
+    public PageResponse<List<PostResponse>> getFeed(AppPageable pageable) {
+        return null;
+    }
+
+    private Post findPost(String id){
         return postRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND, "Post not found with id: " + id));
    }
 

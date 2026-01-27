@@ -7,6 +7,7 @@ import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
 import com.congty9a4.backend.service.PostService;
+import com.congty9a4.backend.service.RedditCrawlingService;
 import com.congty9a4.backend.util.AppPageable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,6 +25,8 @@ public class PostController {
 
     @Autowired
     private PostService postService;
+    @Autowired
+    private RedditCrawlingService redditCrawlingService;
 
     @PostMapping(value = "/create", consumes = "multipart/form-data")
     @Operation(summary = "Create post", description = "Create a new post with optional media files \\\n Example: \\\n" +
@@ -49,6 +52,18 @@ public class PostController {
         List<Post> posts = postService.getAllPosts();
         return new ResponseEntity<>(posts, HttpStatus.OK);
    }*/
+
+    @GetMapping("/feed")
+    public ApiResponse<PageResponse<List<PostResponse>>> getUserFeed(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "id") String sortBy,
+            @RequestParam(required = false, defaultValue = "desc") String sortDir
+    ) {
+        redditCrawlingService.crawlReddit();
+        var results = postService.getAllPosts(AppPageable.of(page, size, sortBy, sortDir));
+        return ApiResponse.success(results);
+    }
 
     @GetMapping
     @Operation(summary = "Get all posts", description = "Retrieve a paginated list of all posts")
