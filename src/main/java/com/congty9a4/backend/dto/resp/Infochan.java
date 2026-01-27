@@ -26,6 +26,6 @@ public class Infochan {
     String userId;
 
     @JsonProperty("fullname")
-    String fullName;
+    String keyName;
 
 }

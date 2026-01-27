@@ -6,6 +6,7 @@ import com.congty9a4.backend.dto.reddit.RedditResponse;
 import com.congty9a4.backend.entity.post.Post;
 import com.congty9a4.backend.mapper.RedditPostMapper;
 import com.congty9a4.backend.repository.mongo.PostRepository;
+import com.congty9a4.backend.util.JsonLogging;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,7 @@ public class RedditCrawlingService {
                     for (RedditChild child : response.getData().getChildren()) {
                         try {
                             RedditPost redditPost = child.getData();
+                            log.info(JsonLogging.toString(redditPost));
                            if (redditPost != null) {
                                 Post savedPost = redditPostMapper.toPost(redditPost);
 /*                               Post savedPost = postRepository.save(post);

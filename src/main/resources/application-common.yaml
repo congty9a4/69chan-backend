@@ -52,6 +52,11 @@ app:
     server:
       url: ${SWAGGER_SERVER_URL:}
 
+# Storage Configuration
+# Choose between 'gcs' (Google Cloud Storage) or 'cloudinary'
+storage:
+  provider: ${STORAGE_PROVIDER:gcs}
+
 gcs:
   bucket-name: 69chan-dev-store-media-files
   sub-directory: media
@@ -62,3 +67,8 @@ jwt:
 
 server:
   port: 8080
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}

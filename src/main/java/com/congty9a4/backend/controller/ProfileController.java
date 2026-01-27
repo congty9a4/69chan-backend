@@ -130,12 +130,12 @@ public class ProfileController {
         return ApiResponse.success(exists);
     }
 
-    @GetMapping("/check-fullname")
-    @Operation(summary = "Check if fullname is taken", description = "Check if a fullname is already taken")
-    public ApiResponse<Boolean> isFullNameTaken(@RequestParam String fullName) {
-        log.info("GET /api/v1/profiles/check-fullname?fullName={}", fullName);
+    @GetMapping("/check-keyname")
+    @Operation(summary = "Check if keyname is taken", description = "Check if a keyname is already taken")
+    public ApiResponse<Boolean> isKeyNameTaken(@RequestParam String keyName) {
+        log.info("GET /api/v1/profiles/check-keyname?keyName={}", keyName);
 
-        boolean taken = profileService.isFullNameTaken(fullName);
+        boolean taken = profileService.isKeyNameTaken(keyName);
         return ApiResponse.success(taken);
     }
 }

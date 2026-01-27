@@ -20,7 +20,7 @@ import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.jpa.UserRepository;
 import com.congty9a4.backend.repository.mongo.CommentRepository;
 import com.congty9a4.backend.repository.mongo.PostRepository;
-import com.congty9a4.backend.service.CloudStorageService;
+import com.congty9a4.backend.service.storage.CloudStorageService;
 import com.congty9a4.backend.service.PostService;
 import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.util.AppPageable;

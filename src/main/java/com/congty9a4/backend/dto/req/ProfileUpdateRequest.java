@@ -19,7 +19,7 @@ import java.time.LocalDate;
 public class ProfileUpdateRequest {
 
     @Size(min = 5, max = 255)
-    String fullName;
+    String keyName;
 
     @Size(max = 500)
     String bio;

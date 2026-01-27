@@ -64,8 +64,8 @@ public interface ProfileService {
     boolean existsForUser(UUID userId);
 
     /**
-     * Check if fullName is already taken
+     * Check if keyName is already taken
      */
-    boolean isFullNameTaken(String fullName);
+    boolean isKeyNameTaken(String keyName);
 }
 

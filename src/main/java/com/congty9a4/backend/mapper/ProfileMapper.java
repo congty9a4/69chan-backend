@@ -15,7 +15,7 @@ public interface ProfileMapper {
     @Mapping(source = "user.id", target = "infochan.userId")
     @Mapping(source = "user.username", target = "infochan.username")
     @Mapping(target = "infochan.profilePicture", ignore = true)
-    @Mapping(source = "fullName", target = "infochan.fullName")
+    @Mapping(source = "keyName", target = "infochan.keyName")
     ProfileResponse toProfileResponse(Profile profile);
 
     @Mapping(target = "id", ignore = true)

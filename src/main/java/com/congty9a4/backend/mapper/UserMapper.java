@@ -17,7 +17,7 @@ public interface UserMapper {
 
     void update(@MappingTarget Userchan userchan, UserUpdationRequest updatedUserchan);
 
-    @Mapping(source = "profile.fullName", target = "fullName")
+    @Mapping(source = "profile.keyName", target = "keyName")
     @Mapping(source = "profile.avatarUrl", target = "profilePicture")
     @Mapping(source = "id", target = "userId")
     Infochan toInfochan(Userchan userchan);
