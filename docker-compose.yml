@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  # Spring Boot Backend Application
+  69chan:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: 69chan-backend
+
+    restart: unless-stopped
+    ports:
+      - "8080:8080"

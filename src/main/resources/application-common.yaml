@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: 69chan
+
+  data:
+    mongodb:
+      uri: "mongodb+srv://${MONGO_DB_USERNAME}:${MONGO_DB_PASSWORD}@${MONGO_DB_HOST}/${MONGO_DB_NAME}?appName=Miku-Dit-Bu"
+
+  datasource:
+    username: ${POSTGRE_DB_USERNAME}
+    password: ${POSTGRE_DB_PASSWORD}
+    url: "jdbc:postgresql://${POSTGRE_DB_HOST}:${POSTGRE_DB_PORT}/postgres?user=${POSTGRE_DB_USERNAME}&password=${POSTGRE_DB_PASSWORD}"
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      transaction-isolation:
+
+  h2:
+    console:
+      enabled: false
+
+  jackson:
+    date-format: yyyy-MM-dd
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: com.congty9a4.backend.repository.PostgreFullTextSearchDialect
+        show_sql: true
+
+  sql:
+    init:
+      mode: never
+
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+      file-size-threshold: 0
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          filter:
+            CommonsRequestLoggingFilter: DEBUG
+app:
+  swagger:
+    server:
+      url: ${SWAGGER_SERVER_URL:}
+
+# Storage Configuration
+# Choose between 'gcs' (Google Cloud Storage) or 'cloudinary'
+storage:
+  provider: ${STORAGE_PROVIDER:gcs}
+
+gcs:
+  bucket-name: 69chan-dev-store-media-files
+  sub-directory: media
+
+
+jwt:
+  secret: ${JWT_SECRET}
+
+server:
+  port: 8080
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
