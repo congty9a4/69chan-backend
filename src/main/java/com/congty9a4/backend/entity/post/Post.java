@@ -1,17 +1,14 @@
 package com.congty9a4.backend.entity.post;
 
-import com.congty9a4.backend.entity.Comment;
-import com.congty9a4.backend.entity.enums.PostVisibility;
+import com.congty9a4.backend.entity.enums.PostPrivacy;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.OffsetDateTime;
@@ -54,7 +51,7 @@ public class Post {
 
     @Builder.Default
     @Field("visibility")
-    PostVisibility visibility = PostVisibility.FRIENDS;
+    PostPrivacy visibility = PostPrivacy.FRIENDS;
 
     @Field("is_deleted")
     @Builder.Default

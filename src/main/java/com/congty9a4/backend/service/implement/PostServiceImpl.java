@@ -8,8 +8,9 @@ import com.congty9a4.backend.dto.resp.CommentResponse;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.entity.Comment;
-import com.congty9a4.backend.entity.enums.PostVisibility;
 import com.congty9a4.backend.entity.Infochan;
+import com.congty9a4.backend.entity.enums.PostPrivacy;
+import com.congty9a4.backend.dto.resp.Infochan;
 import com.congty9a4.backend.entity.post.Post;
 import com.congty9a4.backend.entity.post.PostMedia;
 import com.congty9a4.backend.exception.error.ErrorCode;
@@ -20,7 +21,6 @@ import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.jpa.UserRepository;
 import com.congty9a4.backend.repository.mongo.CommentRepository;
 import com.congty9a4.backend.repository.mongo.PostRepository;
-import com.congty9a4.backend.service.storage.CloudStorageService;
 import com.congty9a4.backend.service.PostService;
 import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.util.AppPageable;
@@ -58,7 +58,7 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private UserMapper userMapper;
     @Autowired
-    private CloudStorageService cloudStorageService;
+    private com.congty9a4.backend.service.storage.CloudStorageService cloudStorageService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -68,7 +68,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostResponse createPost(PostRequest req, List<MultipartFile> files) {
         Post postEntity = postMapper.toPost(req);
-        postEntity.setVisibility(req.isPublic() ? PostVisibility.PUBLIC : PostVisibility.FRIENDS);
+        postEntity.setVisibility(req.isPublic() ? PostPrivacy.PUBLIC : PostPrivacy.FRIENDS);
         postEntity.setLikes(new HashSet<>());
         // fake user
         if (!userRepository.existsById(UUID.fromString(SecurityUtils.getCurrentUserId())))
@@ -206,15 +206,7 @@ public class PostServiceImpl implements PostService {
         return postMapper.toPostResponse(postRepository.save(post));
     }
 
-    @Override
-    public PageResponse<List<PostResponse>> getFeed(AppPageable pageable) {
-        var userId = SecurityUtils.getCurrentUserId();
-/*        var currentPage = postRepository.getFeedsByUser(userId, pageable.getPageable());*/
-
-        return null;
-    }
-
-    private Post findPost(String id){
+   private Post findPost(String id){
         return postRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND, "Post not found with id: " + id));
    }
 

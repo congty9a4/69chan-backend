@@ -2,7 +2,7 @@ package com.congty9a4.backend.repository;
 
 import com.congty9a4.backend.config.mongodb.MongoConfig;
 import com.congty9a4.backend.entity.Userchan;
-import com.congty9a4.backend.entity.enums.PostVisibility;
+import com.congty9a4.backend.entity.enums.PostPrivacy;
 import com.congty9a4.backend.entity.post.Post;
 import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.mongo.PostRepository;
@@ -47,7 +47,7 @@ public class PostRepositoryTest {
 
 
         samplePost = Post.builder()
-                .visibility(PostVisibility.PUBLIC)
+                .visibility(PostPrivacy.PUBLIC)
                 .caption("This is a sample post content.")
                 .id(userchan.getId().toString())
                 .build();
