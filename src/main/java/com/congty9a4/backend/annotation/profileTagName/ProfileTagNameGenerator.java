@@ -13,7 +13,7 @@ import java.util.EnumSet;
  * Example: @johndoe1, @johndoe2, etc.
  *
  * This generator is invoked before INSERT operations to auto-generate
- * the fullName field when it's null.
+ * the keyName field when it's null.
  */
 public class ProfileTagNameGenerator implements BeforeExecutionGenerator {
 
@@ -54,9 +54,9 @@ public class ProfileTagNameGenerator implements BeforeExecutionGenerator {
      * and returns the next available number.
      */
     private Long getNextSequenceForUsername(SharedSessionContractImplementor session, String username) {
-        String hql = "SELECT COALESCE(MAX(CAST(SUBSTRING(p.fullName, LENGTH(:prefix) + 1) AS long)), 0) + 1 " +
+        String hql = "SELECT COALESCE(MAX(CAST(SUBSTRING(p.keyName, LENGTH(:prefix) + 1) AS long)), 0) + 1 " +
                      "FROM Profile p " +
-                     "WHERE p.fullName LIKE :pattern";
+                     "WHERE p.keyName LIKE :pattern";
 
         String prefix = "@" + username;
         String pattern = prefix + "%";

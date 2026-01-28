@@ -40,7 +40,7 @@ public class Profile {
     @Size(min = 5, max = 255)
     @ProfileTagName
     @Column(name = "fullname", unique = true)
-    private String fullName;
+    private String keyName;
 
     @Size(max = 500)
     String bio;

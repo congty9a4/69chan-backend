@@ -1,4 +1,4 @@
-package com.congty9a4.backend.dto.resp;
+package com.congty9a4.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -26,6 +26,6 @@ public class Infochan {
     String userId;
 
     @JsonProperty("fullname")
-    String fullName;
+    String keyName;
 
 }
