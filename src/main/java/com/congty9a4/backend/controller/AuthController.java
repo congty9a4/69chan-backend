@@ -31,6 +31,12 @@ public class AuthController {
         return ApiResponse.success(authService.guest());
     }
 
+    @GetMapping("/refresh-token")
+    @Operation(summary = "Refresh token", description = "Refresh JWT token using a valid refresh token")
+    public ApiResponse<AuthResponse> refreshToken(@RequestParam("token") String refreshToken) {
+        var result = authService.refreshToken(refreshToken);
+        return ApiResponse.success(result);
+    }
 
 }
 

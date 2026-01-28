@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface ProfileRepository extends JpaRepository<Profile, Integer> {
     Optional<Profile> findByUser(Userchan user);
     Optional<Profile> findByUserId(java.util.UUID userId);
-    Optional<Profile> findByFullName(String fullName);
-    boolean existsByFullName(String fullName);
+    Optional<Profile> findByKeyName(String keyName);
+    boolean existsByKeyName(String keyName);
 }
 

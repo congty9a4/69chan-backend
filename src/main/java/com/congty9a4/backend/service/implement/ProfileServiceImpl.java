@@ -12,7 +12,7 @@ import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.ProfileMapper;
 import com.congty9a4.backend.repository.jpa.ProfileRepository;
 import com.congty9a4.backend.repository.jpa.UserRepository;
-import com.congty9a4.backend.service.CloudStorageService;
+import com.congty9a4.backend.service.storage.CloudStorageService;
 import com.congty9a4.backend.service.ProfileService;
 import com.congty9a4.backend.util.AppPageable;
 import com.congty9a4.backend.util.PaginationHelper;
@@ -120,7 +120,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         // Check if fullname is already taken
         if (request.getFullname() != null &&
-            profileRepository.existsByFullName(request.getFullname())) {
+            profileRepository.existsByKeyName(request.getFullname())) {
             throw new AppException(
                     ErrorCode.PROFILE_FULLNAME_ALREADY_EXISTS,
                     "Full name already taken: " + request.getFullname()
@@ -151,12 +151,12 @@ public class ProfileServiceImpl implements ProfileService {
                 ));
 
         // Check if fullname is being changed and if it's already taken
-        if (request.getFullName() != null &&
-            !request.getFullName().equals(profile.getFullName()) &&
-            profileRepository.existsByFullName(request.getFullName())) {
+        if (request.getKeyName() != null &&
+            !request.getKeyName().equals(profile.getKeyName()) &&
+            profileRepository.existsByKeyName(request.getKeyName())) {
             throw new AppException(
                     ErrorCode.PROFILE_FULLNAME_ALREADY_EXISTS,
-                    "Full name already taken: " + request.getFullName()
+                    "Full name already taken: " + request.getKeyName()
             );
         }
 
@@ -220,8 +220,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public boolean isFullNameTaken(String fullName) {
-        return profileRepository.existsByFullName(fullName);
+    public boolean isKeyNameTaken(String keyName) {
+        return profileRepository.existsByKeyName(keyName);
     }
 
     private String saveMediaFile(MultipartFile file) {
