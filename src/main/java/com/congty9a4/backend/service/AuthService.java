@@ -9,6 +9,7 @@ import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.UserMapper;
+import com.congty9a4.backend.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,20 +37,33 @@ public class AuthService {
         if (!passwordEncoder.matches(requestedPassword, user.getPassword()))
             throw new AppException(ErrorCode.INVALID_CREDENTIALS, "Wrong password");
 
-        String token = jwtService.createToken(user.getId().toString());
+        String token = jwtService.createToken(user.getId().toString(), true);
+        String refreshToken = jwtService.createToken(user.getId().toString(), false);
 
         return AuthResponse.builder()
                 .token(token)
+                .refreshToken(refreshToken)
                 .user(userMapper.toInfochan(user))
                 .build();
     }
 
     public AuthResponse guest() {
         Userchan guest = userService.getUserByEmail(USER.GUEST.EMAIL);
-        String token = jwtService.createToken(guest.getId().toString());
+        String token = jwtService.createToken(guest.getId().toString(), true);
+        String refreshToken = jwtService.createToken(guest.getId().toString(), false);
         return AuthResponse.builder()
                 .token(token)
+                .refreshToken(refreshToken)
                 .user(userMapper.toInfochan(guest))
                 .build();
     }
+
+    public AuthResponse refreshToken(String refreshToken) {
+        jwtService.validateToken(refreshToken);
+        return AuthResponse.builder()
+                .token(jwtService.createToken(SecurityUtils.getCurrentUserId(), true))
+                .build();
+    }
+
+
 }

@@ -5,6 +5,7 @@ import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -13,24 +14,32 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
 
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Service
 public class JwtService {
 
 
     @Value("${jwt.secret}")
-    private String jwtSecret;
+    String jwtSecret;
 
     private SecretKey getSigningKey () {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
-    private final long exp = 1000 * 60 * 60 * 24;
 
-    public String createToken(String userId) {
+    @Value("${jwt.expiration.access}")
+    long accessExpiration;
+
+    @Value("${jwt.expiration.refresh}")
+    long refreshExpiration;
+
+    public String createToken(String userId, boolean isAccessToken) {
+
+        long expiration = isAccessToken ? accessExpiration : refreshExpiration;
 
         return Jwts.builder()
                 .subject(userId)
                 .issuedAt(Date.from(LOCALE.now.toInstant()))
-                .expiration(Date.from(LOCALE.now.toInstant().plusMillis(exp)))
+                .expiration(Date.from(LOCALE.now.toInstant().plusSeconds(expiration)))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .id(UUID.randomUUID().toString())
                 .compact();
