@@ -105,5 +105,14 @@ public class UserServiceImpl implements UserService {
         );
         return userMapper.toInfochan(user);
     }
+
+    @Override
+    @Transactional
+    public void handleFollow(UUID id) {
+        getUserById(id);
+
+
+    }
+
 }
 

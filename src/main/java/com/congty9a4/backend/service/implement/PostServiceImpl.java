@@ -208,6 +208,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PageResponse<List<PostResponse>> getFeed(AppPageable pageable) {
+        var userId = SecurityUtils.getCurrentUserId();
+/*        var currentPage = postRepository.getFeedsByUser(userId, pageable.getPageable());*/
+
         return null;
     }
 

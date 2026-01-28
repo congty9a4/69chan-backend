@@ -80,5 +80,11 @@ public class UserController {
                 String.format("User with id=%s is deleted successfully", id.toString())
         );
     }
+
+    @PostMapping("/follow/{id}")
+    @Operation(summary = "Follow/unfollow user", description = "Toggle follow status for a user")
+    public void handleFollow(@PathVariable UUID id) {
+        userService.handleFollow(id);
+    }
 }
 
