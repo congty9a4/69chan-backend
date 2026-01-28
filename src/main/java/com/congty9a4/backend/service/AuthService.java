@@ -58,6 +58,7 @@ public class AuthService {
                 .build();
     }
 
+    // add blacklist mechanism later
     public AuthResponse refreshToken(String refreshToken) {
         jwtService.validateToken(refreshToken);
         return AuthResponse.builder()
