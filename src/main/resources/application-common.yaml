@@ -63,6 +63,9 @@ gcs:
 
 
 jwt:
+  expiration:
+      refresh: 2592000 # 30 days in seconds
+      access: 43200
   secret: ${JWT_SECRET}
 
 server:
