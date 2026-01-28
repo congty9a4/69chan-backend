@@ -2,7 +2,7 @@ package com.congty9a4.backend.mapper;
 
 import com.congty9a4.backend.dto.req.user.UserUpdationRequest;
 import com.congty9a4.backend.dto.resp.UserResponse;
-import com.congty9a4.backend.dto.resp.Infochan;
+import com.congty9a4.backend.entity.Infochan;
 import com.congty9a4.backend.entity.Userchan;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

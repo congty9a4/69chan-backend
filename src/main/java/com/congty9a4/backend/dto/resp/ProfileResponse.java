@@ -1,5 +1,6 @@
 package com.congty9a4.backend.dto.resp;
 
+import com.congty9a4.backend.entity.Infochan;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

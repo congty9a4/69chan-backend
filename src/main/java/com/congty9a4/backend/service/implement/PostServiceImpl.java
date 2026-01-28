@@ -9,7 +9,7 @@ import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.entity.Comment;
 import com.congty9a4.backend.entity.enums.PostVisibility;
-import com.congty9a4.backend.dto.resp.Infochan;
+import com.congty9a4.backend.entity.Infochan;
 import com.congty9a4.backend.entity.post.Post;
 import com.congty9a4.backend.entity.post.PostMedia;
 import com.congty9a4.backend.exception.error.ErrorCode;

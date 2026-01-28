@@ -1,4 +1,4 @@
-package com.congty9a4.backend.service;
+package com.congty9a4.backend.service.crawling;
 
 import com.congty9a4.backend.dto.reddit.RedditChild;
 import com.congty9a4.backend.dto.reddit.RedditPost;
@@ -28,7 +28,6 @@ public class RedditCrawlingService {
     String SYSTEM_USER_ID = "reddit-bot";
 
     RedditPostMapper redditPostMapper;
-    PostRepository postRepository;
 
     public List<Post> crawlReddit() {
         RestClient restClient = RestClient.create();
@@ -52,10 +51,9 @@ public class RedditCrawlingService {
                             log.info(JsonLogging.toString(redditPost));
                            if (redditPost != null) {
                                 Post savedPost = redditPostMapper.toPost(redditPost);
-/*                               Post savedPost = postRepository.save(post);
-                                savedPosts.add(savedPost);*/
-
-                                log.info("Saved post from r/{}: {} (ID: {})",
+/*                               Post savedPost = postRepository.save(post);*/
+                                savedPosts.add(savedPost);
+                               log.info("Saved post from r/{}: {} (ID: {})",
                                     subreddit, redditPost.getTitle(), savedPost.getId());
                             }
                         } catch (Exception e) {

@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.URL;
 
 import java.time.OffsetDateTime;
@@ -31,12 +32,8 @@ public class Botchan {
     @Column(nullable = false)
     String displayName;
 
-    @Size(min = 5, max = 255)
-    @Column(name = "key_name", unique = true)
-    private String keyName;
-
-    @Size(max = 500)
-    String bio;
+    @Column(name = "bot_config_id", nullable = false)
+    String botConfigId;
 
     @URL
     @Column(name = "avatar_url")
@@ -58,6 +55,9 @@ public class Botchan {
     @Column(name = "created_at", updatable = false)
     OffsetDateTime createdAt;
 
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    OffsetDateTime updatedAt;
 }
 
 
