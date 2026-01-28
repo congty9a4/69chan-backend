@@ -46,21 +46,16 @@ public class PostController {
         return ApiResponse.success(result);
     }
 
- /*   @GetMapping
-    public ResponseEntity<List<Post>> getAllPosts() {
-        List<Post> posts = postService.getAllPosts();
-        return new ResponseEntity<>(posts, HttpStatus.OK);
-   }*/
 
+    // Replace offset pagination with cursor pagination for feed retrieval later
     @GetMapping("/feed")
     public ApiResponse<PageResponse<List<PostResponse>>> getUserFeed(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false, defaultValue = "id") String sortBy,
+            @RequestParam(required = false, defaultValue = "created_at") String sortBy,
             @RequestParam(required = false, defaultValue = "desc") String sortDir
     ) {
-        redditCrawlingService.crawlReddit();
-        var results = postService.getAllPosts(AppPageable.of(page, size, sortBy, sortDir));
+        var results = postService.getFeed(AppPageable.of(page, size, sortBy, sortDir));
         return ApiResponse.success(results);
     }
 
@@ -76,6 +71,7 @@ public class PostController {
         var results = postService.getAllPosts(AppPageable.of(page, size, sortBy, sortDir));
         return ApiResponse.success(results);
     }
+
     @GetMapping("/{id}")
     @Operation(summary = "Get post by ID", description = "Retrieve a specific post by its unique identifier")
     public ApiResponse<PostResponse> getPostById(@PathVariable String id) {
@@ -97,37 +93,6 @@ public class PostController {
         return ApiResponse.success("Post deleted successfully");
     }
 
-    @PatchMapping("/{id}/like")
-    @Operation(summary = "Like/unlike post", description = "Toggle like status for a post")
-    public void handleLike(@PathVariable String id) {
-        postService.handlePostLikes(id);
-    }
-
-
-    @GetMapping("/{postId}/comments")
-    @Operation(summary = "Get post comments", description = "Retrieve all comments for a specific post with pagination")
-    public ApiResponse<PageResponse<List<CommentResponse>>> getComments(
-            @PathVariable String postId,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
-            @RequestParam(required = false, defaultValue = "desc") String sortDir
-    ) {
-        var results = postService.getComments(postId, AppPageable.of(page, size, sortBy, sortDir));
-        return ApiResponse.success(results);
-    }
-
-    @PostMapping("/{postId}/comments")
-    @Operation(summary = "Add comment", description = "Add a new comment to a post")
-    public void handleCommentPost(@PathVariable String postId, @RequestBody CommentRequest request){
-        postService.handleComment(postId, request);
-    }
-
-    @PostMapping("/{postId}/comments/{commentId}")
-    @Operation(summary = "Add reply to comment", description = "Add a child comment (reply) to an existing comment")
-    public void handleChildComment(@PathVariable String postId, @PathVariable String commentId, @RequestBody CommentRequest request){
-        postService.handleChildComment(postId, request, commentId);
-    }
 
 }
 
