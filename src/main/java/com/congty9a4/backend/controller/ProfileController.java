@@ -33,7 +33,7 @@ public class ProfileController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir,
+            @RequestParam(defaultValue = "asc") String sortDir
     ) {
         log.info("GET /api/v1/profiles - page: {}, size: {}, sortBy: {}, sortDir: {}",
                  page, size, sortBy, sortDir);
