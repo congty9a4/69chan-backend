@@ -14,7 +14,6 @@ import com.congty9a4.backend.repository.specification.UserSpecification;
 import com.congty9a4.backend.util.AppPageable;
 import com.congty9a4.backend.util.ServerUtils;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

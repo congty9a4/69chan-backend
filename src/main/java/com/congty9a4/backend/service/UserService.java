@@ -97,7 +97,7 @@ public interface UserService {
      * the target user, this will unfollow them. Otherwise, it will create a new follow
      * relationship.</p>
      *
-     * @param id the unique identifier (UUID) of the user to follow or unfollow
+     * @param targetUserId the unique identifier (UUID) of the user to follow or unfollow
      * @throws com.congty9a4.backend.exception.error.AppException if the target user is not found
      *         or if the user attempts to follow themselves
      * @throws IllegalArgumentException if id is null

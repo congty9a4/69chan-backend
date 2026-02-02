@@ -6,17 +6,13 @@ import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
 import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.mapper.UserMapper;
-import com.congty9a4.backend.service.RelationService;
 import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.util.AppPageable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

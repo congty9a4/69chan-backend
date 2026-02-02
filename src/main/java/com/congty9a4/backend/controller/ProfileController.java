@@ -9,11 +9,9 @@ import com.congty9a4.backend.service.ProfileService;
 import com.congty9a4.backend.util.AppPageable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,7 +34,6 @@ public class ProfileController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir,
-            HttpServletRequest request
     ) {
         log.info("GET /api/v1/profiles - page: {}, size: {}, sortBy: {}, sortDir: {}",
                  page, size, sortBy, sortDir);

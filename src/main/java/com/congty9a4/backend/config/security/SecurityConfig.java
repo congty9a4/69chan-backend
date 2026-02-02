@@ -20,7 +20,7 @@ public class SecurityConfig {
     @Autowired
     private JwtService jwtService;
 
-    /*TODO remove temp permission*/
+
     private static final String[] WHITELIST = {
              "/swagger-ui/**",
              "/v3/api-docs/**",
@@ -29,10 +29,8 @@ public class SecurityConfig {
             "/api/sample/**",
             "/",
             "/api/v1/**",
-            "/api/search",
-            "/actuator/**",
-            "/api/posts/feed",
-            "/api/users/{userId}/profile",
+            "/actuator/**"
+
      };
 
     @Bean

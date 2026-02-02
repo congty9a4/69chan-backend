@@ -11,7 +11,6 @@ import java.util.EnumSet;
  * Custom value generator for Profile tag names.
  * Generates unique tag names with the pattern: @{username}{sequence}
  * Example: @johndoe1, @johndoe2, etc.
- *
  * This generator is invoked before INSERT operations to auto-generate
  * the keyName field when it's null.
  */
