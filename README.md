@@ -270,12 +270,6 @@ docker-compose up -d
 - [ ] **Multi-language Support** - i18n
 - [ ] **Bot Detection** - CAPTCHA integration
 
-## 📚 Additional Resources
-
-- [Full Text Search Documentation](./docs/POSTGRESQL_FTS.md)
-- [FTS Usage Guide](./docs/FTS_USAGE_GUIDE.md)
-- [API Test Scripts](./docs/test-fts-api.sh)
-
 ## 🤝 Contributing
 
 When working on this project:
