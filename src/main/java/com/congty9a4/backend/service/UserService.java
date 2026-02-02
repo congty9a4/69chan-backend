@@ -17,9 +17,6 @@ public interface UserService {
      * Retrieves a paginated list of all users in the system.
      *
      * @param pageable the pagination parameters including page number, size, and sorting criteria
-     * @return a {@link PageResponse} containing a list of {@link UserResponse} objects
-     *         with pagination metadata
-     * @throws IllegalArgumentException if pageable is null
      */
     PageResponse<List<UserResponse>> getAllUsers(AppPageable pageable);
 
@@ -28,8 +25,6 @@ public interface UserService {
      *
      * @param id the unique identifier (UUID) of the user
      * @return the {@link Userchan} entity corresponding to the given ID
-     * @throws com.congty9a4.backend.exception.error.AppException if the user is not found
-     * @throws IllegalArgumentException if id is null
      */
     Userchan getUserById(UUID id);
 
@@ -42,9 +37,6 @@ public interface UserService {
      *
      * @param user the {@link UserCreationRequest} containing user details
      * @return the newly created {@link Userchan} entity
-     * @throws com.congty9a4.backend.exception.error.AppException if the email already exists
-     *         or validation fails
-     * @throws IllegalArgumentException if user is null
      */
     Userchan createUser(UserCreationRequest user);
 
@@ -57,8 +49,6 @@ public interface UserService {
      * @param id the unique identifier (UUID) of the user to update
      * @param user the {@link UserUpdationRequest} containing updated user details
      * @return the updated {@link Userchan} entity
-     * @throws com.congty9a4.backend.exception.error.AppException if the user is not found
-     * @throws IllegalArgumentException if id or user is null
      */
     Userchan updateUser(UUID id, UserUpdationRequest user);
 
@@ -112,6 +102,8 @@ public interface UserService {
      *         or if the user attempts to follow themselves
      * @throws IllegalArgumentException if id is null
      */
-    void handleFollow(UUID id);
+    void handleFollow(String targetUserId);
+
+    void handleUnfollow(String id);
 }
 

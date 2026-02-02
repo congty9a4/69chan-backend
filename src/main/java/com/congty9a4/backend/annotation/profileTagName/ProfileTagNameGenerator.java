@@ -32,7 +32,7 @@ public class ProfileTagNameGenerator implements BeforeExecutionGenerator {
             Long sequenceValue = getNextSequenceForUsername(session, username);
 
             // Generate the tag name with pattern: @{username}{sequence}
-            return "@" + username + sequenceValue;
+            return username + sequenceValue;
         }
 
         return null;
@@ -58,12 +58,11 @@ public class ProfileTagNameGenerator implements BeforeExecutionGenerator {
                      "FROM Profile p " +
                      "WHERE p.keyName LIKE :pattern";
 
-        String prefix = "@" + username;
-        String pattern = prefix + "%";
+        String pattern = username + "%";
 
         try {
             Long result = session.createQuery(hql, Long.class)
-                    .setParameter("prefix", prefix)
+                    .setParameter("prefix", username)
                     .setParameter("pattern", pattern)
                     .getSingleResult();
             return result != null ? result : 1L;

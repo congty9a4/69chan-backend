@@ -1,7 +1,7 @@
 package com.congty9a4.backend.mapper;
 
 import com.congty9a4.backend.dto.reddit.RedditPost;
-import com.congty9a4.backend.entity.enums.PostVisibility;
+import com.congty9a4.backend.entity.enums.PostPrivacy;
 import com.congty9a4.backend.entity.post.Post;
 import com.congty9a4.backend.entity.post.PostMedia;
 import org.springframework.stereotype.Component;
@@ -52,7 +52,7 @@ public class RedditPostMapper {
             .likes(new HashSet<>())
             .likeCount(redditPost.getScore() != null ? redditPost.getScore() : 0)
             .commentCount(redditPost.getNumComments() != null ? redditPost.getNumComments() : 0)
-            .visibility(PostVisibility.PUBLIC)
+            .visibility(PostPrivacy.PUBLIC)
             .isDeleted(false)
             .createdAt(convertCreatedTime(redditPost.getCreatedUtc()))
             .updatedAt(convertCreatedTime(redditPost.getCreatedUtc()))

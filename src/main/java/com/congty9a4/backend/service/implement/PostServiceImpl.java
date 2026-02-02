@@ -10,7 +10,6 @@ import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.entity.Comment;
 import com.congty9a4.backend.entity.Infochan;
 import com.congty9a4.backend.entity.enums.PostPrivacy;
-import com.congty9a4.backend.dto.resp.Infochan;
 import com.congty9a4.backend.entity.post.Post;
 import com.congty9a4.backend.entity.post.PostMedia;
 import com.congty9a4.backend.exception.error.ErrorCode;
@@ -47,10 +46,6 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     PaginationHelper paginationHelper;
-
-    @Autowired
-    ServerUtils serverUtils;
-
     @Autowired
     private PostRepository postRepository;
     @Autowired
@@ -206,7 +201,12 @@ public class PostServiceImpl implements PostService {
         return postMapper.toPostResponse(postRepository.save(post));
     }
 
-   private Post findPost(String id){
+    @Override
+    public PageResponse<List<PostResponse>> getFeed(AppPageable pageable) {
+        return null;
+    }
+
+    private Post findPost(String id){
         return postRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND, "Post not found with id: " + id));
    }
 

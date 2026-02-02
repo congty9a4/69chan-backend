@@ -1,15 +1,8 @@
 package com.congty9a4.backend.entity;
 
-import com.congty9a4.backend.entity.enums.FriendStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.io.Serial;
-import java.time.OffsetDateTime;
 
 @Entity
 @Getter
@@ -18,9 +11,18 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "relationships", indexes = {
-    @Index(name = "idx_relation_object", columnList = "objectName, objectId, relation"),
-    @Index(name = "idx_subject", columnList = "subjectName, subjectId")})
+@Table(name = "relationships",
+    indexes = {
+        @Index(name = "idx_subject_object", columnList = "objectId, relation, subjectId"),
+        @Index(name = "idx_object_subject", columnList = "subjectId, relation, objectId")
+    },
+    uniqueConstraints = {
+        @UniqueConstraint(
+            name = "uk_relationship_object_subject_relation",
+            columnNames = {"objectId", "subjectId", "relation"}
+        )
+    }
+)
 public class Relationship {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +41,11 @@ public class Relationship {
 
     String subjectId;
 
-    // 'member' -> group ; 'follower' -> user
+    /**
+     * The reciprocal relationship type from the subject's perspective.
+     * Examples: 'member' for group relationships, 'follower' for user relationships.
+     * This field helps establish bidirectional relationship semantics.
+     */
     String subjectRelation;
 
 }

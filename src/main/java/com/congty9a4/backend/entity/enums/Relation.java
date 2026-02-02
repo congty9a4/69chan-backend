@@ -6,3 +6,4 @@ public enum Relation {
     FOLLOWER,
     FRIEND
 }
+

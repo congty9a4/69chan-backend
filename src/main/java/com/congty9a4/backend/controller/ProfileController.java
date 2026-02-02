@@ -22,14 +22,14 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/profiles")
+@RequestMapping("/api")
 @Tag(name = "Profile", description = "Profile management APIs")
 public class ProfileController {
 
     @Autowired
     private ProfileService profileService;
 
-    @GetMapping
+    @GetMapping("/profiles")
     @Operation(summary = "Get all profiles", description = "Get all profiles with pagination")
     public ApiResponse<PageResponse<List<ProfileResponse>>> getAllProfiles(
             @RequestParam(defaultValue = "1") int page,
@@ -47,7 +47,7 @@ public class ProfileController {
         return ApiResponse.success(profiles);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/profiles/{id}")
     @Operation(summary = "Get profile by ID", description = "Get a profile by its ID")
     public ApiResponse<ProfileResponse> getProfileById(@PathVariable Integer id) {
         log.info("GET /api/v1/profiles/{}", id);
@@ -56,7 +56,7 @@ public class ProfileController {
         return ApiResponse.success(profile);
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/users/{userId}/profile")
     @Operation(summary = "Get profile by user ID", description = "Get a profile by user ID")
     public ApiResponse<ProfileResponse> getProfileByUserId(@PathVariable UUID userId) {
         log.info("GET /api/v1/profiles/user/{}", userId);
@@ -65,21 +65,21 @@ public class ProfileController {
         return ApiResponse.success(profile);
     }
 
-    @PostMapping(value = "/user/{userId}", consumes = "multipart/form-data")
+    @PostMapping(value = "/users/{userId}/profile", consumes = "multipart/form-data")
     @Operation(summary = "Create profile", description = "Create a new profile for a user")
     public ApiResponse<ProfileResponse> createProfile(
-            @PathVariable UUID userId,
+            @PathVariable String userId,
             @RequestPart(value = "avatar", required = false) MultipartFile avatar,
-            @RequestPart(value = "coverBackground", required = false) MultipartFile coverBackground,
+            @RequestPart(value = "coverImage", required = false) MultipartFile coverBackground,
             @Valid @RequestPart("profile") ProfileCreationRequest request
     ) {
         log.info("POST /api/v1/profiles/user/{} - Creating profile", userId);
 
-        ProfileResponse profile = profileService.createProfile(userId, request, avatar, coverBackground);
+        ProfileResponse profile = profileService.createProfile(UUID.fromString(userId), request, avatar, coverBackground);
         return ApiResponse.success(profile);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/profiles/{id}")
     @Operation(summary = "Update profile", description = "Update an existing profile by ID")
     public ApiResponse<ProfileResponse> updateProfile(
             @PathVariable Integer id,
@@ -91,7 +91,7 @@ public class ProfileController {
         return ApiResponse.success(profile);
     }
 
-    @PutMapping("/user/{userId}")
+    @PutMapping("/users/{userId}/profile")
     @Operation(summary = "Update profile by user ID", description = "Update a profile by user ID")
     public ApiResponse<ProfileResponse> updateProfileByUserId(
             @PathVariable UUID userId,
@@ -103,7 +103,7 @@ public class ProfileController {
         return ApiResponse.success(profile);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/profiles/{id}")
     @Operation(summary = "Delete profile", description = "Delete a profile by ID")
     public ApiResponse<Void> deleteProfile(@PathVariable Integer id) {
         log.info("DELETE /api/v1/profiles/{} - Deleting profile", id);
@@ -112,7 +112,7 @@ public class ProfileController {
         return ApiResponse.success(null);
     }
 
-    @DeleteMapping("/user/{userId}")
+    @DeleteMapping("/user/{userId}/profile")
     @Operation(summary = "Delete profile by user ID", description = "Delete a profile by user ID")
     public ApiResponse<Void> deleteProfileByUserId(@PathVariable UUID userId) {
         log.info("DELETE /api/v1/profiles/user/{} - Deleting profile", userId);
@@ -121,7 +121,7 @@ public class ProfileController {
         return ApiResponse.success(null);
     }
 
-    @GetMapping("/user/{userId}/exists")
+    @GetMapping("/users/{userId}/profile/exists")
     @Operation(summary = "Check if profile exists", description = "Check if a profile exists for a user")
     public ApiResponse<Boolean> existsForUser(@PathVariable UUID userId) {
         log.info("GET /api/v1/profiles/user/{}/exists - Checking if profile exists", userId);
@@ -130,7 +130,7 @@ public class ProfileController {
         return ApiResponse.success(exists);
     }
 
-    @GetMapping("/check-keyname")
+    @GetMapping("/profiles/check-keyname")
     @Operation(summary = "Check if keyname is taken", description = "Check if a keyname is already taken")
     public ApiResponse<Boolean> isKeyNameTaken(@RequestParam String keyName) {
         log.info("GET /api/v1/profiles/check-keyname?keyName={}", keyName);

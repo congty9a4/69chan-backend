@@ -10,10 +10,16 @@ import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.UserMapper;
+import com.congty9a4.backend.repository.jpa.RelationshipRepository;
 import com.congty9a4.backend.repository.jpa.UserRepository;
+import com.congty9a4.backend.service.RelationService;
 import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.util.AppPageable;
 import com.congty9a4.backend.util.PaginationHelper;
+import com.congty9a4.backend.util.SecurityUtils;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,16 +31,19 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private PaginationHelper paginationHelper;
+    UserRepository userRepository;
+
+    PasswordEncoder passwordEncoder;
+
+    UserMapper userMapper;
+
+    PaginationHelper paginationHelper;
+
+    RelationService relationService;
 
     @Override
     public PageResponse<List<UserResponse>> getAllUsers(AppPageable pageable) {
@@ -108,11 +117,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void handleFollow(UUID id) {
-        getUserById(id);
-
-
+    public void handleFollow(String targetUserId) {
+        getUserById(UUID.fromString(targetUserId)); // check if user exists
+        relationService.follow(SecurityUtils.getCurrentUserId(), targetUserId);
     }
 
+    @Override
+    @Transactional
+    public void handleUnfollow(String targetUserId) {
+        getUserById(UUID.fromString(targetUserId)); // check if user exists
+        relationService.unfollow(SecurityUtils.getCurrentUserId(), targetUserId);
+    }
 }
 
