@@ -3,6 +3,7 @@ package com.congty9a4.backend.config.security;
 import com.congty9a4.backend.dto.resp.api.ErrorApiResponse;
 import com.congty9a4.backend.exception.error.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.j2objc.annotations.Property;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import java.io.IOException;
+
 
 @Slf4j
 public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
