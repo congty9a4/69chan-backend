@@ -14,6 +14,6 @@ public interface StorageService {
      * @return the public URL of the uploaded file
      */
     String uploadFile(MultipartFile file, String fileName);
-    String deleteFiles(String fileId);
+    String deleteFile(String fileId);
 }
 

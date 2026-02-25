@@ -49,7 +49,7 @@ public class CloudinaryStorageService implements StorageService {
     }
 
     @Override
-    public String deleteFiles(String fileId) {
+    public String deleteFile(String fileId) {
         try {
         Map<String, Object> deleteResult = cloudinary.uploader().destroy(fileId, ObjectUtils.emptyMap());
             log.info("File deleted from Cloudinary: {}, result: {}", fileId, deleteResult);

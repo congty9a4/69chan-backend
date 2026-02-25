@@ -48,7 +48,7 @@ public class GcsStorageService implements StorageService {
     }
 
     @Override
-    public String deleteFiles(String fileId) {
+    public String deleteFile(String fileId) {
         return "";
     }
 }

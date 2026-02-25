@@ -6,6 +6,7 @@ import com.congty9a4.backend.exception.error.AppException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
 
+@Slf4j
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Service
 public class JwtService {
@@ -52,8 +54,10 @@ public class JwtService {
         try {
             Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
         } catch (ExpiredJwtException e) {
+            log.error("Token expired: {}", e.getMessage());
             throw new AppException(ErrorCode.INVALID_TOKEN, "Expired token");
         } catch (JwtException e) {
+            log.error("Token validation error: {}", e.getMessage());
             throw new AppException(ErrorCode.INVALID_TOKEN, "Token is invalid");
         }
     }
