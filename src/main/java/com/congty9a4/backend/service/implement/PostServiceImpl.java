@@ -92,6 +92,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public void deletePost(String id) {
+
         postRepository.deleteById(id);
     }
 
@@ -230,6 +231,7 @@ public class PostServiceImpl implements PostService {
                     .url(url)
                     .uploadedAt(LOCALE.now)
                     .mediaType(type)
+                    .id(fileName.substring(0, fileName.lastIndexOf('.')))
                     .build());
             log.info(url);
         }

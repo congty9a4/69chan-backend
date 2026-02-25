@@ -28,17 +28,7 @@ public class PostController {
     private RedditCrawlingService redditCrawlingService;
 
     @PostMapping(value = "/create", consumes = "multipart/form-data")
-    @Operation(summary = "Create post", description = "Create a new post with optional media files \\\n Example: \\\n" +
-            "curl --location 'http://localhost:8080/api/v1/profiles/user/b25d74f3-cd17-435a-8fc2-463483d9f54c' \\\n" +
-            "--header 'User-Agent: MyApp/1.0.0' \\\n" +
-            "--form 'profile=\"{\n" +
-            "  \\\"bio\\\": \\\"string\\\",\n" +
-            "  \\\"country\\\": \\\"string\\\",\n" +
-            "  \\\"birthday\\\": \\\"2026-01-18\\\",\n" +
-            "  \\\"phone\\\": \\\"1614127419\\\",\n" +
-            "  \\\"fullname\\\": \\\"string\\\"\n" +
-            "}\";type=application/json' \\\n" +
-            "--form 'avatar=@\"/home/miku/Downloads/bong_qua.jpg\"'")
+    @Operation(summary = "Create post", description = "NOTE: If encounter with 500 error, ensure set Content-Type of 'files' & 'post' to 'multipart/form-data' and 'application/json' respectively \\\n'")
     public ApiResponse<PostResponse> createPost(
             @RequestPart(value = "files", required = false) List<MultipartFile> mediaFiles,
             @RequestPart("post") PostRequest post) {

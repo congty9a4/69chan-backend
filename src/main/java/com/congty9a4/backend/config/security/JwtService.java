@@ -49,15 +49,12 @@ public class JwtService {
         if (token == null || token.trim().isEmpty() )
             throw new AppException(ErrorCode.INVALID_TOKEN, "Token not found!");
 
-
-        var claims = Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
-
-        if (claims == null) throw new AppException(ErrorCode.INVALID_TOKEN, "Token is invalid");
-
-        var payload = claims.getPayload();
-
-        if (payload.isEmpty() || payload.getExpiration().before(Date.from(LOCALE.now.toInstant()))){
+        try {
+            Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
+        } catch (ExpiredJwtException e) {
             throw new AppException(ErrorCode.INVALID_TOKEN, "Expired token");
+        } catch (JwtException e) {
+            throw new AppException(ErrorCode.INVALID_TOKEN, "Token is invalid");
         }
     }
 
