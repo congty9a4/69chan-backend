@@ -8,7 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.TimeZone;
 
 @Slf4j
-@SpringBootApplication
+// @SpringBootApplication
+@SpringBootApplication(exclude = {
+        com.google.cloud.spring.autoconfigure.storage.GcpStorageAutoConfiguration.class
+})
 public class BackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);

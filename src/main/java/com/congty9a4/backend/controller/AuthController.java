@@ -38,5 +38,10 @@ public class AuthController {
         return ApiResponse.success(result);
     }
 
+    @PostMapping("/google")
+    @Operation(summary = "Google Login", description = "Login or Register using Google ID Token")
+    public ApiResponse<AuthResponse> loginGoogle(@RequestBody LoginRequest req) {
+        var result = authService.loginWithGoogle(req.token);
+        return ApiResponse.success(result);
+    }
 }
-

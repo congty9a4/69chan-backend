@@ -1,6 +1,5 @@
 package com.congty9a4.backend.dto.req;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -22,4 +21,6 @@ public class LoginRequest {
 
     @NotBlank
     String password;
+
+    public String token;
 }
