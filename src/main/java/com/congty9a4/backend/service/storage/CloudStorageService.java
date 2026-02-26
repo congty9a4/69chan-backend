@@ -20,5 +20,10 @@ public class CloudStorageService {
         log.debug("Uploading file: {} using configured storage provider", fileName);
         return storageService.uploadFile(file, fileName);
     }
+
+    public String deleteFile(String fileId) {
+        log.debug("Deleting file: {} using configured storage provider", fileId);
+        return storageService.deleteFile(fileId);
+    }
 }
 

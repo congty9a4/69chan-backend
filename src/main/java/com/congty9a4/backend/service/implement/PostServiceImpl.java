@@ -86,6 +86,15 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public void deletePost(String id) {
+        var targetPost = findPost(id);
+
+        // Delete associated media files from cloud storage
+        if (targetPost.getMediaFiles() != null) {
+            for (PostMedia media : targetPost.getMediaFiles()) {
+                cloudStorageService.deleteFile(media.getId());
+            }
+        }
+
         postRepository.deleteById(id);
     }
 
@@ -224,6 +233,7 @@ public class PostServiceImpl implements PostService {
                     .url(url)
                     .uploadedAt(LOCALE.now)
                     .mediaType(type)
+                    .id(fileName.substring(0, fileName.lastIndexOf('.')))
                     .build());
             log.info(url);
         }

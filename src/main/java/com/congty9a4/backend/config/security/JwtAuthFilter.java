@@ -1,17 +1,23 @@
 package com.congty9a4.backend.config.security;
 
+import com.congty9a4.backend.dto.resp.api.ErrorApiResponse;
+import com.congty9a4.backend.exception.error.AppException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+
+// Global Exception Handler can't catch exceptions thrown in filters, so we need to handle them here
 
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -28,7 +34,26 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String token = header.substring(7);
 
-        jwtService.validateToken(token);
+        // here is where we catch exception manually
+        try {
+            jwtService.validateToken(token);
+        } catch (AppException appException) {
+
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType(String.valueOf(MediaType.APPLICATION_JSON));
+
+            var resp = ErrorApiResponse.builder()
+                    .message(appException.getMessage())
+                    .detail(appException.getErrorCode().getDetailedMessage())
+                    .timestamp(null)
+                    .build();
+            ObjectMapper objectMapper = new ObjectMapper();
+            response.getWriter().write(objectMapper.writeValueAsString(resp));
+            response.flushBuffer();
+
+            // Don't continue the filter chain after writing the error response
+            return;
+        }
 
         String userId = jwtService.extractUserId(token);
 
