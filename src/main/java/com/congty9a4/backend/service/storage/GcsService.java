@@ -46,5 +46,10 @@ public class GcsService implements StorageService {
         log.info("New file uploaded to GCS with link: {}", publicUrl);
         return publicUrl;
     }
+
+    @Override
+    public String deleteFile(String fileId) {
+        return "";
+    }
 }
 

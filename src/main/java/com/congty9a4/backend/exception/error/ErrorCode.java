@@ -39,7 +39,7 @@ public enum ErrorCode {
     FILE_TOO_LARGE(40050, "The uploaded file is too large. Please upload a smaller file.", HttpStatus.BAD_REQUEST),
     INVALID_FILE_TYPE(40051, "The uploaded file type is not supported.", HttpStatus.BAD_REQUEST),
     FILE_UPLOAD_FAILED(40052, "File upload failed. Please try again.", HttpStatus.BAD_REQUEST),
-
+    FILE_DELETE_FAILED(40053, "File deletion failed. Please try again.", HttpStatus.BAD_REQUEST),
     // Friends & Relationships
     FRIEND_REQUEST_ALREADY_SENT(40060, "You have already sent a friend request to this user.", HttpStatus.BAD_REQUEST),
     ALREADY_FRIENDS(40061, "You are already friends with this user.", HttpStatus.BAD_REQUEST),
@@ -59,8 +59,8 @@ public enum ErrorCode {
 
     // --- NOT FOUND (404) ---
     RESOURCE_NOT_FOUND(40400, "No endpoint found for this request", HttpStatus.NOT_FOUND),
-    VERIFICATION_TOKEN_NOT_FOUND(40404, "The verification token is invalid or has expired.", HttpStatus.NOT_FOUND)
-    ;
+    VERIFICATION_TOKEN_NOT_FOUND(40404, "The verification token is invalid or has expired.", HttpStatus.NOT_FOUND);
+
 
     private final int code;
     private final String detailedMessage;
