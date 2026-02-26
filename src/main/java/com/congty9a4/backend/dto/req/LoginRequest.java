@@ -22,5 +22,4 @@ public class LoginRequest {
     @NotBlank
     String password;
 
-    public String token;
 }
