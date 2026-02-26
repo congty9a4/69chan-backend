@@ -14,4 +14,5 @@ public interface PostRepository extends MongoRepository<Post, String>{
 
     @Query("{ $text:  {$search :  ?0}}")
     List<Post> postByKeywords(String query);
+
 }

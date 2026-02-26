@@ -20,7 +20,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "storage.provider", havingValue = "cloudinary")
-public class CloudinaryStorageService implements StorageService {
+public class CloudinaryService implements StorageService {
 
     private final Cloudinary cloudinary;
 

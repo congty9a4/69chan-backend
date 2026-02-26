@@ -13,4 +13,3 @@ public class RedditResponse {
     String kind;
     RedditData data;
 }
-

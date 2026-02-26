@@ -10,9 +10,9 @@ import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.util.AppPageable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,13 +20,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+@AllArgsConstructor
 @Tag(name = "User", description = "User management APIs")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private UserMapper userMapper;
+    UserService userService;
+
+    UserMapper userMapper;
 
     @GetMapping
     @Operation(summary = "Get all users", description = "Retrieve a paginated list of all users")
@@ -79,6 +80,18 @@ public class UserController {
         return ApiResponse.success(
                 String.format("User with id=%s is deleted successfully", id.toString())
         );
+    }
+
+    @PostMapping("/follow/{id}")
+    @Operation(summary = "Follow/unfollow user", description = "Toggle follow status for a user")
+    public void handleFollow(@PathVariable String id) {
+        userService.handleFollow(id);
+    }
+
+    @DeleteMapping("/unfollow/{id}")
+    @Operation(summary = "Unfollow user", description = "Unfollow a user by ID")
+    public void handleUnfollow(@PathVariable String id) {
+        userService.handleUnfollow(id);
     }
 }
 

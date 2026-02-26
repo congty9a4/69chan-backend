@@ -36,3 +36,9 @@ gcs_credentials.json
 
 .env**
 .env.local
+*.md
+*.markdown
+*.json
+.claude/
+docs/
+.github/prompts/

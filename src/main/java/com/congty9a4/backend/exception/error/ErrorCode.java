@@ -46,6 +46,7 @@ public enum ErrorCode {
     FRIEND_REQUEST_NOT_FOUND(40062, "Friend request not found.", HttpStatus.BAD_REQUEST),
     USER_BLOCKED(40063, "This user is blocked.", HttpStatus.BAD_REQUEST),
     CANNOT_INTERACT_WITH_BLOCKED_USER(40064, "You cannot interact with a user you have blocked or who has blocked you.", HttpStatus.BAD_REQUEST),
+    ALREADY_FOLLOWING(40065, "You are already following this user.", HttpStatus.BAD_REQUEST),
 
 
     // --- UNAUTHENTICATED (401) ---

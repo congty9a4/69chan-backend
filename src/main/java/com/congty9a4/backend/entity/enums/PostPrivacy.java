@@ -1,6 +1,6 @@
 package com.congty9a4.backend.entity.enums;
 
-public enum PostVisibility {
+public enum PostPrivacy {
     PUBLIC,
     FRIENDS,
     PRIVATE
