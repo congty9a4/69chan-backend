@@ -17,12 +17,10 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @Hidden
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionalHandler {
-
 
     @ExceptionHandler(value = AppException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -42,9 +40,9 @@ public class GlobalExceptionalHandler {
         ErrorCode errorCode = ErrorCode.RESOURCE_NOT_FOUND;
         return ErrorApiResponse.builder()
                 .message("Resource Not Found")
-                .detail(String.format("%s [%s -> %s]", errorCode.getDetailedMessage(), ex.getHttpMethod().name().toUpperCase(), ex.getResourcePath()))
+                .detail(String.format("%s [%s -> %s]", errorCode.getDetailedMessage(),
+                        ex.getHttpMethod().name().toUpperCase(), ex.getResourcePath()))
                 .build();
-
 
     }
 
@@ -77,5 +75,19 @@ public class GlobalExceptionalHandler {
                 .detail(errorCode.getDetailedMessage())
                 .build();
     }
-}
 
+    @ExceptionHandler(value = { java.security.GeneralSecurityException.class, java.io.IOException.class,
+            IllegalArgumentException.class })
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    ErrorApiResponse handlingGoogleSecurityException(Exception ex) {
+        log.error("Decoding error Token Google: {}", ex.getMessage());
+
+        ErrorCode errorCode = ErrorCode.INVALID_TOKEN;
+
+        return ErrorApiResponse.builder()
+                .message("Authentication Failed")
+                .detail("Token Google Invalid, invalid format or expired.")
+                .status(errorCode.getCode())
+                .build();
+    }
+}
