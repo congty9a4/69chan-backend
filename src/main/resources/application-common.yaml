@@ -75,4 +75,4 @@ cloudinary:
   api-secret: ${CLOUDINARY_API_SECRET}
 
 google:
-  client-id: ${GOOGLE_CLIENT_ID}
+  client-id: 234085092595-6eckkcjge18tcc8huuha9rp8821sn4kh.apps.googleusercontent.com
