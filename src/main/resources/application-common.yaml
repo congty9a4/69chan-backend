@@ -4,7 +4,7 @@ spring:
 
   data:
     mongodb:
-      uri: "mongodb+srv://${MONGO_DB_USERNAME}:${MONGO_DB_PASSWORD}@${MONGO_DB_HOST}/${MONGO_DB_NAME}?appName=Miku-Dit-Bu"
+      uri: ${MONGO_URI}
 
   datasource:
     username: ${POSTGRE_DB_USERNAME}
@@ -33,7 +33,6 @@ spring:
     init:
       mode: never
 
-
   servlet:
     multipart:
       max-file-size: 10MB
@@ -55,23 +54,25 @@ app:
 # Storage Configuration
 # Choose between 'gcs' (Google Cloud Storage) or 'cloudinary'
 storage:
-  provider: ${STORAGE_PROVIDER:cloudinary} # Default to Cloudinary if not set
+  provider: ${STORAGE_PROVIDER:cloudinary}
 
-gcs:
-  bucket-name: 69chan-dev-store-media-files
-  sub-directory: media
-
+# gcs:
+#   bucket-name: 69chan-dev-store-media-files
+#   sub-directory: media
 
 jwt:
   expiration:
-      refresh: 2592000 # 30 days in seconds
-      access: 43200
+    refresh: 2592000 # 30 days in seconds
+    access: 43200
   secret: ${JWT_SECRET}
 
 server:
   port: 8080
 
 cloudinary:
-  cloud_name: ${CLOUDINARY_CLOUD_NAME}
-  api_key: ${CLOUDINARY_API_KEY}
-  api_secret: ${CLOUDINARY_API_SECRET}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
+
+google:
+  client-id: 234085092595-6eckkcjge18tcc8huuha9rp8821sn4kh.apps.googleusercontent.com

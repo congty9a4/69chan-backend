@@ -20,12 +20,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-    @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@Table(name = "userchans",
-    indexes = {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Table(name = "userchans", indexes = {
         @Index(name = "idx_userchan_email", columnList = "email", unique = true)
-    }
-)
+})
 public class Userchan {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
