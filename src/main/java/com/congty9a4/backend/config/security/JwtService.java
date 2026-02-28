@@ -43,21 +43,33 @@ public class JwtService {
                 .issuedAt(Date.from(LOCALE.now.toInstant()))
                 .expiration(Date.from(LOCALE.now.toInstant().plusSeconds(expiration)))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .id(UUID.randomUUID().toString())
+                .claim("is_access_token", isAccessToken)
                 .compact();
     }
 
-    public void validateToken(String token) {
+    public void validateToken(String token, boolean isAccessToken) {
         if (token == null || token.trim().isEmpty() )
             throw new AppException(ErrorCode.INVALID_TOKEN, "Token not found!");
         try {
-            Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
+            var payload = Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token).getPayload();
+
+            if (payload.getSubject().isBlank()) {
+                throw new AppException(ErrorCode.INVALID_TOKEN, "Token subject is missing");
+            }
+
+            if (payload.get("is_access_token") == null || (Boolean) payload.get("is_access_token") != isAccessToken) {
+                throw new AppException(ErrorCode.INVALID_TOKEN, "Token type mismatch");
+            }
+
         } catch (ExpiredJwtException e) {
             log.error("Token expired: {}", e.getMessage());
             throw new AppException(ErrorCode.INVALID_TOKEN, "Expired token");
         } catch (JwtException e) {
             log.error("Token validation error: {}", e.getMessage());
             throw new AppException(ErrorCode.INVALID_TOKEN, "Token is invalid");
+        } catch (NullPointerException e) {
+            log.error("Token parsing error: {}", e.getMessage());
+            throw new AppException(ErrorCode.INVALID_TOKEN, "Token credential is missing or malformed");
         }
     }
 
