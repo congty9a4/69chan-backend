@@ -1,6 +1,7 @@
 package com.congty9a4.backend.controller;
 
 import com.congty9a4.backend.dto.req.LoginRequest;
+import com.congty9a4.backend.dto.req.RefreshTokenRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
 import com.congty9a4.backend.exception.error.AppException;
@@ -33,10 +34,12 @@ public class AuthController {
         return ApiResponse.success(authService.guest());
     }
 
-    @GetMapping("/refresh-token")
+    @PostMapping("/refresh-token")
     @Operation(summary = "Refresh token", description = "Refresh JWT token using a valid refresh token")
-    public ApiResponse<AuthResponse> refreshToken(@RequestParam("token") String refreshToken) {
-        var result = authService.refreshToken(refreshToken);
+    public ApiResponse<AuthResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest req
+
+    ) {
+        var result = authService.refreshToken(req.getRefreshToken());
         return ApiResponse.success(result);
     }
 

@@ -108,7 +108,7 @@ public class AuthService {
 
     // add blacklist mechanism later
     public AuthResponse refreshToken(String refreshToken) {
-        jwtService.validateToken(refreshToken);
+        jwtService.validateToken(refreshToken, false);
         return AuthResponse.builder()
                 .token(jwtService.createToken(SecurityUtils.getCurrentUserId(), true))
                 .build();
