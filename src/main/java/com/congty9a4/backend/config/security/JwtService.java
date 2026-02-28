@@ -37,6 +37,7 @@ public class JwtService {
 
         long expiration = isAccessToken ? accessExpiration : refreshExpiration;
 
+
         return Jwts.builder()
                 .subject(userId)
                 .issuedAt(Date.from(LOCALE.now.toInstant()))
@@ -49,7 +50,6 @@ public class JwtService {
     public void validateToken(String token) {
         if (token == null || token.trim().isEmpty() )
             throw new AppException(ErrorCode.INVALID_TOKEN, "Token not found!");
-
         try {
             Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
         } catch (ExpiredJwtException e) {
