@@ -38,7 +38,7 @@ jobs:
 #      - name: Notify Discord - CI Failed
 #        if: failure()
 #        env:
-#          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+#          DISCORD_WEBHOOK: ${{ secrets.CICD_DISCORD_WEBHOOK }}
 #        run: |
 #          curl -H "Content-Type: application/json" -X POST \
 #          -d '{
@@ -66,7 +66,7 @@ jobs:
     steps:
       - name: Notify Discord - Deploy Started
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_WEBHOOK: ${{ secrets.CICD_DISCORD_WEBHOOK }}
         run: |
           curl -H "Content-Type: application/json" -X POST \
           -d '{
@@ -97,7 +97,7 @@ jobs:
       - name: Notify Discord - Deploy Success
         if: success()
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_WEBHOOK: ${{ secrets.CICD_DISCORD_WEBHOOK }}
         run: |
           curl -H "Content-Type: application/json" -X POST \
           -d '{
@@ -118,7 +118,7 @@ jobs:
       - name: Notify Discord - Deploy Failed
         if: failure()
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_WEBHOOK: ${{ secrets.CICD_DISCORD_WEBHOOK }}
         run: |
           curl -H "Content-Type: application/json" -X POST \
           -d '{
