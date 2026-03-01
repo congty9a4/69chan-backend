@@ -8,8 +8,8 @@ import com.congty9a4.backend.dto.resp.CommentResponse;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.entity.Comment;
-import com.congty9a4.backend.entity.enums.PostVisibility;
 import com.congty9a4.backend.entity.Infochan;
+import com.congty9a4.backend.entity.enums.PostPrivacy;
 import com.congty9a4.backend.entity.post.Post;
 import com.congty9a4.backend.entity.post.PostMedia;
 import com.congty9a4.backend.exception.error.ErrorCode;
@@ -20,13 +20,11 @@ import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.jpa.UserRepository;
 import com.congty9a4.backend.repository.mongo.CommentRepository;
 import com.congty9a4.backend.repository.mongo.PostRepository;
-import com.congty9a4.backend.service.storage.CloudStorageService;
 import com.congty9a4.backend.service.PostService;
 import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.util.AppPageable;
 import com.congty9a4.backend.util.PaginationHelper;
 import com.congty9a4.backend.util.SecurityUtils;
-import com.congty9a4.backend.util.ServerUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,10 +45,6 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     PaginationHelper paginationHelper;
-
-    @Autowired
-    ServerUtils serverUtils;
-
     @Autowired
     private PostRepository postRepository;
     @Autowired
@@ -58,7 +52,7 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private UserMapper userMapper;
     @Autowired
-    private CloudStorageService cloudStorageService;
+    private com.congty9a4.backend.service.storage.CloudStorageService cloudStorageService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -68,7 +62,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostResponse createPost(PostRequest req, List<MultipartFile> files) {
         Post postEntity = postMapper.toPost(req);
-        postEntity.setVisibility(req.isPublic() ? PostVisibility.PUBLIC : PostVisibility.FRIENDS);
+        postEntity.setVisibility(req.isPublic() ? PostPrivacy.PUBLIC : PostPrivacy.FRIENDS);
         postEntity.setLikes(new HashSet<>());
         // fake user
         if (!userRepository.existsById(UUID.fromString(SecurityUtils.getCurrentUserId())))
@@ -92,6 +86,15 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public void deletePost(String id) {
+        var targetPost = findPost(id);
+
+        // Delete associated media files from cloud storage
+        if (targetPost.getMediaFiles() != null) {
+            for (PostMedia media : targetPost.getMediaFiles()) {
+                cloudStorageService.deleteFile(media.getId());
+            }
+        }
+
         postRepository.deleteById(id);
     }
 
@@ -230,6 +233,7 @@ public class PostServiceImpl implements PostService {
                     .url(url)
                     .uploadedAt(LOCALE.now)
                     .mediaType(type)
+                    .id(fileName.substring(0, fileName.lastIndexOf('.')))
                     .build());
             log.info(url);
         }

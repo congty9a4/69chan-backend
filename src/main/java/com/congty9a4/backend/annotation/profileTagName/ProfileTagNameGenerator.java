@@ -11,7 +11,6 @@ import java.util.EnumSet;
  * Custom value generator for Profile tag names.
  * Generates unique tag names with the pattern: @{username}{sequence}
  * Example: @johndoe1, @johndoe2, etc.
- *
  * This generator is invoked before INSERT operations to auto-generate
  * the keyName field when it's null.
  */
@@ -32,7 +31,7 @@ public class ProfileTagNameGenerator implements BeforeExecutionGenerator {
             Long sequenceValue = getNextSequenceForUsername(session, username);
 
             // Generate the tag name with pattern: @{username}{sequence}
-            return "@" + username + sequenceValue;
+            return username + sequenceValue;
         }
 
         return null;
@@ -58,12 +57,11 @@ public class ProfileTagNameGenerator implements BeforeExecutionGenerator {
                      "FROM Profile p " +
                      "WHERE p.keyName LIKE :pattern";
 
-        String prefix = "@" + username;
-        String pattern = prefix + "%";
+        String pattern = username + "%";
 
         try {
             Long result = session.createQuery(hql, Long.class)
-                    .setParameter("prefix", prefix)
+                    .setParameter("prefix", username)
                     .setParameter("pattern", pattern)
                     .getSingleResult();
             return result != null ? result : 1L;

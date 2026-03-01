@@ -2,6 +2,8 @@ package com.congty9a4.backend.service.storage;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.congty9a4.backend.exception.error.AppException;
+import com.congty9a4.backend.exception.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -18,12 +20,11 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "storage.provider", havingValue = "cloudinary")
-public class CloudinaryStorageService implements StorageService {
+public class CloudinaryService implements StorageService {
 
     private final Cloudinary cloudinary;
 
     @Override
-    @SuppressWarnings("unchecked")
     public String uploadFile(MultipartFile file, String fileName) {
         try {
             // Remove file extension for cloudinary public_id
@@ -43,7 +44,19 @@ public class CloudinaryStorageService implements StorageService {
 
         } catch (IOException e) {
             log.error("Failed to upload file to Cloudinary: {}", fileName, e);
-            throw new RuntimeException("Failed to upload file to Cloudinary", e);
+            throw new AppException(ErrorCode.FILE_UPLOAD_FAILED, "Failed to upload file to Cloudinary");
+        }
+    }
+
+    @Override
+    public String deleteFile(String fileId) {
+        try {
+        Map<String, Object> deleteResult = cloudinary.uploader().destroy(fileId, ObjectUtils.emptyMap());
+            log.info("File deleted from Cloudinary: {}, result: {}", fileId, deleteResult);
+            return (String) deleteResult.get("result");
+        } catch (IOException e) {
+            log.error("Failed to delete file from Cloudinary: {}", fileId, e);
+            throw new AppException(ErrorCode.FILE_DELETE_FAILED, "Failed to delete file from Cloudinary");
         }
     }
 }

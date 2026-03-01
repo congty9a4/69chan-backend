@@ -15,8 +15,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @Setter
-@SuperBuilder
-@Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)

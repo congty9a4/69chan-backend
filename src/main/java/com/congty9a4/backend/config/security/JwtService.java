@@ -5,6 +5,8 @@ import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -13,42 +15,61 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
 
+@Slf4j
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Service
 public class JwtService {
 
-
     @Value("${jwt.secret}")
-    private String jwtSecret;
+    String jwtSecret;
 
     private SecretKey getSigningKey () {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
-    private final long exp = 1000 * 60 * 60 * 24;
 
-    public String createToken(String userId) {
+    @Value("${jwt.expiration.access}")
+    long accessExpiration;
+
+    @Value("${jwt.expiration.refresh}")
+    long refreshExpiration;
+
+    public String createToken(String userId, boolean isAccessToken) {
+
+        long expiration = isAccessToken ? accessExpiration : refreshExpiration;
+
 
         return Jwts.builder()
                 .subject(userId)
                 .issuedAt(Date.from(LOCALE.now.toInstant()))
-                .expiration(Date.from(LOCALE.now.toInstant().plusMillis(exp)))
+                .expiration(Date.from(LOCALE.now.toInstant().plusSeconds(expiration)))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .id(UUID.randomUUID().toString())
+                .claim("is_access_token", isAccessToken)
                 .compact();
     }
 
-    public void validateToken(String token) {
+    public void validateToken(String token, boolean isAccessToken) {
         if (token == null || token.trim().isEmpty() )
             throw new AppException(ErrorCode.INVALID_TOKEN, "Token not found!");
+        try {
+            var payload = Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token).getPayload();
 
+            if (payload.getSubject().isBlank()) {
+                throw new AppException(ErrorCode.INVALID_TOKEN, "Token subject is missing");
+            }
 
-        var claims = Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
+            if (payload.get("is_access_token") == null || (Boolean) payload.get("is_access_token") != isAccessToken) {
+                throw new AppException(ErrorCode.INVALID_TOKEN, "Token type mismatch");
+            }
 
-        if (claims == null) throw new AppException(ErrorCode.INVALID_TOKEN, "Token is invalid");
-
-        var payload = claims.getPayload();
-
-        if (payload.isEmpty() || payload.getExpiration().before(Date.from(LOCALE.now.toInstant()))){
+        } catch (ExpiredJwtException e) {
+            log.error("Token expired: {}", e.getMessage());
             throw new AppException(ErrorCode.INVALID_TOKEN, "Expired token");
+        } catch (JwtException e) {
+            log.error("Token validation error: {}", e.getMessage());
+            throw new AppException(ErrorCode.INVALID_TOKEN, "Token is invalid");
+        } catch (NullPointerException e) {
+            log.error("Token parsing error: {}", e.getMessage());
+            throw new AppException(ErrorCode.INVALID_TOKEN, "Token credential is missing or malformed");
         }
     }
 

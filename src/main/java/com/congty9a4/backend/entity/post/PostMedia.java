@@ -16,6 +16,10 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostMedia {
+
+    // id to reference media in storage
+    String id;
+
     String url;
 
     @JsonProperty("type")

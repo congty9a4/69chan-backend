@@ -21,7 +21,7 @@ import java.util.Collections;
 @Service
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "storage.provider", havingValue = "gcs", matchIfMissing = true)
-public class GcsStorageService implements StorageService {
+public class GcsService implements StorageService {
 
     private final Storage storage;
     private final BucketConfig bucketConfig;
@@ -45,6 +45,11 @@ public class GcsStorageService implements StorageService {
 
         log.info("New file uploaded to GCS with link: {}", publicUrl);
         return publicUrl;
+    }
+
+    @Override
+    public String deleteFile(String fileId) {
+        return "";
     }
 }
 

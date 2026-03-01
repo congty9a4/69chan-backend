@@ -1,6 +1,9 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
+
   profiles:
     group:
       "dev": "dev,common"
       "local": "local,common"
-    active: '@spring.profiles.active@'
+    active: ${SPRING_PROFILES_ACTIVE:dev}

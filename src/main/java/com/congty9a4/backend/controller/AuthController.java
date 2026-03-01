@@ -1,8 +1,11 @@
 package com.congty9a4.backend.controller;
 
 import com.congty9a4.backend.dto.req.LoginRequest;
+import com.congty9a4.backend.dto.req.RefreshTokenRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
+import com.congty9a4.backend.exception.error.AppException;
+import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,6 +34,29 @@ public class AuthController {
         return ApiResponse.success(authService.guest());
     }
 
+    @PostMapping("/refresh-token")
+    @Operation(summary = "Refresh token", description = "Refresh JWT token using a valid refresh token")
+    public ApiResponse<AuthResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest req
 
+    ) {
+        var result = authService.refreshToken(req.getRefreshToken());
+        return ApiResponse.success(result);
+    }
+
+    @PostMapping("/google")
+    @Operation(summary = "Google Login", description = "Login or Register using Google ID Token")
+    public ApiResponse<AuthResponse> loginGoogle(@RequestBody java.util.Map<String, String> req)
+            throws java.security.GeneralSecurityException, java.io.IOException {
+
+        String token = req.get("token");
+
+        System.out.println(token);
+
+        if (token == null || token.isBlank()) {
+            throw new AppException(ErrorCode.INVALID_INPUT);
+        }
+        var result = authService.loginWithGoogle(token);
+
+        return ApiResponse.success(result);
+    }
 }
-

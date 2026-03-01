@@ -11,13 +11,13 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(name = "storage.provider", havingValue = "cloudinary")
 public class CloudinaryConfig {
 
-    @Value("${cloudinary.cloud_name}")
+    @Value("${cloudinary.cloud-name}")
     String CLOUD_NAME;
 
-    @Value("${cloudinary.api_key}")
+    @Value("${cloudinary.api-key}")
     String API_KEY;
 
-    @Value("${cloudinary.api_secret}")
+    @Value("${cloudinary.api-secret}")
     String API_SECRET;
 
     @Bean
