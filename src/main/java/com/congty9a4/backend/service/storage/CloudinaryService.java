@@ -42,7 +42,7 @@ public class CloudinaryService implements StorageService {
             );
 
             String publicUrl = (String) uploadResult.get("secure_url");
-            log.info("New file uploaded to Cloudinary with link: {}", publicUrl);
+
             return publicUrl;
 
         } catch (IOException e) {

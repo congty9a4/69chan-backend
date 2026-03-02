@@ -16,54 +16,43 @@ import java.util.stream.Collectors;
 public class CloudStorageService {
 
     private final StorageService storageService;
-
-    //@Async makes this function is executed in seperate thread
-    //this works as wrapper for the uploadFile,
-    //allowing it to be called asynchronously in bulkUpload and singleUpload
-    @Async("taskExecutor")
-    public CompletableFuture<String> uploadFileAsync(MultipartFile file) {
-        log.debug("Uploading file asynchronously: {} using configured storage provider", file.getOriginalFilename());
-        String url = storageService.uploadFile(file);
-        return CompletableFuture.completedFuture(url);
-    }
+    private final AsyncFileUploader asyncFileUploader;
 
     public String uploadFile(MultipartFile file) {
-        return uploadFileAsync(file)
-            .thenApply(url -> {
-
-                log.debug("File uploaded successfully: {} with URL: {}", file.getOriginalFilename(), url);
-                return url;
-            })
-            .join();
-
+        log.debug("Executing synchronous upload for: {}", file.getOriginalFilename());
+        return storageService.uploadFile(file);
     }
 
     public List<String> bulkUpload(List<MultipartFile> files) {
-        log.debug("Starting bulk upload for {} files", files.size());
+        if (files == null || files.isEmpty()) {
+            return List.of();
+        }
 
+        long startTime = System.currentTimeMillis();
+        log.info("Starting bulk upload for {} files.", files.size());
+
+        // Delegate async calls to the dedicated uploader service
         List<CompletableFuture<String>> futures = files.stream()
-                .map(this::uploadFileAsync)  // ← File1→Thread1, File2→Thread2, File3→Thread3
+                .map(asyncFileUploader::uploadFileAsync)
                 .toList();
 
-        // Combine all futures into one "master" future
-        // This doesn't block - just creates a composite future
-        CompletableFuture<Void> allFutures = CompletableFuture.allOf(
-                futures.toArray(new CompletableFuture[0])
-        );
+        // Wait for all concurrent uploads to complete
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
-        // Wait for completion and collect URLs
-        allFutures.join();
-
+        // Collect the results
         List<String> urls = futures.stream()
                 .map(CompletableFuture::join)
                 .collect(Collectors.toList());
 
-        log.debug("Bulk upload completed. {} files uploaded successfully", urls.size());
+        long duration = System.currentTimeMillis() - startTime;
+        log.info("Bulk upload completed: {} files in {}ms (avg {}ms/file)",
+                urls.size(), duration, duration / Math.max(urls.size(), 1));
+
         return urls;
     }
 
     public String deleteFile(String fileId) {
-        log.debug("Deleting file: {} using configured storage provider", fileId);
+        log.debug("Deleting file: {}", fileId);
         return storageService.deleteFile(fileId);
     }
 }
