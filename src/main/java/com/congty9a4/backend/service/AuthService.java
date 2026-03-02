@@ -9,10 +9,10 @@ import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.jpa.UserRepository;
-import com.congty9a4.backend.util.SecurityUtils;
 
 import java.util.Collections;
 
+import com.congty9a4.backend.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

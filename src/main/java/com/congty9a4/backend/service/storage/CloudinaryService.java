@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Cloudinary implementation for file uploads
@@ -25,10 +26,12 @@ public class CloudinaryService implements StorageService {
     private final Cloudinary cloudinary;
 
     @Override
-    public String uploadFile(MultipartFile file, String fileName) {
+    public String uploadFile(MultipartFile file) {
         try {
             // Remove file extension for cloudinary public_id
+            String fileName = String.join("-", UUID.randomUUID().toString(), file.getOriginalFilename());
             String publicId = fileName.substring(0, fileName.lastIndexOf('.'));
+
 
             Map<String, Object> uploadResult = cloudinary.uploader().upload(
                     file.getBytes(),
@@ -43,7 +46,7 @@ public class CloudinaryService implements StorageService {
             return publicUrl;
 
         } catch (IOException e) {
-            log.error("Failed to upload file to Cloudinary: {}", fileName, e);
+            log.error("Failed to upload file to Cloudinary: {}", file.getOriginalFilename(), e);
             throw new AppException(ErrorCode.FILE_UPLOAD_FAILED, "Failed to upload file to Cloudinary");
         }
     }

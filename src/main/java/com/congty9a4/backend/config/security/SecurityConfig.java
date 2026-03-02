@@ -27,10 +27,10 @@ public class SecurityConfig {
              "/api/auth/**",
              "/api/users/create",
             "/api/sample/**",
+            "/api/files/**",
             "/",
             "/api/v1/**",
             "/actuator/**"
-
      };
 
     @Bean
