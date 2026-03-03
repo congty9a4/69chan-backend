@@ -10,8 +10,8 @@ import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.entity.Comment;
 import com.congty9a4.backend.entity.Infochan;
 import com.congty9a4.backend.entity.enums.PostPrivacy;
+import com.congty9a4.backend.entity.post.MediaInfo;
 import com.congty9a4.backend.entity.post.Post;
-import com.congty9a4.backend.entity.post.PostMedia;
 import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.CommentMapper;
@@ -95,7 +95,7 @@ public class PostServiceImpl implements PostService {
 
         // Delete associated media files from cloud storage
         if (targetPost.getMediaFiles() != null) {
-            for (PostMedia media : targetPost.getMediaFiles()) {
+            for (MediaInfo media : targetPost.getMediaFiles()) {
                 cloudStorageService.deleteFile(media.getId());
             }
         }
@@ -223,8 +223,8 @@ public class PostServiceImpl implements PostService {
         return postRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND, "Post not found with id: " + id));
    }
 
-   private Set<PostMedia> uploadMediaFiles(List<MultipartFile> files){
-       Set<PostMedia> mediaFiles = new HashSet<>();
+   private Set<MediaInfo> uploadMediaFiles(List<MultipartFile> files){
+       Set<MediaInfo> mediaFiles = new HashSet<>();
 
        if (files == null || files.isEmpty()) return mediaFiles;
 
@@ -234,7 +234,7 @@ public class PostServiceImpl implements PostService {
                    String fileName = url.substring(url.lastIndexOf('/') + 1);
                    String type = MEDIA.getType(fileName);
                    String publicId = fileName.substring(0, fileName.lastIndexOf('.'));
-                   mediaFiles.add(PostMedia.builder().id(publicId).url(url).mediaType(type).uploadedAt(LOCALE.now).build());
+                   mediaFiles.add(MediaInfo.builder().id(publicId).url(url).mediaType(type).uploadedAt(LOCALE.now).build());
        });
 
        return mediaFiles;

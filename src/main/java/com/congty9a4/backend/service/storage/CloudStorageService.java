@@ -1,8 +1,9 @@
 package com.congty9a4.backend.service.storage;
 
+import com.congty9a4.backend.constant.MEDIA;
+import com.congty9a4.backend.entity.post.MediaInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,12 +16,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CloudStorageService {
 
-    private final StorageService storageService;
     private final AsyncFileUploader asyncFileUploader;
 
     public String uploadFile(MultipartFile file) {
-        log.debug("Executing synchronous upload for: {}", file.getOriginalFilename());
-        return storageService.uploadFile(file);
+        CompletableFuture<String> future = asyncFileUploader.uploadFileAsync(file);
+        String url = future.join(); // Wait for the async upload to complete
+        log.info("File uploaded successfully: {}, URL: {}", file.getOriginalFilename(), url);
+        return url;
     }
 
     public List<String> bulkUpload(List<MultipartFile> files) {
@@ -51,9 +53,19 @@ public class CloudStorageService {
         return urls;
     }
 
-    public String deleteFile(String fileId) {
-        log.debug("Deleting file: {}", fileId);
-        return storageService.deleteFile(fileId);
+    public void deleteFile(String url) {
+        asyncFileUploader.deleteFileAsync(toMediaInfo(url).getId()).join();
+    }
+
+    public MediaInfo toMediaInfo(String url) {
+        String fileName = url.substring(url.lastIndexOf('/') + 1);
+        String type = MEDIA.getType(fileName);
+        String publicId = fileName.substring(0, fileName.lastIndexOf('.'));
+        return MediaInfo.builder()
+                .url(url)
+                .mediaType(type)
+                .id(publicId)
+                .build();
     }
 }
 

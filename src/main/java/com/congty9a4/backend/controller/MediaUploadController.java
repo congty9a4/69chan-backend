@@ -31,4 +31,11 @@ public class MediaUploadController {
 
                 return body;
         }
+
+        @DeleteMapping
+        @Operation(summary = "Delete media", description = "Delete media file by URL")
+        public ApiResponse<Void> deleteMedia(@RequestParam String url) {
+                storageService.deleteFile(url);
+                return ApiResponse.success(null);
+        }
 }

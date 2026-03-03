@@ -52,11 +52,9 @@ public class CloudinaryService implements StorageService {
     }
 
     @Override
-    public String deleteFile(String fileId) {
+    public void deleteFile(String fileId) {
         try {
-        Map<String, Object> deleteResult = cloudinary.uploader().destroy(fileId, ObjectUtils.emptyMap());
-            log.info("File deleted from Cloudinary: {}, result: {}", fileId, deleteResult);
-            return (String) deleteResult.get("result");
+            cloudinary.uploader().destroy(fileId, ObjectUtils.emptyMap());
         } catch (IOException e) {
             log.error("Failed to delete file from Cloudinary: {}", fileId, e);
             throw new AppException(ErrorCode.FILE_DELETE_FAILED, "Failed to delete file from Cloudinary");

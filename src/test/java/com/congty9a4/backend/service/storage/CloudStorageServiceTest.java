@@ -97,21 +97,6 @@ class CloudStorageServiceTest {
         assertEquals(0, result.size());
         verify(asyncFileUploader, never()).uploadFileAsync(any());
     }
-
-    @Test
-    @DisplayName("deleteFile_should_returnSuccessMessage_when_fileIdIsValid")
-    void deleteFile_should_returnSuccessMessage_when_fileIdIsValid() {
-        // Arrange
-        String fileId = "some-file-id";
-        String expectedResponse = "File deleted successfully";
-        when(storageService.deleteFile(fileId)).thenReturn(expectedResponse);
-
-        // Act
-        String response = cloudStorageService.deleteFile(fileId);
-
-        // Assert
-        assertEquals(expectedResponse, response);
-        verify(storageService, times(1)).deleteFile(fileId);
-    }
+    
 }
 

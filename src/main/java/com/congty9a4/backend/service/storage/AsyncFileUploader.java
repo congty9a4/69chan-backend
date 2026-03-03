@@ -37,10 +37,23 @@ public class AsyncFileUploader {
         try {
             String url = storageService.uploadFile(file);
             long duration = System.currentTimeMillis() - startTime;
-            log.info("[{}] Upload completed in {}ms: {} -> {}", threadName, duration, fileName, url);
+
             return CompletableFuture.completedFuture(url);
         } catch (Exception e) {
             log.error("[{}] Failed to upload file {}: {}", threadName, fileName, e.getMessage());
+            return CompletableFuture.failedFuture(e);
+        }
+    }
+
+    @Async("taskExecutor")
+    public CompletableFuture<Void> deleteFileAsync(String fileId) {
+        String threadName = Thread.currentThread().getName();
+
+        try {
+            storageService.deleteFile(fileId);
+            return CompletableFuture.completedFuture(null);
+        } catch (Exception e) {
+            log.error("[{}] Failed to delete file with id {}: {}", threadName, fileId, e.getMessage());
             return CompletableFuture.failedFuture(e);
         }
     }
