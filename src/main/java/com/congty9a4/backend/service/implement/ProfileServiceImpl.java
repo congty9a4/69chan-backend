@@ -225,14 +225,12 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private String saveMediaFile(MultipartFile file) {
-        // Implement your file saving logic here
 
         if (file == null) return "";
         if (file.isEmpty()) {
             throw new AppException(ErrorCode.FILE_UPLOAD_FAILED, "Cannot save empty file");
         }
-        String fileName = String.join("-", UUID.randomUUID().toString(), file.getOriginalFilename());
-        String url = cloudStorageService.uploadFile(file, fileName);
+        String url = cloudStorageService.uploadFile(file);
         log.info("FILE UPLOADED: " + url);
         return url;
     }

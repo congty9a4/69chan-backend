@@ -7,6 +7,9 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.OffsetDateTime;
 
+/**
+ * Represents file metadata
+ */
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
@@ -15,7 +18,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PostMedia {
+public class MediaInfo {
 
     // id to reference media in storage
     String id;
