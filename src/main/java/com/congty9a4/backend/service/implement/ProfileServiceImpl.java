@@ -225,7 +225,6 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private String saveMediaFile(MultipartFile file) {
-        // Implement your file saving logic here
 
         if (file == null) return "";
         if (file.isEmpty()) {

@@ -73,7 +73,7 @@ public class PostServiceImpl implements PostService {
         if (!userRepository.existsById(UUID.fromString(SecurityUtils.getCurrentUserId())))
             throw new AppException(ErrorCode.USER_NOT_FOUND, "Can't create post due to user not found");
         postEntity.setUserId(SecurityUtils.getCurrentUserId());
-        postEntity.setMediaFiles(convertMediaFiles(files));
+       postEntity.setMediaFiles(uploadMediaFiles(files));
         var savedPost = postRepository.save(postEntity);
         return postMapper.toPostResponse(savedPost, userService::userInfo);
     }
@@ -223,42 +223,20 @@ public class PostServiceImpl implements PostService {
         return postRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND, "Post not found with id: " + id));
    }
 
-   private Set<PostMedia> convertMediaFiles(List<MultipartFile> files){
+   private Set<PostMedia> uploadMediaFiles(List<MultipartFile> files){
        Set<PostMedia> mediaFiles = new HashSet<>();
 
        if (files == null || files.isEmpty()) return mediaFiles;
 
-       // Upload all files concurrently (much faster!)
        List<String> urls = cloudStorageService.bulkUpload(files);
 
-       // Create PostMedia entities with uploaded URLs
-       for (int i = 0; i < files.size(); i++) {
-           MultipartFile file = files.get(i);
-           String url = urls.get(i);
-           String fileName = file.getOriginalFilename();
+       urls.forEach(url -> {
+                   String fileName = url.substring(url.lastIndexOf('/') + 1);
+                   String type = MEDIA.getType(fileName);
+                   String publicId = fileName.substring(0, fileName.lastIndexOf('.'));
+                   mediaFiles.add(PostMedia.builder().id(publicId).url(url).mediaType(type).uploadedAt(LOCALE.now).build());
+       });
 
-           if (fileName == null || fileName.isEmpty()) {
-               fileName = "file_" + i;  // Fallback filename
-           }
-
-           String type = MEDIA.getType(fileName);
-
-           // Extract ID from filename (remove extension)
-           String mediaId = fileName.contains(".")
-               ? fileName.substring(0, fileName.lastIndexOf('.'))
-               : fileName;
-
-           mediaFiles.add(PostMedia.builder()
-                   .url(url)
-                   .uploadedAt(LOCALE.now)
-                   .mediaType(type)
-                   .id(mediaId)
-                   .build());
-
-           log.debug("Media file processed: {} -> {}", fileName, url);
-       }
-
-       log.info("Successfully converted {} media files", mediaFiles.size());
        return mediaFiles;
    }
 }
