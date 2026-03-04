@@ -59,4 +59,11 @@ public class AuthController {
 
         return ApiResponse.success(result);
     }
+
+    @PostMapping("/logout")
+    @Operation(summary = "User logout", description = "Invalidate the current user's token")
+    public ApiResponse<Void> logout(@RequestBody RefreshTokenRequest req) {
+        authService.logout(req);
+        return ApiResponse.success(null);
+    }
 }

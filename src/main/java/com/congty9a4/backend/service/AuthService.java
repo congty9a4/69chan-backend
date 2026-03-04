@@ -3,6 +3,7 @@ package com.congty9a4.backend.service;
 import com.congty9a4.backend.config.security.JwtService;
 import com.congty9a4.backend.constant.USER;
 import com.congty9a4.backend.dto.req.LoginRequest;
+import com.congty9a4.backend.dto.req.RefreshTokenRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
 import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.exception.error.ErrorCode;
@@ -12,35 +13,45 @@ import com.congty9a4.backend.repository.jpa.UserRepository;
 
 import java.util.Collections;
 
+import com.congty9a4.backend.service.redis.RedisService;
 import com.congty9a4.backend.util.SecurityUtils;
+import jakarta.persistence.FieldResult;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
-import org.springframework.beans.factory.annotation.Value;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class AuthService {
 
-    @Autowired
+    private final RedisService redisService;
     PasswordEncoder passwordEncoder;
 
-    @Autowired
     UserService userService;
 
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private UserMapper userMapper;
+    JwtService jwtService;
 
-    @Autowired
-    private UserRepository userRepository;
+    UserMapper userMapper;
+
+    UserRepository userRepository;
+
+    HttpServletRequest request;
 
     @Value("${google.client-id}")
-    private String googleClientId;
+    String googleClientId;
 
     public AuthResponse loginWithGoogle(String googleToken)
             throws java.security.GeneralSecurityException, java.io.IOException {
@@ -112,6 +123,33 @@ public class AuthService {
         return AuthResponse.builder()
                 .token(jwtService.createToken(SecurityUtils.getCurrentUserId(), true))
                 .build();
+    }
+
+    public void logout(RefreshTokenRequest req) {
+
+        invalidateToken(req.getRefreshToken());
+
+        String header = request.getHeader("Authorization");
+        if (header == null || !header.startsWith("Bearer "))
+            throw new AppException(ErrorCode.INVALID_TOKEN, "Token not found!");
+
+        String accessToken =  header.substring(7);
+
+        invalidateToken(accessToken);
+
+    }
+
+    private void invalidateToken(String token) {
+        long ttl = jwtService.extractTokenExpiration(token).getTime() - System.currentTimeMillis();
+
+        if (ttl <= 0){
+            log.info("Token already expired, no need to blacklist");
+            return;
+        }
+
+        String jid = jwtService.extractTokenId(token);
+        log.info("Blacklisting token with JID {} for {} ms", jid, ttl);
+        redisService.blacklistToken(jid, ttl);
     }
 
 }
