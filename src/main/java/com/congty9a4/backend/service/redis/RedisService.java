@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class RedisService {
+
     RedisTemplate<String, Object> redisTemplate;
 
     public void blacklistToken(String token, long expiration) {

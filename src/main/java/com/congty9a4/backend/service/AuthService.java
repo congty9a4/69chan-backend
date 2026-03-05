@@ -15,14 +15,11 @@ import java.util.Collections;
 
 import com.congty9a4.backend.service.redis.RedisService;
 import com.congty9a4.backend.util.SecurityUtils;
-import jakarta.persistence.FieldResult;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,19 +34,15 @@ import com.google.api.client.json.gson.GsonFactory;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class AuthService {
 
-    private final RedisService redisService;
-    PasswordEncoder passwordEncoder;
+    final RedisService redisService;
+    final PasswordEncoder passwordEncoder;
+    final UserService userService;
+    final JwtService jwtService;
+    final UserMapper userMapper;
+    final UserRepository userRepository;
+    final HttpServletRequest request;
 
-    UserService userService;
-
-    JwtService jwtService;
-
-    UserMapper userMapper;
-
-    UserRepository userRepository;
-
-    HttpServletRequest request;
-
+    @NonFinal
     @Value("${google.client-id}")
     String googleClientId;
 

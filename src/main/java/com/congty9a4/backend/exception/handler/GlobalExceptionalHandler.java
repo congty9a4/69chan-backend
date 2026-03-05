@@ -76,7 +76,7 @@ public class GlobalExceptionalHandler {
                 .build();
     }
 
-    @ExceptionHandler(value = { java.security.GeneralSecurityException.class, java.io.IOException.class })
+   /* @ExceptionHandler(value = { java.security.GeneralSecurityException.class, java.io.IOException.class })
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     ErrorApiResponse handlingGoogleSecurityException(Exception ex) {
         log.error("Decoding error Token Google: {}", ex.getMessage());
@@ -88,5 +88,5 @@ public class GlobalExceptionalHandler {
                 .detail("Token Google Invalid, invalid format or expired.")
                 .status(errorCode.getCode())
                 .build();
-    }
+    }*/
 }

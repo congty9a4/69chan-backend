@@ -51,6 +51,7 @@ public class JwtService {
                 .expiration(Date.from(LOCALE.now.toInstant().plusSeconds(expiration)))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .claim("is_access_token", isAccessToken)
+                .id(UUID.randomUUID().toString())
                 .compact();
     }
 
@@ -94,7 +95,10 @@ public class JwtService {
     }
 
     public String extractTokenId(String token) {
-        return getPayload(token).getId();
+        String jid = getPayload(token).getId();
+        if (jid == null) throw new AppException(ErrorCode.INVALID_TOKEN, "Token ID (JID) is missing");
+
+        return jid;
     }
 
     private Claims getPayload(String token) {
