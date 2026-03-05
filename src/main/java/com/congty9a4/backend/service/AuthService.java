@@ -2,8 +2,8 @@ package com.congty9a4.backend.service;
 
 import com.congty9a4.backend.config.security.JwtService;
 import com.congty9a4.backend.constant.USER;
-import com.congty9a4.backend.dto.req.LoginRequest;
-import com.congty9a4.backend.dto.req.RefreshTokenRequest;
+import com.congty9a4.backend.dto.req.auth.LoginRequest;
+import com.congty9a4.backend.dto.req.auth.RefreshTokenRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
 import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.exception.error.ErrorCode;
@@ -11,7 +11,9 @@ import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.jpa.UserRepository;
 
+import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
 
 import com.congty9a4.backend.service.redis.RedisService;
 import com.congty9a4.backend.util.SecurityUtils;
@@ -46,38 +48,47 @@ public class AuthService {
     @Value("${google.client-id}")
     String googleClientId;
 
-    public AuthResponse loginWithGoogle(String googleToken)
-            throws java.security.GeneralSecurityException, java.io.IOException {
+    public AuthResponse loginWithGoogle(Map<String, String> req){
+        String token = req.get("token");
 
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
-                .setAudience(Collections.singletonList(googleClientId)).build();
+        System.out.println(token);
 
-        GoogleIdToken idToken = verifier.verify(googleToken);
-
-        if (idToken == null) {
-            throw new AppException(ErrorCode.INVALID_TOKEN);
+        if (token == null || token.isBlank()) {
+            throw new AppException(ErrorCode.GOOGLE_TOKEN_INVALID, "Google token not found in request!");
         }
 
-        String email = idToken.getPayload().getEmail();
+        try {
 
-        var user = userRepository.findByEmail(email).orElseGet(() -> {
-            String baseUsername = email.length() > 50 ? email.substring(0, 50) : email;
-            String encodedPassword = passwordEncoder.encode(java.util.UUID.randomUUID().toString());
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
+                    .setAudience(Collections.singletonList(googleClientId)).build();
 
-            return userRepository.save(Userchan.builder()
-                    .email(email)
-                    .username(baseUsername)
-                    .password(encodedPassword)
-                    .isActive(true)
-                    .build());
-        });
+            GoogleIdToken idToken = verifier.verify(token);
 
-        return AuthResponse.builder()
-                .token(jwtService.createToken(user.getId().toString(), true))
-                .refreshToken(jwtService.createToken(user.getId().toString(), false))
-                // .user(userMapper.toInfochan(user)) // Mở comment nếu FE cần hiển thị thông
-                // tin
-                .build();
+            String email = idToken.getPayload().getEmail();
+
+            var user = userRepository.findByEmail(email).orElseGet(() -> {
+                String baseUsername = email.length() > 50 ? email.substring(0, 50) : email;
+                String encodedPassword = passwordEncoder.encode(java.util.UUID.randomUUID().toString());
+
+                return userRepository.save(Userchan.builder()
+                        .email(email)
+                        .username(baseUsername)
+                        .password(encodedPassword)
+                        .isActive(true)
+                        .build());
+            });
+
+            return AuthResponse.builder()
+                    .token(jwtService.createToken(user.getId().toString(), true))
+                    .refreshToken(jwtService.createToken(user.getId().toString(), false))
+                    // .user(userMapper.toInfochan(user)) // Mở comment nếu FE cần hiển thị thông
+                    // tin
+                    .build();
+
+        } catch (IOException | java.security.GeneralSecurityException e) { // 1 in 2
+            log.error("Google token verification failed", e);
+            throw new AppException(ErrorCode.GOOGLE_TOKEN_INVALID, "Failed to verify Google token");
+        }
     }
 
     public AuthResponse authenticate(LoginRequest req) {
