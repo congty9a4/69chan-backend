@@ -97,7 +97,7 @@ public class UserControllerUnitTest {
                 .password(userchan.getPassword())
                 .build();
 
-        when(userService.createUser(any(UserCreationRequest.class))).thenReturn(userchan);
+      //  when(userService.createUser(any(UserCreationRequest.class))).thenReturn(userchan);
         when(userMapper.toUserResponse(any(Userchan.class))).thenReturn(userResponse);
 
         // when & then

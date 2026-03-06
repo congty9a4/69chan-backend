@@ -61,8 +61,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Userchan createUser(UserCreationRequest userReq) {
-
+    public UserResponse createUser(UserCreationRequest userReq) {
         if (userRepository.existsByEmail(userReq.getEmail()))
             throw new AppException(ErrorCode.USER_ALREADY_EXISTS, "User already exists with email: " + userReq.getEmail());
 
@@ -75,7 +74,8 @@ public class UserServiceImpl implements UserService {
         String rawPassword = user.getPassword();
         String hashedPassword = passwordEncoder.encode(rawPassword);
         user.setPassword(hashedPassword);
-        return userRepository.save(user);
+
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     @Override

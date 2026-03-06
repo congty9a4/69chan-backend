@@ -1,6 +1,6 @@
 package com.congty9a4.backend.controller;
 
-import com.congty9a4.backend.dto.req.LoginRequest;
+import com.congty9a4.backend.dto.req.auth.LoginRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
 import com.congty9a4.backend.service.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;

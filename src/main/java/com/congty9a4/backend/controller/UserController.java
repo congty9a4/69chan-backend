@@ -55,15 +55,6 @@ public class UserController {
         );
     }
 
-    @PostMapping("/create")
-    @Operation(summary = "Create user", description = "Create a new user account")
-    public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest userReq) {
-        var userchan = userService.createUser(userReq);
-        return ApiResponse.success(
-                userMapper.toUserResponse(userchan)
-        );
-    }
-
     @PutMapping("/{id}")
     @Operation(summary = "Update user", description = "Update an existing user's information")
     public ApiResponse<UserResponse> updateUser(@PathVariable UUID id, @RequestBody UserUpdationRequest user) {
