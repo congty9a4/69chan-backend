@@ -3,6 +3,7 @@ package com.congty9a4.backend.service.implement;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.congty9a4.backend.entity.Notification;
@@ -18,6 +19,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
 
+    @Async
     @Override
     public void sendNotification(String senderId, String receiverId, NotificationType type, String targetId) {
         if (senderId.equals(receiverId))
