@@ -11,8 +11,8 @@ import com.congty9a4.backend.entity.Comment;
 import com.congty9a4.backend.entity.Infochan;
 import com.congty9a4.backend.entity.enums.NotificationType;
 import com.congty9a4.backend.entity.enums.PostPrivacy;
+import com.congty9a4.backend.entity.post.MediaInfo;
 import com.congty9a4.backend.entity.post.Post;
-import com.congty9a4.backend.entity.post.PostMedia;
 import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.CommentMapper;
@@ -26,6 +26,7 @@ import com.congty9a4.backend.service.PostService;
 import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.util.AppPageable;
 import com.congty9a4.backend.util.PaginationHelper;
+
 import com.congty9a4.backend.util.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -73,7 +77,7 @@ public class PostServiceImpl implements PostService {
         if (!userRepository.existsById(UUID.fromString(SecurityUtils.getCurrentUserId())))
             throw new AppException(ErrorCode.USER_NOT_FOUND, "Can't create post due to user not found");
         postEntity.setUserId(SecurityUtils.getCurrentUserId());
-        postEntity.setMediaFiles(convertMediaFiles(files));
+        postEntity.setMediaFiles(uploadMediaFiles(files));
         var savedPost = postRepository.save(postEntity);
         return postMapper.toPostResponse(savedPost, userService::userInfo);
     }
@@ -93,7 +97,7 @@ public class PostServiceImpl implements PostService {
 
         // Delete associated media files from cloud storage
         if (targetPost.getMediaFiles() != null) {
-            for (PostMedia media : targetPost.getMediaFiles()) {
+            for (MediaInfo media : targetPost.getMediaFiles()) {
                 cloudStorageService.deleteFile(media.getId());
             }
         }
@@ -244,13 +248,13 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND, "Post not found with id: " + id));
     }
 
-    private Set<PostMedia> convertMediaFiles(List<MultipartFile> files) {
-        Set<PostMedia> mediaFiles = new HashSet<>();
+    private Set<MediaInfo> uploadMediaFiles(List<MultipartFile> files) {
+        Set<MediaInfo> mediaFiles = new HashSet<>();
 
         if (files == null || files.isEmpty())
             return mediaFiles;
 
-        log.info("[MEDIA FILES]: ");
+        List<String> urls = cloudStorageService.bulkUpload(files);
 
         for (MultipartFile file : files) {
             String fileName = String.join("-", UUID.randomUUID().toString(), file.getOriginalFilename());
@@ -266,4 +270,12 @@ public class PostServiceImpl implements PostService {
         }
         return mediaFiles;
     }
-}
+       urls.forEach(url -> {
+                   String fileName = url.substring(url.lastIndexOf('/') + 1);
+                   String type = MEDIA.getType(fileName);
+                   String publicId = fileName.substring(0, fileName.lastIndexOf('.'));
+                   mediaFiles.add(MediaInfo.builder().id(publicId).url(url).mediaType(type).uploadedAt(LOCALE.now).build());
+       });
+
+       return mediaFiles;
+   }}

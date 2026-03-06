@@ -22,7 +22,7 @@ public enum ErrorCode {
     ACCOUNT_BLOCKED(40014, "Your account has been blocked. Please contact support for assistance.", HttpStatus.BAD_REQUEST),
     INVALID_EMAIL_FORMAT(40015, "The email address you entered is not valid.", HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND(40016, "The user you are looking for could not be found.", HttpStatus.BAD_REQUEST),
-
+    GOOGLE_TOKEN_INVALID(40017, "The Google token is invalid or expired.", HttpStatus.BAD_REQUEST),
 
     // Post & Content
     POST_NOT_FOUND(40030, "The post you are looking for could not be found.", HttpStatus.BAD_REQUEST),
