@@ -6,9 +6,11 @@ import com.congty9a4.backend.dto.resp.CommentResponse;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
+import com.congty9a4.backend.service.FanoutService;
 import com.congty9a4.backend.service.PostService;
 import com.congty9a4.backend.service.crawling.RedditCrawlingService;
 import com.congty9a4.backend.util.AppPageable;
+import com.congty9a4.backend.util.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -26,6 +29,8 @@ public class PostController {
     private PostService postService;
     @Autowired
     private RedditCrawlingService redditCrawlingService;
+    @Autowired
+    private FanoutService fanoutService;
 
     @PostMapping(value = "/create", consumes = "multipart/form-data")
     @Operation(summary = "Create post", description = "NOTE: If encounter with 500 error, ensure set Content-Type of 'files' & 'post' to 'multipart/form-data' and 'application/json' respectively \\\n'")
@@ -45,8 +50,21 @@ public class PostController {
             @RequestParam(required = false, defaultValue = "created_at") String sortBy,
             @RequestParam(required = false, defaultValue = "desc") String sortDir
     ) {
-        var results = postService.getFeed(AppPageable.of(page, size, sortBy, sortDir));
+        var results = postService.getNewsFeed(AppPageable.of(page, size, sortBy, sortDir));
         return ApiResponse.success(results);
+    }
+
+    @GetMapping("/home-feed")
+    @Operation(
+        summary = "Get home feed (Fanout-on-Read)",
+        description = "Retrieve posts from all users that the current user follows. " +
+                     "Uses pull model (fanout-on-read) where posts are aggregated on-demand. " +
+                     "Posts are sorted by creation date (newest first)."
+    )
+    public ApiResponse<Set<PostResponse>> getHomeFeed() {
+        String userId = SecurityUtils.getCurrentUserId();
+        Set<PostResponse> homeFeed = fanoutService.getHomeFeed(userId);
+        return ApiResponse.success(homeFeed);
     }
 
     @GetMapping

@@ -26,5 +26,5 @@ public interface PostService {
 
     PostResponse updatePost(String id, PostRequest req);
 
-    PageResponse<List<PostResponse>> getFeed(AppPageable pageable);
+    PageResponse<List<PostResponse>> getNewsFeed(AppPageable pageable);
 }
