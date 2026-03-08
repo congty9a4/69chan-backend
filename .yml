@@ -6,10 +6,9 @@ on:
     types: [opened, synchronize, reopened, closed]
 
 jobs:
-
-  # Uncomment when tests are available
-
   # ─── Job 1: Run on every PR push (opened/sync/reopened) ───────────────────
+
+  
 #  ci:
 #    name: Build & Test
 #    runs-on: ubuntu-latest
@@ -38,7 +37,7 @@ jobs:
 #      - name: Notify Discord - CI Failed
 #        if: failure()
 #        env:
-#          DISCORD_WEBHOOK: ${{ secrets.CICD_DISCORD_WEBHOOK }}
+#          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
 #        run: |
 #          curl -H "Content-Type: application/json" -X POST \
 #          -d '{
@@ -66,7 +65,7 @@ jobs:
     steps:
       - name: Notify Discord - Deploy Started
         env:
-          DISCORD_WEBHOOK: ${{ secrets.CICD_DISCORD_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           curl -H "Content-Type: application/json" -X POST \
           -d '{
@@ -97,7 +96,7 @@ jobs:
       - name: Notify Discord - Deploy Success
         if: success()
         env:
-          DISCORD_WEBHOOK: ${{ secrets.CICD_DISCORD_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           curl -H "Content-Type: application/json" -X POST \
           -d '{
@@ -118,7 +117,7 @@ jobs:
       - name: Notify Discord - Deploy Failed
         if: failure()
         env:
-          DISCORD_WEBHOOK: ${{ secrets.CICD_DISCORD_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           curl -H "Content-Type: application/json" -X POST \
           -d '{

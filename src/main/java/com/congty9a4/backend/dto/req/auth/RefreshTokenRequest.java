@@ -1,7 +1,7 @@
-package com.congty9a4.backend.dto.req;
+package com.congty9a4.backend.dto.req.auth;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.Email;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,13 +13,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LoginRequest {
+public class RefreshTokenRequest {
 
-    @Email
-    @NotBlank
-    String email;
-
-    @NotBlank
-    String password;
+   @NotBlank
+   @JsonProperty("refresh_token")
+   String refreshToken;
 
 }

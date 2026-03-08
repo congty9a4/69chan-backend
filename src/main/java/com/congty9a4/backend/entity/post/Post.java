@@ -36,7 +36,7 @@ public class Post {
     Set<String> tags;
 
     @Field("media")
-    Set<PostMedia> mediaFiles;
+    Set<MediaInfo> mediaFiles;
 
     @Field("likes")
     Set<String> likes;

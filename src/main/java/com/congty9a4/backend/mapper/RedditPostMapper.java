@@ -2,8 +2,8 @@ package com.congty9a4.backend.mapper;
 
 import com.congty9a4.backend.dto.reddit.RedditPost;
 import com.congty9a4.backend.entity.enums.PostPrivacy;
+import com.congty9a4.backend.entity.post.MediaInfo;
 import com.congty9a4.backend.entity.post.Post;
-import com.congty9a4.backend.entity.post.PostMedia;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -20,13 +20,13 @@ public class RedditPostMapper {
             return null;
         }
 
-        Set<PostMedia> mediaFiles = new HashSet<>();
+        Set<MediaInfo> mediaFiles = new HashSet<>();
         String imageUrl = redditPost.getUrlOverriddenByDest() != null
             ? redditPost.getUrlOverriddenByDest()
             : redditPost.getUrl();
 
         if (isImageUrl(imageUrl)) {
-            PostMedia media = PostMedia.builder()
+            MediaInfo media = MediaInfo.builder()
                 .url(imageUrl)
                 .mediaType(determineMediaType(redditPost))
                 .uploadedAt(convertCreatedTime(redditPost.getCreatedUtc()))

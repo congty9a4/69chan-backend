@@ -27,8 +27,9 @@ public class GcsService implements StorageService {
     private final BucketConfig bucketConfig;
 
     @Override
-    public String uploadFile(MultipartFile file, String _fileName) {
-        String fileName = String.join("/", bucketConfig.getSubDirectory(), _fileName);
+    public String uploadFile(MultipartFile file) {
+        String _fileName = file.getOriginalFilename();
+        String fileName = String.join("/", bucketConfig.getSubDirectory(), file.getOriginalFilename());
         BlobId blobId = BlobId.of(bucketConfig.getBucketName(), fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
                 .setContentType(file.getContentType())
@@ -48,8 +49,7 @@ public class GcsService implements StorageService {
     }
 
     @Override
-    public String deleteFile(String fileId) {
-        return "";
+    public void deleteFile(String fileId) {
     }
 }
 
