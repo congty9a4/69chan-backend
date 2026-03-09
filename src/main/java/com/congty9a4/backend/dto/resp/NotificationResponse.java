@@ -3,12 +3,12 @@ package com.congty9a4.backend.dto.resp;
 import com.congty9a4.backend.entity.Infochan;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
