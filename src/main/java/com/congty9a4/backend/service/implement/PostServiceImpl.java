@@ -256,26 +256,13 @@ public class PostServiceImpl implements PostService {
 
         List<String> urls = cloudStorageService.bulkUpload(files);
 
-        for (MultipartFile file : files) {
-            String fileName = String.join("-", UUID.randomUUID().toString(), file.getOriginalFilename());
-            String url = cloudStorageService.uploadFile(file, fileName);
+        urls.forEach(url -> {
+            String fileName = url.substring(url.lastIndexOf('/') + 1);
             String type = MEDIA.getType(fileName);
-            mediaFiles.add(PostMedia.builder()
-                    .url(url)
-                    .uploadedAt(LOCALE.now)
-                    .mediaType(type)
-                    .id(fileName.substring(0, fileName.lastIndexOf('.')))
-                    .build());
-            log.info(url);
-        }
+            String publicId = fileName.substring(0, fileName.lastIndexOf('.'));
+            mediaFiles.add(MediaInfo.builder().id(publicId).url(url).mediaType(type).uploadedAt(LOCALE.now).build());
+        });
+
         return mediaFiles;
     }
-       urls.forEach(url -> {
-                   String fileName = url.substring(url.lastIndexOf('/') + 1);
-                   String type = MEDIA.getType(fileName);
-                   String publicId = fileName.substring(0, fileName.lastIndexOf('.'));
-                   mediaFiles.add(MediaInfo.builder().id(publicId).url(url).mediaType(type).uploadedAt(LOCALE.now).build());
-       });
-
-       return mediaFiles;
-   }}
+}
