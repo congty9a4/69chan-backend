@@ -22,6 +22,7 @@ import com.congty9a4.backend.repository.jpa.RelationshipRepository;
 import com.congty9a4.backend.repository.jpa.UserRepository;
 import com.congty9a4.backend.repository.mongo.CommentRepository;
 import com.congty9a4.backend.repository.mongo.PostRepository;
+import com.congty9a4.backend.service.FanoutService;
 import com.congty9a4.backend.service.PostService;
 import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.util.AppPageable;
@@ -70,6 +71,8 @@ public class PostServiceImpl implements PostService {
     private CommentRepository commentRepository;
 
     private RelationshipRepository relationshipRepository;
+
+    FanoutService fanoutService;
 
     @Override
     @Transactional
@@ -227,29 +230,6 @@ public class PostServiceImpl implements PostService {
         return postMapper.toPostResponse(postRepository.save(post));
     }
 
-
-    @Override
-    public PageResponse<List<PostResponse>> getNewsFeed(AppPageable pageable) {
-        String userId = SecurityUtils.getCurrentUserId();
-        Userchan currentUser = userService.getUserById(UUID.fromString(userId));
-
-        Set<String> friends = relationshipRepository.findAllFollowingByUserId(userId);
-
-        friends.stream().forEach( friend ->
-
-        );
-
-
-        return paginationHelper.buildPageResponse(
-                currentPage,
-                post -> postMapper.toPostResponse(post, userId),
-                postResponse -> {
-                    postResponse.setInfochan(infochan);
-                    return postResponse;
-                },
-                pageable
-        );
-    }
 
 
     private Post findPost(String id){

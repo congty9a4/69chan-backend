@@ -19,7 +19,8 @@ public class CorsConfigurationn {
     }
 
     public static final String[] WHITE_LISTS = {
-            "http://localhost:3000"
+            "http://localhost:3000",
+            "http://localhost:63342",
     };
 
     @Bean

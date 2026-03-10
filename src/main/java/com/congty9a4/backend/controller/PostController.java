@@ -1,8 +1,8 @@
 package com.congty9a4.backend.controller;
 
-import com.congty9a4.backend.dto.req.CommentRequest;
+import com.congty9a4.backend.dto.req.CursorPageRequest;
 import com.congty9a4.backend.dto.req.post.PostRequest;
-import com.congty9a4.backend.dto.resp.CommentResponse;
+import com.congty9a4.backend.dto.resp.CursorPageResponse;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -42,30 +41,13 @@ public class PostController {
     }
 
 
-    // Replace offset pagination with cursor pagination for feed retrieval later
-    @GetMapping("/feed")
-    public ApiResponse<PageResponse<List<PostResponse>>> getUserFeed(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false, defaultValue = "created_at") String sortBy,
-            @RequestParam(required = false, defaultValue = "desc") String sortDir
-    ) {
-        var results = postService.getNewsFeed(AppPageable.of(page, size, sortBy, sortDir));
-        return ApiResponse.success(results);
+    @GetMapping("/feeds")
+    @Operation(summary = "Get home feed with cursor-based pagination")
+    public ApiResponse<CursorPageResponse<PostResponse>> getHomeFeed(
+            CursorPageRequest request){
+        return ApiResponse.success(fanoutService.getHomeFeed(request));
     }
 
-    @GetMapping("/home-feed")
-    @Operation(
-        summary = "Get home feed (Fanout-on-Read)",
-        description = "Retrieve posts from all users that the current user follows. " +
-                     "Uses pull model (fanout-on-read) where posts are aggregated on-demand. " +
-                     "Posts are sorted by creation date (newest first)."
-    )
-    public ApiResponse<Set<PostResponse>> getHomeFeed() {
-        String userId = SecurityUtils.getCurrentUserId();
-        Set<PostResponse> homeFeed = fanoutService.getHomeFeed(userId);
-        return ApiResponse.success(homeFeed);
-    }
 
     @GetMapping
     @Operation(summary = "Get all posts", description = "Retrieve a paginated list of all posts")

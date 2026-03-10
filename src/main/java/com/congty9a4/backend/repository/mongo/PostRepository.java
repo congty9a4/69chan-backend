@@ -22,6 +22,12 @@ public interface PostRepository extends MongoRepository<Post, String>{
      * Only returns non-deleted posts
      */
     @Query(value = "{'user_id': {$in: ?0}, 'is_deleted': false}", sort = "{'created_at': -1}")
-    List<Post> findPostsByUserIds(Set<String> userIds);
+    List<Post> findPostsByUserIdsFirstPage(Set<String> userIds, Pageable pageable);
+
+    @Query(value = "{'user_id': {$in: ?0}, 'is_deleted': false, 'createdAt': {$lt: ?1}}", sort = "{'created_at': -1}")
+    List<Post> findPostsByUserIdsAfter(Set<String> userIds, String cursor, Pageable pageable);
+
+    @Query(value = "{'user_id': {$in: ?0}, 'is_deleted': false, 'createdAt': {$gt: ?1}}", sort = "{'created_at': 1}")
+    List<Post> findPostsByUserIdsBefore(Set<String> userIds, String cursor, Pageable pageable);
 
 }
