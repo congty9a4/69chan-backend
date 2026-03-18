@@ -26,10 +26,6 @@ public class PostController {
 
     @Autowired
     private PostService postService;
-    @Autowired
-    private RedditCrawlingService redditCrawlingService;
-    @Autowired
-    private FanoutService fanoutService;
 
     @PostMapping(value = "/create", consumes = "multipart/form-data")
     @Operation(summary = "Create post", description = "NOTE: If encounter with 500 error, ensure set Content-Type of 'files' & 'post' to 'multipart/form-data' and 'application/json' respectively \\\n'")
@@ -41,12 +37,6 @@ public class PostController {
     }
 
 
-    @GetMapping("/feeds")
-    @Operation(summary = "Get home feed with cursor-based pagination")
-    public ApiResponse<CursorPageResponse<PostResponse>> getHomeFeed(
-            CursorPageRequest request){
-        return ApiResponse.success(fanoutService.getHomeFeed(request));
-    }
 
 
     @GetMapping

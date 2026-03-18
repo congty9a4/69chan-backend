@@ -1,13 +1,17 @@
 package com.congty9a4.backend.dto.req;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Data
+
+@Setter
+@Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Schema(description = "Use when you need cursor-based pagination")
 public class CursorPageRequest {
@@ -20,10 +24,6 @@ public class CursorPageRequest {
     String cursor;
 
     @Builder.Default
-    @Schema(
-            description = "Number of items to return",
-            example = "10"
-    )
     int limit = 10;
 
 

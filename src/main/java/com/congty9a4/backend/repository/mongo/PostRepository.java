@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
@@ -16,18 +17,9 @@ public interface PostRepository extends MongoRepository<Post, String>{
     @Query("{ $text:  {$search :  ?0}}")
     List<Post> postByKeywords(String query);
 
-    /**
-     * Find all posts from a set of user IDs (for home feed)
-     * Ordered by creation date descending (newest first)
-     * Only returns non-deleted posts
-     */
-    @Query(value = "{'user_id': {$in: ?0}, 'is_deleted': false}", sort = "{'created_at': -1}")
-    List<Post> findPostsByUserIdsFirstPage(Set<String> userIds, Pageable pageable);
+    List<Post> getUserFeedsFirstPage(Set<String> userIds, Pageable pageable);
 
-    @Query(value = "{'user_id': {$in: ?0}, 'is_deleted': false, 'createdAt': {$lt: ?1}}", sort = "{'created_at': -1}")
-    List<Post> findPostsByUserIdsAfter(Set<String> userIds, String cursor, Pageable pageable);
-
-    @Query(value = "{'user_id': {$in: ?0}, 'is_deleted': false, 'createdAt': {$gt: ?1}}", sort = "{'created_at': 1}")
-    List<Post> findPostsByUserIdsBefore(Set<String> userIds, String cursor, Pageable pageable);
+    @Query(value = "{'user_id': {$in: ?0}, 'is_deleted': false, 'createdAt.dateTime': {$lt: ?1}}", sort = "{'created_at': -1}")
+    List<Post> getUserFeedsAfterCursor(Set<String> userIds, Instant cursor, Pageable pageable);
 
 }
