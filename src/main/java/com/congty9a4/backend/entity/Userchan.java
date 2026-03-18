@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.OffsetDateTime;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Table(name = "userchans", indexes = {
@@ -64,5 +66,8 @@ public class Userchan {
     @UpdateTimestamp
     @Column(name = "updated_at")
     OffsetDateTime updatedAt;
+
+    @Builder.Default
+    private boolean isVerified = false;
 
 }
