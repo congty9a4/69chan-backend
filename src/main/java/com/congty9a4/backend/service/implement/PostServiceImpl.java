@@ -10,7 +10,6 @@ import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.entity.Comment;
 import com.congty9a4.backend.entity.Infochan;
 import com.congty9a4.backend.entity.enums.NotificationType;
-import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.entity.enums.PostPrivacy;
 import com.congty9a4.backend.entity.post.MediaInfo;
 import com.congty9a4.backend.entity.post.Post;
@@ -19,7 +18,6 @@ import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.CommentMapper;
 import com.congty9a4.backend.mapper.PostMapper;
 import com.congty9a4.backend.mapper.UserMapper;
-import com.congty9a4.backend.repository.jpa.RelationshipRepository;
 import com.congty9a4.backend.repository.jpa.UserRepository;
 import com.congty9a4.backend.repository.mongo.CommentRepository;
 import com.congty9a4.backend.repository.mongo.PostRepository;
@@ -33,7 +31,6 @@ import com.congty9a4.backend.util.SecurityUtils;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,33 +46,26 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PostServiceImpl implements PostService {
 
-    @Autowired
-    private NotificationService notificationService;
+    NotificationService notificationService;
 
-    @Autowired
     PostMapper postMapper;
-
 
     CommentMapper commentMapper;
 
-
     PaginationHelper paginationHelper;
 
-    private PostRepository postRepository;
+    PostRepository postRepository;
 
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
-    private UserMapper userMapper;
+    UserMapper userMapper;
 
-    private com.congty9a4.backend.service.storage.CloudStorageService cloudStorageService;
+    com.congty9a4.backend.service.storage.CloudStorageService cloudStorageService;
 
-    private UserService userService;
+    UserService userService;
 
-    private CommentRepository commentRepository;
+    CommentRepository commentRepository;
 
-    private RelationshipRepository relationshipRepository;
-
-    FanoutService fanoutService;
 
     @Override
     @Transactional
@@ -252,11 +242,6 @@ public class PostServiceImpl implements PostService {
         Post post = findPost(id);
         postMapper.update(post, req);
         return postMapper.toPostResponse(postRepository.save(post));
-    }
-
-    @Override
-    public PageResponse<List<PostResponse>> getFeed(AppPageable pageable) {
-        return null;
     }
 
     private Post findPost(String id) {
