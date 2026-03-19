@@ -43,5 +43,4 @@ gcs_credentials.json
 *.markdown
 *.json
 .claude/
-docs/
 .github/prompts/

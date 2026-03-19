@@ -17,6 +17,8 @@ public interface PostRepository extends MongoRepository<Post, String>{
     @Query("{ $text:  {$search :  ?0}}")
     List<Post> postByKeywords(String query);
 
+
+    @Query(value = "{'user_id': {$in: ?0}, 'is_deleted': false}", sort = "{'created_at': -1}")
     List<Post> getUserFeedsFirstPage(Set<String> userIds, Pageable pageable);
 
     @Query(value = "{'user_id': {$in: ?0}, 'is_deleted': false, 'createdAt.dateTime': {$lt: ?1}}", sort = "{'created_at': -1}")
