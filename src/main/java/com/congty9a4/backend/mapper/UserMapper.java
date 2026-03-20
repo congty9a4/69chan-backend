@@ -15,6 +15,12 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface UserMapper {
     UserResponse toUserResponse(Userchan user);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "active", ignore = true)
+    @Mapping(target = "profile", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     void update(@MappingTarget Userchan userchan, UserUpdationRequest updatedUserchan);
 
     @Mapping(source = "profile.keyName", target = "keyName")

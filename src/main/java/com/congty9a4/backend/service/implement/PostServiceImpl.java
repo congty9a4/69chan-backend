@@ -28,8 +28,9 @@ import com.congty9a4.backend.util.AppPageable;
 import com.congty9a4.backend.util.PaginationHelper;
 
 import com.congty9a4.backend.util.SecurityUtils;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,44 +42,49 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class PostServiceImpl implements PostService {
 
-    @Autowired
-    private NotificationService notificationService;
+    NotificationService notificationService;
 
-    @Autowired
     PostMapper postMapper;
 
-    @Autowired
     CommentMapper commentMapper;
 
-    @Autowired
     PaginationHelper paginationHelper;
-    @Autowired
-    private PostRepository postRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private com.congty9a4.backend.service.storage.CloudStorageService cloudStorageService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private CommentRepository commentRepository;
+
+    PostRepository postRepository;
+
+    UserRepository userRepository;
+
+    UserMapper userMapper;
+
+    com.congty9a4.backend.service.storage.CloudStorageService cloudStorageService;
+
+    UserService userService;
+
+    CommentRepository commentRepository;
+
 
     @Override
     @Transactional
     public PostResponse createPost(PostRequest req, List<MultipartFile> files) {
+
         Post postEntity = postMapper.toPost(req);
         postEntity.setVisibility(req.isPublic() ? PostPrivacy.PUBLIC : PostPrivacy.FRIENDS);
         postEntity.setLikes(new HashSet<>());
         // fake user
+
         if (!userRepository.existsById(UUID.fromString(SecurityUtils.getCurrentUserId())))
             throw new AppException(ErrorCode.USER_NOT_FOUND, "Can't create post due to user not found");
+
         postEntity.setUserId(SecurityUtils.getCurrentUserId());
         postEntity.setMediaFiles(uploadMediaFiles(files));
+
+        postEntity.setMediaFiles(uploadMediaFiles(files));
         var savedPost = postRepository.save(postEntity);
+
         return postMapper.toPostResponse(savedPost, userService::userInfo);
     }
 
@@ -236,11 +242,6 @@ public class PostServiceImpl implements PostService {
         Post post = findPost(id);
         postMapper.update(post, req);
         return postMapper.toPostResponse(postRepository.save(post));
-    }
-
-    @Override
-    public PageResponse<List<PostResponse>> getFeed(AppPageable pageable) {
-        return null;
     }
 
     private Post findPost(String id) {
