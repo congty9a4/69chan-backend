@@ -4,10 +4,8 @@ import com.congty9a4.backend.dto.req.auth.LoginRequest;
 import com.congty9a4.backend.dto.req.auth.RefreshTokenRequest;
 import com.congty9a4.backend.dto.req.user.UserCreationRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
-import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
 import com.congty9a4.backend.service.AuthService;
-import com.congty9a4.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -22,9 +20,6 @@ public class AuthController {
 
     private AuthService authService;
 
-    private UserService userService;
-
-
     @PostMapping("/login")
     @Operation(summary = "User login", description = "Authenticate user with credentials and return JWT token")
     public ApiResponse<AuthResponse> login(@Valid @RequestBody LoginRequest req) {
@@ -35,9 +30,9 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Create user", description = "Create a new user account")
-    public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest userReq) {
+    public ApiResponse<AuthResponse> createUser(@RequestBody @Valid UserCreationRequest userReq) {
         return ApiResponse.success(
-                userService.createUser(userReq)
+                authService.register(userReq)
         );
     }
 
