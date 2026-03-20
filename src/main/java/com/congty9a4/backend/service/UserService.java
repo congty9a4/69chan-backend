@@ -38,7 +38,7 @@ public interface UserService {
      * @param user the {@link UserCreationRequest} containing user details
      * @return the newly created {@link Userchan} entity
      */
-    UserResponse createUser(UserCreationRequest user);
+    Userchan createUser(UserCreationRequest user);
 
     /**
      * Updates an existing user's information.

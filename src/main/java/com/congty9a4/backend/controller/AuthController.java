@@ -22,9 +22,6 @@ public class AuthController {
 
     private AuthService authService;
 
-    private UserService userService;
-
-
     @PostMapping("/login")
     @Operation(summary = "User login", description = "Authenticate user with credentials and return JWT token")
     public ApiResponse<AuthResponse> login(@Valid @RequestBody LoginRequest req) {
@@ -35,9 +32,9 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Create user", description = "Create a new user account")
-    public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest userReq) {
+    public ApiResponse<AuthResponse> createUser(@RequestBody @Valid UserCreationRequest userReq) {
         return ApiResponse.success(
-                userService.createUser(userReq)
+                authService.register(userReq)
         );
     }
 

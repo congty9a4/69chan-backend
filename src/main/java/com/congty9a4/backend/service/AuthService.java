@@ -4,7 +4,9 @@ import com.congty9a4.backend.config.security.JwtService;
 import com.congty9a4.backend.constant.USER;
 import com.congty9a4.backend.dto.req.auth.LoginRequest;
 import com.congty9a4.backend.dto.req.auth.RefreshTokenRequest;
+import com.congty9a4.backend.dto.req.user.UserCreationRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
+import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
@@ -18,6 +20,7 @@ import java.util.Map;
 import com.congty9a4.backend.service.redis.RedisService;
 import com.congty9a4.backend.util.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
@@ -156,4 +159,18 @@ public class AuthService {
         redisService.blacklistToken(jid, ttl);
     }
 
+    public AuthResponse register(UserCreationRequest userReq) {
+
+        Userchan newUser = userService.createUser(userReq);
+
+        String accessToken = jwtService.createToken(newUser.getId().toString(), true);
+        String refreshToken = jwtService.createToken(newUser.getId().toString(), false);
+
+        return AuthResponse.builder()
+                .token(accessToken)
+                .refreshToken(refreshToken)
+                .user(newUser.toInfochan())
+                .build();
+
+    }
 }

@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.net.URL;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -64,5 +65,19 @@ public class Userchan {
     @UpdateTimestamp
     @Column(name = "updated_at")
     OffsetDateTime updatedAt;
+
+    public Infochan toInfochan() {
+        Infochan newInfo = Infochan.builder()
+                .username(this.username)
+                .userId(this.id.toString())
+                .build();
+
+        if (profile != null) {
+            newInfo.setKeyName(profile.getKeyName());
+            newInfo.setProfilePicture(profile.getAvatarUrl());
+        }
+
+        return newInfo;
+    }
 
 }
