@@ -41,8 +41,12 @@ public class AuthController {
     @PostMapping("/register")
     @Operation(summary = "Create user", description = "Create a new user account")
     public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest userReq) {
-        return ApiResponse.success(
-                userService.createUser(userReq));
+        // return ApiResponse.success(
+        // userService.createUser(userReq));
+        // authService.register(userReq);
+
+        UserResponse newUser = userService.createUser(userReq);
+        return ApiResponse.success(newUser);
     }
 
     @GetMapping("/guest")

@@ -1,14 +1,16 @@
 package com.congty9a4.backend.controller;
 
-import com.congty9a4.backend.dto.req.CommentRequest;
+import com.congty9a4.backend.dto.req.CursorPageRequest;
 import com.congty9a4.backend.dto.req.post.PostRequest;
-import com.congty9a4.backend.dto.resp.CommentResponse;
+import com.congty9a4.backend.dto.resp.CursorPageResponse;
 import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
+import com.congty9a4.backend.service.FanoutService;
 import com.congty9a4.backend.service.PostService;
 import com.congty9a4.backend.service.crawling.RedditCrawlingService;
 import com.congty9a4.backend.util.AppPageable;
+import com.congty9a4.backend.util.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +26,6 @@ public class PostController {
 
     @Autowired
     private PostService postService;
-    @Autowired
-    private RedditCrawlingService redditCrawlingService;
 
     @PostMapping(value = "/create", consumes = "multipart/form-data")
     @Operation(summary = "Create post", description = "NOTE: If encounter with 500 error, ensure set Content-Type of 'files' & 'post' to 'multipart/form-data' and 'application/json' respectively \\\n'")
@@ -37,17 +37,7 @@ public class PostController {
     }
 
 
-    // Replace offset pagination with cursor pagination for feed retrieval later
-    @GetMapping("/feed")
-    public ApiResponse<PageResponse<List<PostResponse>>> getUserFeed(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false, defaultValue = "created_at") String sortBy,
-            @RequestParam(required = false, defaultValue = "desc") String sortDir
-    ) {
-        var results = postService.getFeed(AppPageable.of(page, size, sortBy, sortDir));
-        return ApiResponse.success(results);
-    }
+
 
     @GetMapping
     @Operation(summary = "Get all posts", description = "Retrieve a paginated list of all posts")
