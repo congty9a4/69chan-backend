@@ -41,12 +41,7 @@ public class AuthController {
     @PostMapping("/register")
     @Operation(summary = "Create user", description = "Create a new user account")
     public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest userReq) {
-        // return ApiResponse.success(
-        // userService.createUser(userReq));
-        // authService.register(userReq);
-
-        UserResponse newUser = userService.createUser(userReq);
-        return ApiResponse.success(newUser);
+        return ApiResponse.success(userService.createUser(userReq));
     }
 
     @GetMapping("/guest")
@@ -77,15 +72,14 @@ public class AuthController {
 
     @PostMapping("/verify-email")
     @Operation(summary = "Verify Email", description = "Confirm Account OTP Code!")
-    public ApiResponse<String> verifyEmail(@RequestParam String email, @RequestParam String otp) {
-        userService.verifyEmailOtp(email, otp);
-        return ApiResponse.success("Account verification successful! You can now log in.");
+    public ApiResponse<AuthResponse> verifyEmail(@RequestParam String email, @RequestParam String otp) {
+        return ApiResponse.success(authService.verifyAndLogin(email, otp));
     }
 
     @PostMapping("/resend-otp")
     @Operation(summary = "Resend OTP", description = "Resend code OTP verification email")
-    public ApiResponse<String> resendOtp(@RequestParam String email) {
+    public ApiResponse<Void> resendOtp(@RequestParam String email) {
         userService.resendVerificationOtp(email);
-        return ApiResponse.success("A new OTP code has been sent to your email! Please check your inbox.");
+        return ApiResponse.success(null);
     }
 }

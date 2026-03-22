@@ -49,6 +49,10 @@ public class Userchan {
     @Column(name = "is_active", columnDefinition = "boolean default true")
     boolean isActive = true;
 
+    @Builder.Default
+    @Column(name = "is_verified", columnDefinition = "boolean default false", nullable = false)
+    boolean isVerified = false;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Profile profile;
 
@@ -80,8 +84,4 @@ public class Userchan {
 
         return newInfo;
     }
-
-    @Builder.Default
-    private boolean isVerified = false;
-
 }

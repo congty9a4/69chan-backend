@@ -6,6 +6,7 @@ import com.congty9a4.backend.dto.req.auth.LoginRequest;
 import com.congty9a4.backend.dto.req.auth.RefreshTokenRequest;
 import com.congty9a4.backend.dto.req.user.UserCreationRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
+import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
@@ -164,20 +165,19 @@ public class AuthService {
         redisService.blacklistToken(jid, ttl);
     }
 
-    // public AuthResponse register(UserCreationRequest userReq) {
+    public AuthResponse verifyAndLogin(String email, String otp) {
+        userService.verifyEmailOtp(email, otp);
 
-    // Userchan newUser = userService.createUser(userReq);
+        Userchan verifiedUser = userService.getUserByEmail(email);
 
-    // String accessToken = jwtService.createToken(newUser.getId().toString(),
-    // true);
-    // String refreshToken = jwtService.createToken(newUser.getId().toString(),
-    // false);
+        String accessToken = jwtService.createToken(verifiedUser.getId().toString(), true);
+        String refreshToken = jwtService.createToken(verifiedUser.getId().toString(), false);
 
-    // return AuthResponse.builder()
-    // .token(accessToken)
-    // .refreshToken(refreshToken)
-    // .user(newUser.toInfochan())
-    // .build();
+        return AuthResponse.builder()
+                .token(accessToken)
+                .refreshToken(refreshToken)
+                .user(userMapper.toInfochan(verifiedUser))
+                .build();
 
-    // }
+    }
 }
