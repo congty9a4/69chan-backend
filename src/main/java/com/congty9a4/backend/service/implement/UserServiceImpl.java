@@ -11,8 +11,6 @@ import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.jpa.UserRepository;
-import com.congty9a4.backend.service.EmailService;
-import com.congty9a4.backend.service.OtpService;
 import com.congty9a4.backend.service.RelationService;
 import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.util.AppPageable;
@@ -34,9 +32,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final EmailService emailService;
-    private final OtpService otpService;
-
     UserRepository userRepository;
 
     PasswordEncoder passwordEncoder;
@@ -54,37 +49,33 @@ public class UserServiceImpl implements UserService {
         return paginationHelper.buildPageResponse(
                 currentPage,
                 userMapper::toUserResponse,
-                pageable);
+                pageable
+        );
     }
 
     @TrackExecutionTime
     @Override
     public Userchan getUserById(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, "User not found with id: " + id));
+        return userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, "User not found with id: " + id));
     }
 
     @Override
     @Transactional
     public UserResponse createUser(UserCreationRequest userReq) {
         if (userRepository.existsByEmail(userReq.getEmail()))
-            throw new AppException(ErrorCode.USER_ALREADY_EXISTS,
-                    "User already exists with email: " + userReq.getEmail());
+            throw new AppException(ErrorCode.USER_ALREADY_EXISTS, "User already exists with email: " + userReq.getEmail());
 
         Userchan user = Userchan.builder()
                 .username(userReq.getUsername())
                 .password(userReq.getPassword())
-                .email(userReq.getEmail())
-                .isVerified(false)
-                .build();
+                .email(userReq.getEmail()).
+                build();
 
         String rawPassword = user.getPassword();
         String hashedPassword = passwordEncoder.encode(rawPassword);
         user.setPassword(hashedPassword);
-        Userchan savedUser = userRepository.save(user);
-        String otp = otpService.generateAndSaveOtp(savedUser.getEmail());
-        emailService.sendOtpEmail(savedUser.getEmail(), otp);
-        return userMapper.toUserResponse(savedUser);
+
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     @Override
@@ -109,14 +100,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Userchan getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, "User not found with email: " + email));
+        return userRepository.findByEmail(email).orElseThrow(()
+                -> new AppException(ErrorCode.USER_NOT_FOUND, "User not found with email: " + email));
     }
 
     @Override
     public Infochan userInfo(String userId) {
         Userchan user = userRepository.findById(UUID.fromString(userId)).orElseThrow(
-                () -> new AppException(ErrorCode.POST_NOT_FOUND, "User of this post not found with id: " + userId));
+                () -> new AppException(ErrorCode.POST_NOT_FOUND, "User of this post not found with id: " + userId)
+        );
         return userMapper.toInfochan(user);
     }
 
@@ -133,32 +125,5 @@ public class UserServiceImpl implements UserService {
         getUserById(UUID.fromString(targetUserId)); // check if user exists
         relationService.unfollow(SecurityUtils.getCurrentUserId(), targetUserId);
     }
-
-    @Override
-    @Transactional
-    public void verifyEmailOtp(String email, String otp) {
-
-        boolean isValid = otpService.validateOtp(email, otp);
-        if (!isValid) {
-            throw new AppException(ErrorCode.INVALID_CREDENTIALS, "OTP invalid or expired!");
-        }
-
-        Userchan user = getUserByEmail(email);
-        user.setVerified(true);
-        userRepository.save(user);
-    }
-
-    @Override
-    public void resendVerificationOtp(String email) {
-
-        Userchan user = getUserByEmail(email);
-
-        if (user.isVerified()) {
-            throw new AppException(ErrorCode.INVALID_CREDENTIALS, "This account has already been verified!");
-        }
-
-        String newOtp = otpService.generateAndSaveOtp(email);
-        emailService.sendOtpEmail(email, newOtp);
-    }
-
 }
+

@@ -42,11 +42,6 @@ public class RelationServiceImpl implements RelationService {
         return relRepo.checkIfAlreadyFollowed(userId, targetUserId);
     }
 
-    @Override
-    public java.util.Set<String> retrieveFollowees(String userId) {
-        return relRepo.findAllFollowingByUserId(userId);
-    }
-
     private Relationship userToUser(String userId, String targetUserId, Relation relation) {
         return Relationship.builder()
                 .objectName(RelationEntity.user.name())
