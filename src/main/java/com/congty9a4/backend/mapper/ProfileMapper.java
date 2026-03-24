@@ -29,9 +29,6 @@ public interface ProfileMapper {
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "keyName", ignore = true)
-    @Mapping(target = "avatarUrl", ignore = true)
-    @Mapping(target = "coverPhotoUrl", ignore = true)
-    @Mapping(target = "location", ignore = true)
     void update(@MappingTarget Profile profile, ProfileUpdateRequest request);
 }
+
