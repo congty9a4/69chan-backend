@@ -4,7 +4,9 @@ import com.congty9a4.backend.config.security.JwtService;
 import com.congty9a4.backend.constant.USER;
 import com.congty9a4.backend.dto.req.auth.LoginRequest;
 import com.congty9a4.backend.dto.req.auth.RefreshTokenRequest;
+import com.congty9a4.backend.dto.req.user.UserCreationRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
+import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
@@ -48,7 +50,7 @@ public class AuthService {
     @Value("${google.client-id}")
     String googleClientId;
 
-    public AuthResponse loginWithGoogle(Map<String, String> req){
+    public AuthResponse loginWithGoogle(Map<String, String> req) {
         String token = req.get("token");
 
         System.out.println(token);
@@ -59,7 +61,8 @@ public class AuthService {
 
         try {
 
-            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
+                    new GsonFactory())
                     .setAudience(Collections.singletonList(googleClientId)).build();
 
             GoogleIdToken idToken = verifier.verify(token);
@@ -75,6 +78,7 @@ public class AuthService {
                         .username(baseUsername)
                         .password(encodedPassword)
                         .isActive(true)
+                        .isVerified(true)
                         .build());
             });
 
@@ -96,6 +100,11 @@ public class AuthService {
         String requestedPassword = req.getPassword();
 
         Userchan user = userService.getUserByEmail(email);
+
+        if (!user.isVerified()) {
+            throw new AppException(ErrorCode.INVALID_CREDENTIALS,
+                    "The account has not been email-verified! Please verify it before logging in.");
+        }
 
         if (!passwordEncoder.matches(requestedPassword, user.getPassword()))
             throw new AppException(ErrorCode.INVALID_CREDENTIALS, "Wrong password");
@@ -137,7 +146,7 @@ public class AuthService {
         if (header == null || !header.startsWith("Bearer "))
             throw new AppException(ErrorCode.INVALID_TOKEN, "Token not found!");
 
-        String accessToken =  header.substring(7);
+        String accessToken = header.substring(7);
 
         invalidateToken(accessToken);
 
@@ -146,7 +155,7 @@ public class AuthService {
     private void invalidateToken(String token) {
         long ttl = jwtService.extractTokenExpiration(token).getTime() - System.currentTimeMillis();
 
-        if (ttl <= 0){
+        if (ttl <= 0) {
             log.info("Token already expired, no need to blacklist");
             return;
         }
@@ -156,4 +165,19 @@ public class AuthService {
         redisService.blacklistToken(jid, ttl);
     }
 
+    public AuthResponse verifyAndLogin(String email, String otp) {
+        userService.verifyEmailOtp(email, otp);
+
+        Userchan verifiedUser = userService.getUserByEmail(email);
+
+        String accessToken = jwtService.createToken(verifiedUser.getId().toString(), true);
+        String refreshToken = jwtService.createToken(verifiedUser.getId().toString(), false);
+
+        return AuthResponse.builder()
+                .token(accessToken)
+                .refreshToken(refreshToken)
+                .user(userMapper.toInfochan(verifiedUser))
+                .build();
+
+    }
 }

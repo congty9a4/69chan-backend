@@ -33,8 +33,24 @@ services:
         interval: 30s
         timeout: 10s
         retries: 3
+
+  mongo:
+    image: mongo:6.0
+    container_name: 69chan-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    command: mongod --noauth
   # Spring Boot Backend Application
 
 volumes:
   redis-data:
   postgres-data:
+  mongo-data:
