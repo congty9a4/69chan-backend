@@ -8,7 +8,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.OffsetDateTime;
@@ -20,7 +19,6 @@ import java.util.UUID;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@DynamicUpdate
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Table(name = "userchans", indexes = {
@@ -49,10 +47,6 @@ public class Userchan {
     @Column(name = "is_active", columnDefinition = "boolean default true")
     boolean isActive = true;
 
-    @Builder.Default
-    @Column(name = "is_verified", columnDefinition = "boolean default false", nullable = false)
-    boolean isVerified = false;
-
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Profile profile;
 
@@ -71,17 +65,4 @@ public class Userchan {
     @Column(name = "updated_at")
     OffsetDateTime updatedAt;
 
-    public Infochan toInfochan() {
-        Infochan newInfo = Infochan.builder()
-                .username(this.username)
-                .userId(this.id.toString())
-                .build();
-
-        if (profile != null) {
-            newInfo.setKeyName(profile.getKeyName());
-            newInfo.setProfilePicture(profile.getAvatarUrl());
-        }
-
-        return newInfo;
-    }
 }

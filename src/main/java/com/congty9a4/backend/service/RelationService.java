@@ -1,7 +1,6 @@
 package com.congty9a4.backend.service;
 
 
-import java.util.Set;
 
 public interface RelationService {
 
@@ -10,6 +9,4 @@ public interface RelationService {
     void unfollow(String currentUserId, String targetUserId);
 
     boolean isFollowing(String userId, String targetUserId);
-
-    Set<String> retrieveFollowees(String userId);
 }

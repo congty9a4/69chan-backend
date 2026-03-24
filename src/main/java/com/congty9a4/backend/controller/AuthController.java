@@ -6,12 +6,7 @@ import com.congty9a4.backend.dto.req.user.UserCreationRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
 import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
-import com.congty9a4.backend.entity.Userchan;
-import com.congty9a4.backend.exception.error.AppException;
-import com.congty9a4.backend.exception.error.ErrorCode;
-import com.congty9a4.backend.repository.jpa.UserRepository;
 import com.congty9a4.backend.service.AuthService;
-import com.congty9a4.backend.service.OtpService;
 import com.congty9a4.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,12 +19,11 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @Tag(name = "Authentication", description = "Authentication and authorization APIs")
 public class AuthController {
-    private final OtpService otpService;
-    private final UserRepository userRepository;
 
     private AuthService authService;
 
     private UserService userService;
+
 
     @PostMapping("/login")
     @Operation(summary = "User login", description = "Authenticate user with credentials and return JWT token")
@@ -38,10 +32,13 @@ public class AuthController {
         return ApiResponse.success(result);
     }
 
+
     @PostMapping("/register")
     @Operation(summary = "Create user", description = "Create a new user account")
     public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest userReq) {
-        return ApiResponse.success(userService.createUser(userReq));
+        return ApiResponse.success(
+                userService.createUser(userReq)
+        );
     }
 
     @GetMapping("/guest")
@@ -59,7 +56,7 @@ public class AuthController {
 
     @PostMapping("/login/google")
     @Operation(summary = "Google Login", description = "Login or Register using Google ID Token")
-    public ApiResponse<AuthResponse> loginGoogle(@RequestBody java.util.Map<String, String> req) {
+    public ApiResponse<AuthResponse> loginGoogle(@RequestBody java.util.Map<String, String> req){
         return ApiResponse.success(authService.loginWithGoogle(req));
     }
 
@@ -67,19 +64,6 @@ public class AuthController {
     @Operation(summary = "User logout", description = "Invalidate the current user's token")
     public ApiResponse<Void> logout(@RequestBody RefreshTokenRequest req) {
         authService.logout(req);
-        return ApiResponse.success(null);
-    }
-
-    @PostMapping("/verify-email")
-    @Operation(summary = "Verify Email", description = "Confirm Account OTP Code!")
-    public ApiResponse<AuthResponse> verifyEmail(@RequestParam String email, @RequestParam String otp) {
-        return ApiResponse.success(authService.verifyAndLogin(email, otp));
-    }
-
-    @PostMapping("/resend-otp")
-    @Operation(summary = "Resend OTP", description = "Resend code OTP verification email")
-    public ApiResponse<Void> resendOtp(@RequestParam String email) {
-        userService.resendVerificationOtp(email);
         return ApiResponse.success(null);
     }
 }
