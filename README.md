@@ -1,6 +1,26 @@
-# 69chan Backend
+<div align="center">
+<a href="https://github.com/Sumonta056/FixHub-Issue-Tracker-Website" target="blank">
 
-A social media platform backend built with Spring Boot 3.4.1, featuring user management, posts, comments, friendships, and full-text search capabilities.
+<img width="128" height="128" alt="image" src="https://github.com/user-attachments/assets/43d75824-c958-43a3-a500-10daefbb517a" />
+
+</a>
+
+<h1> 69chan </h1>
+
+**“Where Otaku hearts connect — 絆 (Kizuna) through anime.”**
+
+***69chan*** is a social media app for Otakus.  
+You can post what you love, chat with other fans, and find people who like the same anime and manga.  
+
+Our goal is simple: make a fun and friendly place where Otakus can connect and enjoy anime culture together. With helping hands from
+
+![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
+
+
+</div>
 
 ## 📋 Table of Contents
 - [Tech Stack](#-tech-stack)
