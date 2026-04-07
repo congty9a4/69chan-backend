@@ -30,46 +30,102 @@ Our goal is simple: make a fun and friendly place where Otakus can connect and e
   <img width="819" height="542" alt="image" src="https://github.com/user-attachments/assets/bbe562b7-a1d4-46c4-a7f0-aa5146f61324" />
   
 - **🔍 Advanced Searching:** Power searching utizling Full Text Search of Postgres and MongoDB to quickly find out posts and user accounts.
-- **📝 Communication:** Real-time chat pipeline built with ***Websocket + STOMP*** with helping of message queue from ***Redis*** gives Otakus who finds their same interests to connect each other.  .
+- **📝 Communication:** Real-time chat pipeline built with ***Websocket + STOMP*** with helping of message queue from ***Redis*** gives users who finds their same interests to connect each other.  .
 - **📱 Multiplatform:** Access ***69chan*** on any device from *web or mobile* with a responsive design that adapts to various screen sizes.
 
-## 📋 Table of Contents
-- [Tech Stack](#-tech-stack)
-- [Project Architecture](#-project-architecture)
-- [Database Design](#-database-design)
-- [API Overview](#-api-overview)
-- [Features](#-features)
-- [Getting Started](#-getting-started)
-- [Deployment](#-deployment)
-- [Future Roadmap](#-future-roadmap)
+
 
 ## 🛠 Tech Stack
+``` mermaid
+flowchart TD
+    %% Nodes Definition
+    Client(["<b>Client / Frontend</b><br/>Web / mobile app"])
+    SB(["<b>Spring Boot Backend</b><br/>Java 21 · Spring Boot 3.4.1"])
 
-**Core:**
-- Java 21
-- Spring Boot 3.4.1
-- Maven
+    %% Hierarchy
+    Client --> SB
 
-**Frameworks & Libraries:**
-- Spring Security (JWT authentication)
-- Spring Data JPA (PostgreSQL)
-- Spring Data MongoDB
-- Spring Cloud GCP (Google Cloud Storage)
-- MapStruct (object mapping)
-- Lombok
-- Springdoc OpenAPI (Swagger UI)
+    subgraph BC [<b>Backend core</b>]
+        direction TB
+        SW[Spring Web - REST]
+        SS[Spring Security]
+        SV[Spring Validation]
+        SA[Spring AOP]
+        SM[Spring Mail]
+        L[Lombok]
+    end
 
-**Databases:**
-- PostgreSQL (relational data, FTS)
-- MongoDB (posts & comments)
+    subgraph DL [<b>Data layer</b>]
+        direction TB
+        SDJ[Spring Data JPA]
+        PG[(PostgreSQL 15<br/>relational db)]
+        MG[(MongoDB<br/>document store)]
+        RD[(Redis 7<br/>cache / session)]
+        SDJ --- PG
+        SDJ --- MG
+        SDJ --- RD
+    end
 
-**Storage:**
-- Google Cloud Storage (GCS)
-- Cloudinary (alternative)
+    subgraph AC [<b>Auth & config</b>]
+        direction TB
+        JWT[JWT Auth<br/>JWT_SECRET via env]
+        PC[Profile Config<br/>dev / local / common]
+        ENV[.env import<br/>application.yaml]
+    end
 
-**DevOps:**
-- Docker & Docker Compose
-- Maven Wrapper
+    subgraph FS [<b>File storage</b>]
+        direction LR
+        GCS[Google Cloud Storage<br/>spring-cloud-gcp]
+        CLD[Cloudinary<br/>optional · via env]
+    end
+
+    subgraph BD [<b>Build & deployment</b>]
+        direction TB
+        subgraph Process [Build Pipeline]
+            direction LR
+            MW[Maven Wrapper<br/>Package JAR] --> DM[Docker multi-stage<br/>maven:3.9.6 + temurin:21-jre] --> CI[Container image<br/>Expose :8080]
+        end
+        subgraph Deploy [Delivery]
+            direction LR
+            GHA[GitHub Actions<br/>CI/CD pipeline] --> RC[Render.com<br/>Web service host] --> DS[Discord<br/>Webhook notifications]
+        end
+    end
+
+    %% Global Connections
+    SB --> BC
+    SB --> DL
+    SB --> AC
+    AC --> CLD
+    BC -.-> MW
+
+    %% Styling - Light Theme Palette
+    classDef default fill:#ffffff,stroke:#333,stroke-width:1px;
+    classDef client fill:#E8EAF6,stroke:#3F51B5,color:#1A237E,stroke-width:2px;
+    classDef main fill:#F3E5F5,stroke:#7B1FA2,color:#4A148C,stroke-width:2px;
+    classDef core fill:#E0F2F1,stroke:#00897B,color:#004D40;
+    classDef data fill:#E1F5FE,stroke:#0288D1,color:#01579B;
+    classDef auth fill:#F3E5F5,stroke:#8E24AA,color:#4A148C;
+    classDef storage fill:#FFF3E0,stroke:#FB8C00,color:#E65100;
+    classDef build fill:#FBE9E7,stroke:#D84315,color:#3E2723;
+    classDef notify fill:#F5F5F5,stroke:#9E9E9E,color:#212121;
+
+    %% Apply Classes
+    class Client client;
+    class SB main;
+    class SW,SS,SV,SA,SM,L core;
+    class SDJ,PG,MG,RD data;
+    class JWT,PC,ENV auth;
+    class GCS,CLD storage;
+    class MW,DM,CI,GHA,RC build;
+    class DS notify;
+
+    %% Subgraph Styling
+    style BC fill:#F1F8F7,stroke:#00897B,stroke-dasharray: 5 5
+    style DL fill:#F0F4F8,stroke:#0288D1,stroke-dasharray: 5 5
+    style AC fill:#F8F0F8,stroke:#8E24AA,stroke-dasharray: 5 5
+    style FS fill:#FFF8F0,stroke:#FB8C00,stroke-dasharray: 5 5
+    style BD fill:#FFF5F2,stroke:#D84315,stroke-dasharray: 5 5
+```
 
 ## 🏗 Project Architecture
 
@@ -124,68 +180,6 @@ com.congty9a4.backend/
 **Indexes:**
 - Text indexes on post captions for search
 - User ID indexes for efficient queries
-
-## 🌐 API Overview
-
-**Base URL:** `http://localhost:8080/api`
-
-### Authentication (`/auth`)
-- `POST /login` - User login (returns JWT)
-- `GET /guest` - Guest access
-- `GET /refresh-token` - Refresh JWT token
-
-### Users (`/users`)
-- `GET /users` - List all users (paginated)
-- `GET /users/{id}` - Get user by ID
-- `POST /users/create` - Register new user
-- `PUT /users/{id}` - Update user
-- `DELETE /users/{id}` - Delete user
-
-### Profiles (`/profiles`)
-- `GET /profiles` - List all profiles
-- `GET /users/{userId}/profile` - Get user profile
-- `POST /profiles` - Create profile with avatar upload
-- `PATCH /profiles/{id}` - Update profile
-- `GET /profiles/check-keyname` - Check profile key availability
-
-### Posts (`/posts`)
-- `POST /posts/create` - Create post (multipart: media files + JSON)
-- `GET /posts/feed` - Get post feed (paginated)
-- `GET /posts` - List posts
-- `GET /posts/{id}` - Get single post
-- `PATCH /posts/{id}/like` - Like/unlike post
-- `GET /posts/{postId}/comments` - Get comments
-- `POST /posts/{postId}/comments` - Add comment
-- `POST /posts/{postId}/comments/{commentId}` - Reply to comment
-
-### Search (`/search`)
-- `GET /search?query={q}&filter=users|posts` - Full-text search
-  - PostgreSQL FTS for users (with ranking)
-  - MongoDB text search for posts
-  - Pagination & sorting support
-
-**Interactive API Docs:** Swagger UI at `http://localhost:8080/swagger-ui.html`
-
-## ✨ Features
-
-### Implemented
-✅ **User Management** - Registration, authentication, profile management  
-✅ **JWT Authentication** - Stateless auth with access & refresh tokens (30-day expiry)  
-✅ **Profile System** - Bio, avatar, phone, birthday, location  
-✅ **Post & Comment System** - Create posts with media, nested comments  
-✅ **Like System** - Like/unlike posts with count tracking  
-✅ **Friendship System** - Friend requests (PENDING/ACCEPTED/BLOCKED states)  
-✅ **Full-Text Search** - PostgreSQL FTS for users, MongoDB text search for posts  
-✅ **File Upload** - Multi-file uploads via GCS or Cloudinary  
-✅ **Pagination** - Offset-based pagination across all list endpoints  
-✅ **CORS** - Configured for frontend (localhost:3000)  
-✅ **Logging** - Request logging & execution time tracking (AOP)  
-✅ **API Documentation** - Auto-generated Swagger/OpenAPI docs  
-✅ **Reddit Crawling** - Service for importing Reddit content  
-
-### Partially Implemented
-⚠️ **Database Migrations** - Flyway setup exists but limited migrations  
-⚠️ **Email Service** - Spring Mail configured but not integrated  
 
 ## 🚀 Getting Started
 
@@ -269,14 +263,6 @@ docker-compose up -d
 2. Lightweight JRE runtime (Alpine)
 3. Exposes port 8080
 
-**Production Checklist:**
-- [ ] Update JWT secret to production value
-- [ ] Configure production database URLs
-- [ ] Set up GCS credentials securely
-- [ ] Configure CORS for production domain
-- [ ] Enable HTTPS/TLS
-- [ ] Set up monitoring (Spring Actuator available at `/actuator`)
-
 ## 🔮 Future Roadmap
 
 ### High Priority
@@ -301,23 +287,4 @@ docker-compose up -d
 - [ ] **Multi-language Support** - i18n
 - [ ] **Bot Detection** - CAPTCHA integration
 
-## 🤝 Contributing
 
-When working on this project:
-1. Use the configured code style (Lombok, MapStruct)
-2. Add Swagger annotations to new endpoints
-3. Follow the existing package structure
-4. Write tests for new features
-5. Update this README if adding major features
-
----
-
-**Note:** This is an active development project. Some features are work-in-progress. Check TODOs in code for specific implementation notes.
-
-## API Documentation
-
-The project includes `springdoc-openapi` to automatically generate API documentation using Swagger UI. Once the application is running, you can access the Swagger UI at:
-
-[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
-
-This interface allows you to view all available API endpoints, see their request and response structures, and interact with the API directly from your browser.
