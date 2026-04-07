@@ -14,24 +14,24 @@ You can post what you love, chat with other fans, and find people who like the s
 
 Our goal is simple: make a fun and friendly place where Otakus can connect and enjoy anime culture together. With helping hands from
 
+![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
-
-
+![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
+![Render](https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white)
 </div>
 
 ## ✨ Features
-- **🔐 Authentication:** Secure ***JWT-based*** with ***HS256 Algorithm*** access levels and ***Attribute-based Access Control*** ensure that only authorized users can manage or view resources.
-- **Infinite Scrolling:** Making users's home feeds looks like never ends with ***cursor-based pagination*** and ***fan-out on write/read*** pattern.
-- **Media Storage:** Managed to handle bulk media file uploading from users up to ***10 files, 1KB-10MB***, at once with latency ***1-2s*** with asynchronous thread executors.  
-- **🌍 Issue Assignment:** Creating, Viewing, Updating and Deleting Issues. Assign tasks to team members effortlessly, keeping everyone accountable and informed.
-- **🔍 Advanced Filtering & Sorting:** Easily filter and sort issues to quickly find and prioritize tasks.
-- **📄 Pagination & Analytics:** Navigate through large lists of issues with pagination and gain insights with charts and a comprehensive dashboard.
-- **🎯 Production-Ready Optimization:** Built for speed and reliability, FixHub is optimized for production environments, ensuring smooth performance at scale.
-- **🔧 Customization & Flexibility:** Tailor FixHub to your needs with customizable settings and configurations.
-- **📱 Responsive Design:** Access FixHub on any device with a responsive design that adapts to various screen sizes.
+- **🔐 Authentication:** Secure ***JWT-based*** with ***HS256 Algorithm*** and token refreshing mechanism access levels and ***Attribute-based Access Control*** ensure that only authorized users can manage or view resources.
+- **♾️ Infinite Scrolling:** Making users's home feeds looks like never ends with ***cursor-based pagination*** and ***fan-out on write/read*** pattern.
+- **☁️ Media Storage:** Managed to handle bulk media file uploading from users up to ***10 files, 1KB-10MB***, at once with latency ***2-4s*** with asynchronous thread executors.
+  <img width="819" height="542" alt="image" src="https://github.com/user-attachments/assets/bbe562b7-a1d4-46c4-a7f0-aa5146f61324" />
+  
+- **🔍 Advanced Searching:** Power searching utizling Full Text Search of Postgres and MongoDB to quickly find out posts and user accounts.
+- **📝 Communication:** Real-time chat pipeline built with ***Websocket + STOMP*** with helping of message queue from ***Redis*** gives Otakus who finds their same interests to connect each other.  .
+- **📱 Multiplatform:** Access ***69chan*** on any device from *web or mobile* with a responsive design that adapts to various screen sizes.
 
 ## 📋 Table of Contents
 - [Tech Stack](#-tech-stack)
