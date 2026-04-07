@@ -129,122 +129,120 @@ flowchart TD
 
 ## 🏗 Project Architecture
 
+This backend follows a layered Spring Boot structure to keep API, business logic, and persistence concerns isolated and maintainable.
+
 ### Package Structure
-```
-com.congty9a4.backend/
-├── annotation/          # Custom annotations (@TrackExecutionTime)
-├── config/             # Configuration classes
-│   ├── security/       # JWT, CORS, filters
-│   ├── cloud/          # GCS configuration
-│   └── mongodb/        # MongoDB setup
-├── controller/         # REST API endpoints
-├── dto/               # Request/Response DTOs
-├── entity/            # JPA entities & MongoDB documents
-├── exception/         # Custom exceptions & error handling
-├── mapper/            # MapStruct mappers
-├── repository/        # Data access layer
-├── service/           # Business logic
-│   ├── implement/     # Service implementations
-│   ├── storage/       # File storage services
-│   └── crawling/      # Reddit data crawling
-└── util/              # Utility classes
+```text
+src/main/java/com/congty9a4/backend/
+├── annotation/      # Custom annotations
+├── config/          # Security, async, docs, app-level configuration
+├── constant/        # Shared constants and enums
+├── controller/      # REST endpoints
+├── dto/             # Request/response payload models
+├── entity/          # PostgreSQL entities and MongoDB documents
+├── event/           # Domain/application events
+├── exception/       # Exception types and global handlers
+├── mapper/          # Mapping between entity <-> DTO models
+├── repository/      # Spring Data repositories
+├── script/          # Helper scripts/utilities related to data flows
+├── service/         # Business logic and orchestration
+└── util/            # Reusable utility helpers
 ```
 
-### Key Design Patterns
-- **Polyglot Persistence**: PostgreSQL for users/relationships, MongoDB for posts/comments
-- **JWT Stateless Authentication**: Token-based auth with refresh tokens
-- **DTO Pattern**: Separation of internal entities and API contracts
-- **Service Layer**: Business logic isolation from controllers
-- **AOP**: Logging and execution time tracking
+### Design Principles
+- **Layered architecture**: Controller -> Service -> Repository flow for clear separation of concerns.
+- **DTO boundary**: API contracts are separated from persistence models.
+- **Polyglot persistence**: PostgreSQL + MongoDB + Redis based on data access patterns.
+- **Stateless auth**: JWT-based authentication and request-level authorization.
+- **Config by profile**: `application-*.yaml` files for environment-specific behavior.
 
 ## 💾 Database Design
 
-### PostgreSQL (Relational Data)
-**Tables:**
-- `userchans` - User accounts with credentials
-- `profiles` - Extended user information (bio, avatar, etc.)
-- `friendships` - Friend requests/connections (PENDING, ACCEPTED, BLOCKED)
-- `relationships` - User relationships
+### PostgreSQL
+Main relational data lives in PostgreSQL.
 
-**Features:**
-- UUID primary keys for users
-- Full-Text Search (FTS) with GIN indexes
-- Email uniqueness constraints
-- Automatic timestamps (created_at, updated_at)
+- `userchans`: account-level identity/auth data.
+- `profiles`: profile metadata tied to users.
+- `friendships` and `relationships`: social graph and connection state.
+- Flyway migrations are stored under `src/main/resources/db/migration`.
 
-### MongoDB (Document Storage)
-**Collections:**
-- `posts` - User posts with media, tags, likes
-- `comments` - Nested comments with parent-child relationships
+### MongoDB
+Document-style content data is stored in MongoDB.
 
-**Indexes:**
-- Text indexes on post captions for search
-- User ID indexes for efficient queries
+- `posts`: feed content, media references, and interaction metadata.
+- `comments`: threaded comment data.
+- Text and supporting indexes are used to improve feed/search queries.
 
-## 🚀 Getting Started
+### Redis
+Redis is used for fast-access/ephemeral workloads (for example caching and real-time support paths where configured).
+
+## 📦 Getting Started
+
+Run the backend locally with Java 21 and your database services.
 
 ### Prerequisites
-- **JDK 21** - `java -version` to verify
-- **Docker** (optional) - for containerized databases
-- **PostgreSQL** - Running instance
-- **MongoDB** - Running instance
+- **JDK 21**
+- **Maven Wrapper** (`./mvnw` is included)
+- **PostgreSQL** instance
+- **MongoDB** instance
+- **Redis** instance (recommended for full feature support)
 
-### Environment Setup
+### 1) Configure Environment
+Create a `.env` file in the project root and provide values used by your environment.
 
-1. **Create `.env` file** in project root:
 ```bash
-# Database
+# PostgreSQL
 POSTGRE_DB_HOST=localhost
 POSTGRE_DB_PORT=5432
 POSTGRE_DB_USERNAME=your_user
 POSTGRE_DB_PASSWORD=your_password
 
-MONGO_DB_HOST=your_mongo_host
+# MongoDB
+MONGO_DB_HOST=localhost
 MONGO_DB_NAME=69chan
 MONGO_DB_USERNAME=your_mongo_user
-MONGO_DB_PASSWORD=your_mongo_pass
+MONGO_DB_PASSWORD=your_mongo_password
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
 
 # JWT
 JWT_SECRET=your_super_secret_key_min_256_bits
 
-# Storage (choose one)
-STORAGE_PROVIDER=gcs  # or cloudinary
+# Swagger / app URL
+SWAGGER_SERVER_URL=http://localhost:8080
 
-# GCS (if using)
+# Optional storage providers
+STORAGE_PROVIDER=gcs
 GOOGLE_APPLICATION_CREDENTIALS=path/to/gcs_credentials.json
 
-# Cloudinary (if using)
-CLOUDINARY_CLOUD_NAME=your_cloud
-CLOUDINARY_API_KEY=your_key
-CLOUDINARY_API_SECRET=your_secret
-
-# Swagger
-SWAGGER_SERVER_URL=http://localhost:8080
+# Or Cloudinary
+# STORAGE_PROVIDER=cloudinary
+# CLOUDINARY_CLOUD_NAME=your_cloud
+# CLOUDINARY_API_KEY=your_key
+# CLOUDINARY_API_SECRET=your_secret
 ```
 
-2. **Build the project:**
+### 2) Run with Maven Wrapper
 ```bash
 ./mvnw clean install
-```
-
-3. **Run locally:**
-```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
-4. **Access the app:**
-- API: `http://localhost:8080`
+### 3) Verify
+- API base URL: `http://localhost:8080`
 - Swagger UI: `http://localhost:8080/swagger-ui.html`
 
-### Running Tests
+### 4) Run Tests
 ```bash
 ./mvnw test
 ```
 
-### Profiles
-- `local` - Local development
-- `dev` - Development environment
-- `common` - Shared configuration
+### Available Profiles
+- `local`: local development defaults
+- `dev`: shared development environment
+- `common`: shared base configuration
 
 ## 🐳 Deployment
 
@@ -258,33 +256,37 @@ docker build -t 69chan-backend .
 docker-compose up -d
 ```
 
-**Dockerfile stages:**
-1. Maven build with dependency caching
-2. Lightweight JRE runtime (Alpine)
-3. Exposes port 8080
+### Runtime Notes
+- App listens on port `8080`.
+- Container startup uses `entrypoint.sh`.
+- Environment variables should be supplied by your host/CI/CD platform.
 
-## 🔮 Future Roadmap
+## 📖 API Documentation
+
+When the application is running, Swagger UI is available at:
+
+- `http://localhost:8080/swagger-ui.html`
+
+Use it to inspect endpoints, request schemas, and test calls interactively.
+
+## 🔮 Roadmap
 
 ### High Priority
-- [ ] **Cursor-based Pagination** - Replace offset pagination for feed (noted in PostController)
-- [ ] **Real-time Features** - WebSocket support for notifications
-- [ ] **Email Verification** - Complete email service integration
-- [ ] **Password Reset** - Forgot password flow
-- [ ] **Role-based Access Control** - Admin/Moderator roles
-- [ ] **Post Privacy** - Public/Friends/Private visibility (enum exists, not enforced)
+- [ ] Complete cursor-based pagination rollout for feed-heavy endpoints.
+- [ ] Expand real-time capabilities for notifications and messaging flows.
+- [ ] Finalize email verification and password reset journeys.
+- [ ] Harden authorization policies for role/scoped access.
+- [ ] Enforce post visibility/privacy rules across all read paths.
 
 ### Medium Priority
-- [ ] **Media Processing** - Image resizing, video transcoding
-- [ ] **Search Improvements** - Elasticsearch integration, autocomplete
-- [ ] **Caching Layer** - Redis for sessions, feed caching
-- [ ] **Rate Limiting** - API throttling
-- [ ] **Comprehensive Testing** - Increase test coverage
-- [ ] **Database Migrations** - Complete Flyway migration scripts
+- [ ] Improve media pipeline (transformations and optimization).
+- [ ] Strengthen search relevance and autocomplete.
+- [ ] Add targeted caching for feed and profile hotspots.
+- [ ] Add request throttling/rate limiting.
+- [ ] Increase integration and repository test coverage.
 
 ### Low Priority
-- [ ] **GraphQL API** - Alternative to REST
-- [ ] **Metrics & Monitoring** - Prometheus/Grafana integration
-- [ ] **Multi-language Support** - i18n
-- [ ] **Bot Detection** - CAPTCHA integration
-
-
+- [ ] Add metrics/observability dashboards.
+- [ ] Evaluate GraphQL as a complementary API interface.
+- [ ] Add i18n support for multi-language user experience.
+- [ ] Add anti-abuse/bot mitigation controls.
