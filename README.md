@@ -21,6 +21,10 @@ Our goal is simple: make a fun and friendly place where Otakus can connect and e
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
 ![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
 ![Render](https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white)
+
+<a href="https://69chan.atlassian.net/jira/core/projects/CHAN/board" target="blank">
+<img src="https://img.shields.io/badge/jira-%230A0FFF.svg?style=for-the-badge&logo=jira&logoColor=white" />
+</a>
 </div>
 
 ## ✨ Features
@@ -32,8 +36,18 @@ Our goal is simple: make a fun and friendly place where Otakus can connect and e
 - **🔍 Advanced Searching:** Power searching utizling Full Text Search of Postgres and MongoDB to quickly find out posts and user accounts.
 - **📝 Communication:** Real-time chat pipeline built with ***Websocket + STOMP*** with helping of message queue from ***Redis*** gives users who finds their same interests to connect each other.  .
 - **📱 Multiplatform:** Access ***69chan*** on any device from *web or mobile* with a responsive design that adapts to various screen sizes.
+- **👨‍👨‍👦 Task Assignment :** Apply ***Scrum*** workflow for feature building with team.
+<img width="1358" height="894" alt="image" src="https://github.com/user-attachments/assets/8a9418da-9f1d-4661-a100-c4b738c29fde" />
 
+- **🚀 Continuous Deployment :** Automated build and deploy pipeline on Render, including build, release, and environment configuration steps. 
 
+## 📖 API Documentation
+
+When the application is running, Swagger UI is available at:
+
+- `http://localhost:8080/swagger-ui.html`
+
+Use it to inspect endpoints, request schemas, and test calls interactively.
 
 ## 🛠 Tech Stack
 ``` mermaid
@@ -187,10 +201,11 @@ Run the backend locally with Java 21 and your database services.
 - **MongoDB** instance
 - **Redis** instance (recommended for full feature support)
 
-### 1) Configure Environment
+### Installation 
+1. **Configure Environment**
 Create a `.env` file in the project root and provide values used by your environment.
 
-```bash
+```env
 # PostgreSQL
 POSTGRE_DB_HOST=localhost
 POSTGRE_DB_PORT=5432
@@ -224,20 +239,15 @@ GOOGLE_APPLICATION_CREDENTIALS=path/to/gcs_credentials.json
 # CLOUDINARY_API_SECRET=your_secret
 ```
 
-### 2) Run with Maven Wrapper
+2. **Run with Maven Wrapper**
 ```bash
 ./mvnw clean install
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
-### 3) Verify
+3. **Verify**
 - API base URL: `http://localhost:8080`
 - Swagger UI: `http://localhost:8080/swagger-ui.html`
-
-### 4) Run Tests
-```bash
-./mvnw test
-```
 
 ### Available Profiles
 - `local`: local development defaults
@@ -261,22 +271,13 @@ docker-compose up -d
 - Container startup uses `entrypoint.sh`.
 - Environment variables should be supplied by your host/CI/CD platform.
 
-## 📖 API Documentation
-
-When the application is running, Swagger UI is available at:
-
-- `http://localhost:8080/swagger-ui.html`
-
-Use it to inspect endpoints, request schemas, and test calls interactively.
 
 ## 🔮 Roadmap
 
 ### High Priority
 - [ ] Complete cursor-based pagination rollout for feed-heavy endpoints.
 - [ ] Expand real-time capabilities for notifications and messaging flows.
-- [ ] Finalize email verification and password reset journeys.
 - [ ] Harden authorization policies for role/scoped access.
-- [ ] Enforce post visibility/privacy rules across all read paths.
 
 ### Medium Priority
 - [ ] Improve media pipeline (transformations and optimization).
@@ -290,3 +291,31 @@ Use it to inspect endpoints, request schemas, and test calls interactively.
 - [ ] Evaluate GraphQL as a complementary API interface.
 - [ ] Add i18n support for multi-language user experience.
 - [ ] Add anti-abuse/bot mitigation controls.
+
+## 🤝 Contributing
+
+We welcome contributions to this project. Please follow these steps to contribute:
+
+1. **Fork the repository.**
+2. **Create a new branch** (`git checkout -b feature/your-feature-name`).
+3. **Make your changes** and commit them (`git commit -m 'Add some feature'`).
+4. **Push to the branch** (`git push origin feature/your-feature-name`).
+5. **Open a pull request**.
+
+Please make sure to update tests as appropriate.
+
+## 🐛 Issues
+
+If you encounter any issues while using or setting up the project, please check the [Issues]() section to see if it has already been reported. If not, feel free to open a new issue detailing the problem.
+
+When reporting an issue, please include:
+
+- A clear and descriptive title.
+- A detailed description of the problem.
+- Steps to reproduce the issue.
+- Any relevant logs or screenshots.
+- The environment in which the issue occurs (OS, browser, Node.js version, etc.).
+
+## 📜 License
+
+Distributed under the MIT License. See [License](/LICENSE) for more information.
