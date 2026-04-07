@@ -22,6 +22,17 @@ Our goal is simple: make a fun and friendly place where Otakus can connect and e
 
 </div>
 
+## ✨ Features
+- **🔐 Authentication:** Secure ***JWT-based*** with ***HS256 Algorithm*** access levels and ***Attribute-based Access Control*** ensure that only authorized users can manage or view resources.
+- **Infinite Scrolling:** Making users's home feeds looks like never ends with ***cursor-based pagination*** and ***fan-out on write/read*** pattern.
+- **Media Storage:** Managed to handle bulk media file uploading from users up to ***10 files, 1KB-10MB***, at once with latency ***1-2s*** with asynchronous thread executors.  
+- **🌍 Issue Assignment:** Creating, Viewing, Updating and Deleting Issues. Assign tasks to team members effortlessly, keeping everyone accountable and informed.
+- **🔍 Advanced Filtering & Sorting:** Easily filter and sort issues to quickly find and prioritize tasks.
+- **📄 Pagination & Analytics:** Navigate through large lists of issues with pagination and gain insights with charts and a comprehensive dashboard.
+- **🎯 Production-Ready Optimization:** Built for speed and reliability, FixHub is optimized for production environments, ensuring smooth performance at scale.
+- **🔧 Customization & Flexibility:** Tailor FixHub to your needs with customizable settings and configurations.
+- **📱 Responsive Design:** Access FixHub on any device with a responsive design that adapts to various screen sizes.
+
 ## 📋 Table of Contents
 - [Tech Stack](#-tech-stack)
 - [Project Architecture](#-project-architecture)
