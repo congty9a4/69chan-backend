@@ -1,5 +1,5 @@
 <div align="center">
-<a href="https://github.com/Sumonta056/FixHub-Issue-Tracker-Website" target="blank">
+<a href="https://github.com/congty9a4/69chan-backend" target="blank">
 
 <img width="128" height="128" alt="image" src="https://github.com/user-attachments/assets/43d75824-c958-43a3-a500-10daefbb517a" />
 
