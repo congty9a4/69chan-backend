@@ -22,8 +22,7 @@ import lombok.experimental.FieldDefaults;
             columnNames = {"objectId", "subjectId", "relation"}
         )
     }
-    )
-// object -> relation -> subject
+)
 public class Relationship {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
