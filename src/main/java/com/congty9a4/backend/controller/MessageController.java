@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/messages")
@@ -26,7 +27,8 @@ public class MessageController {
         request.setSenderId("system");
         request.setReceiverId("user");
         request.setContent("");
-        return ApiResponse.success(messageService.create(request));
+
+        return ApiResponse.success(messageService.save(request).join());
     }
 
     @GetMapping("/{id}")
