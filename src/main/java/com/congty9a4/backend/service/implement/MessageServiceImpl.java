@@ -9,9 +9,11 @@ import com.congty9a4.backend.repository.mongo.MessageRepository;
 import com.congty9a4.backend.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,14 +26,15 @@ public class MessageServiceImpl implements MessageService {
     MessageMapper messageMapper;
 
     @Override
-    public MessageResponse create(MessageCreateRequest request) {
+    @Async("taskExecutor")
+    public CompletableFuture<MessageResponse> save(MessageCreateRequest request) {
         Message message = Message.builder()
                 .senderId(request.getSenderId())
                 .receiverId(request.getReceiverId())
                 .content(request.getContent())
                 .build();
         Message saved = messageRepository.save(message);
-        return messageMapper.toMessageResponse(saved);
+        return CompletableFuture.completedFuture(messageMapper.toMessageResponse(saved));
     }
 
     @Override
@@ -71,4 +74,3 @@ public class MessageServiceImpl implements MessageService {
         );
     }
 }
-

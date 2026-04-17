@@ -5,9 +5,10 @@ import com.congty9a4.backend.dto.req.message.MessageUpdateRequest;
 import com.congty9a4.backend.dto.resp.MessageResponse;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface MessageService {
-    MessageResponse create(MessageCreateRequest request);
+    CompletableFuture<MessageResponse> save(MessageCreateRequest request);
 
     MessageResponse getById(Long id);
 
@@ -17,4 +18,3 @@ public interface MessageService {
 
     void delete(Long id);
 }
-
