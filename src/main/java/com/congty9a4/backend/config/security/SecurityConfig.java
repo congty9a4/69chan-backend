@@ -30,8 +30,7 @@ public class SecurityConfig {
             "/api/files/**",
             "/",
             "/api/v1/**",
-            "/actuator/**",
-            "/api/messages/blank"
+            "/actuator/**"
      };
 
     @Bean
