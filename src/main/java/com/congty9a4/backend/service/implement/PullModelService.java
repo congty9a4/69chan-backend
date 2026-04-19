@@ -52,7 +52,7 @@ public class PullModelService implements FanoutService {
         if (pageRequest.getCursor() == null) {
             posts = postRepository.getUserFeedsFirstPage(followees, PageRequest.of(0, limit + 1));
         } else {
-            posts = postRepository.getUserFeedsAfterCursor(followees, parseToUTC(pageRequest.getCursor()), PageRequest.of(0, limit + 1));
+            posts = postRepository.getUserFeedsAfterCursor(followees, parseToUTC((String)pageRequest.getCursor()), PageRequest.of(0, limit + 1));
 
         }
 
