@@ -48,6 +48,13 @@ public enum ErrorCode {
     CANNOT_INTERACT_WITH_BLOCKED_USER(40064, "You cannot interact with a user you have blocked or who has blocked you.", HttpStatus.BAD_REQUEST),
     ALREADY_FOLLOWING(40065, "You are already following this user.", HttpStatus.BAD_REQUEST),
 
+    // Chat & Messaging
+    MESSAGE_NOT_FOUND(40070, "The message you are looking for could not be found.", HttpStatus.BAD_REQUEST),
+    CONVERSATION_ALREADY_EXISTS(40071, "A conversation between these users already exists.", HttpStatus.BAD_REQUEST),
+    CANNOT_SEND_MESSAGE(40072, "You cannot send a message to this user.", HttpStatus.BAD_REQUEST),
+    CANNOT_ACCESS_CONVERSATION(40073, "You do not have permission to access this conversation.", HttpStatus.BAD_REQUEST),
+    CONVERSATION_NOT_FOUND(40074, "The conversation you are looking for could not be found.", HttpStatus.BAD_REQUEST),
+
 
     // --- UNAUTHENTICATED (401) ---
     UNAUTHENTICATED(40100, "You must be logged in to perform this action.", HttpStatus.UNAUTHORIZED),
@@ -60,6 +67,7 @@ public enum ErrorCode {
     // --- NOT FOUND (404) ---
     RESOURCE_NOT_FOUND(40400, "No endpoint found for this request", HttpStatus.NOT_FOUND),
     VERIFICATION_TOKEN_NOT_FOUND(40404, "The verification token is invalid or has expired.", HttpStatus.NOT_FOUND);
+
 
 
     private final int code;

@@ -43,7 +43,6 @@ public class Comment {
     @Builder.Default
     boolean isDeleted = false;
 
-
     @CreatedDate
     @JsonProperty("created_at")
     OffsetDateTime createdAt;

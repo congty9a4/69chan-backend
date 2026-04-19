@@ -14,14 +14,9 @@ import lombok.experimental.FieldDefaults;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Schema(description = "Use when you need cursor-based pagination")
-public class CursorPageRequest {
+public class CursorPageRequest<T> {
 
-    @Schema(
-            description = "Date",
-            example = "2024-06-01T12:00:00Z",
-            requiredMode = Schema.RequiredMode.REQUIRED
-    )
-    String cursor;
+    T cursor;
 
     @Builder.Default
     int limit = 10;

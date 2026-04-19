@@ -8,19 +8,19 @@ import com.congty9a4.backend.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/messages")
 @Tag(name = "Message", description = "Message CRUD APIs")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class MessageController {
 
-    private final MessageService messageService;
+    private MessageService messageService;
+
     @PostMapping("/blank")
     public ApiResponse<MessageResponse> createBlank() {
         MessageCreateRequest request = new MessageCreateRequest();
