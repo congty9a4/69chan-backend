@@ -42,7 +42,6 @@ public class ConversationServiceImpl implements ConversationService {
             pageRequest.setCursor(conv.getLastMessageId());
         }
 
-        CursorPageResponse<MessageResponse> response = new CursorPageResponse<>();
 
         List<MessageResponse> messages = messageRepository.retrieveHistory(id, pageRequest.getCursor(), PageRequest.of(0, pageRequest.getLimit() + 1))
                 .stream().map(messageMapper::toMessageResponse).toList();
