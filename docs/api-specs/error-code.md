@@ -41,6 +41,12 @@ This document describes all standardized error codes returned by the API. Each e
 | `USER_BLOCKED` | 40063 | 400 Bad Request | `BAD_REQUEST` | This user is blocked. |
 | `CANNOT_INTERACT_WITH_BLOCKED_USER` | 40064 | 400 Bad Request | `BAD_REQUEST` | You cannot interact with a user you have blocked or who has blocked you. |
 | `ALREADY_FOLLOWING` | 40065 | 400 Bad Request | `BAD_REQUEST` | You are already following this user. |
+| **CHAT & MESSAGING** |||||
+| `MESSAGE_NOT_FOUND` | 40070 | 400 Bad Request | `BAD_REQUEST` | The message you are looking for could not be found. |
+| `CONVERSATION_ALREADY_EXISTS` | 40071 | 400 Bad Request | `BAD_REQUEST` | A conversation between these users already exists. |
+| `CANNOT_SEND_MESSAGE` | 40072 | 400 Bad Request | `BAD_REQUEST` | You cannot send a message to this user. |
+| `CANNOT_ACCESS_CONVERSATION` | 40073 | 400 Bad Request | `BAD_REQUEST` | You do not have permission to access this conversation. |
+| `CONVERSATION_NOT_FOUND` | 40074 | 400 Bad Request | `BAD_REQUEST` | The conversation you are looking for could not be found. |
 | **UNAUTHENTICATED (401)** |||||
 | `UNAUTHENTICATED` | 40100 | 401 Unauthorized | `UNAUTHORIZED` | You must be logged in to perform this action. |
 | `INVALID_TOKEN` | 40101 | 401 Unauthorized | `UNAUTHORIZED` | Invalid or expired token. Please log in again. |
@@ -59,21 +65,23 @@ All API errors return a consistent JSON response body:
 
 ```json
 {
-  "code": 40000,
-  "message": "Invalid input. Please check your data.",
-  "errors": [
-      "email": "Not in email format"
-  ],
+  "isSuccess": false,
+  "status": 40000,
+  "message": "Invalid input. Please check your data",
+  "errors": {
+    "email": "Not in email format"
+  },
   "detail": "My custom message"
 }
 ```
 
 | Field | Type | Description |
 |---|---|---|
-| `code` | `integer` | Application-specific numeric error code |
+| `isSuccess` | `boolean` | Always `false` for errors |
+| `status` | `integer` | Application-specific numeric error code |
 | `message` | `string` | Human-readable description of the error |
-| `errors` | `map` | Tell which input part was wrong format |
-| `detail` | `string` | Context-based, personal message |
+| `errors` | `map` | Field-level validation errors, when available |
+| `detail` | `string` | Context-specific message |
 
 ---
 
