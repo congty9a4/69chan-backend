@@ -21,7 +21,7 @@ public record ConversationResponse(
         String lastSenderId,
 
         @JsonProperty("last_message_time")
-        String lastMessageTime,
+        Long lastMessageTime,
 
         @JsonProperty("unread_count")
         int unreadCount

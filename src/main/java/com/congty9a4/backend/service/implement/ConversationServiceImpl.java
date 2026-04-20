@@ -8,6 +8,7 @@ import com.congty9a4.backend.entity.Conversation;
 import com.congty9a4.backend.entity.Message;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.exception.error.ErrorCode;
+import com.congty9a4.backend.mapper.ConversationMapper;
 import com.congty9a4.backend.mapper.MessageMapper;
 import com.congty9a4.backend.repository.mongo.ConversationRepository;
 import com.congty9a4.backend.repository.mongo.MessageRepository;
@@ -32,16 +33,16 @@ public class ConversationServiceImpl implements ConversationService {
     ConversationRepository conversationRepository;
     MessageRepository messageRepository;
     private final MessageMapper messageMapper;
+    private final ConversationMapper conversationMapper;
 
 
     @Override
     public CursorPageResponse<MessageResponse> getConversationHistory(String id, CursorPageRequest<Long> pageRequest) {
-        Conversation conv = retrieveConversationById(id);
+        Conversation conv = getConv(id);
 
         if (pageRequest.getCursor() == null) {
             pageRequest.setCursor(conv.getLastMessageId());
         }
-
 
         List<MessageResponse> messages = messageRepository.retrieveHistory(id, pageRequest.getCursor(), PageRequest.of(0, pageRequest.getLimit() + 1))
                 .stream().map(messageMapper::toMessageResponse).toList();
@@ -55,16 +56,28 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public List<Conversation> getAllMyChats() {
+    public List<ConversationResponse> getAllMyChats() {
         String userId = SecurityUtils.getCurrentUserId();
 
         userService.getUserById(UUID.fromString(userId));
-        return conversationRepository.findAllMyChats(userId);
+        return conversationRepository.findAllMyChats(userId).stream().map(conversationMapper::toResponse).toList();
     }
 
     @Override
-    public Conversation retrieveConversationById(String id) {
-        return conversationRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.CONVERSATION_NOT_FOUND, "Conversation " + id + "not found"));
+    public ConversationResponse retrieveConversationById(String id) {
+        return conversationMapper.toResponse(getConv(id));
+    }
+
+    private Conversation getConv(String id) {
+        return conversationRepository.findById(id).map(e -> {
+                    if (!checkConversationAccess(e)) throw new AppException(ErrorCode.CANNOT_ACCESS_CONVERSATION);
+                    return e;
+                } )
+                .orElseThrow(() -> new AppException(ErrorCode.CONVERSATION_NOT_FOUND));
+    }
+
+    private Boolean checkConversationAccess(Conversation conversation) {
+        String userId = SecurityUtils.getCurrentUserId();
+        return conversation.getParticipantIds().contains(userId);
     }
 }

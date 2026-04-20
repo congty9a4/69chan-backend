@@ -45,13 +45,13 @@ public class ConversationController {
 
     @GetMapping("/me")
     @Operation(summary = "List conversations for current user")
-    public ApiResponse<List<Conversation>> listMyConversations() {
+    public ApiResponse<List<ConversationResponse>> listMyConversations() {
         return ApiResponse.success(conversationService.getAllMyChats());
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get conversation by ID")
-    public ApiResponse<Conversation> getConversationById(@PathVariable String id) {
+    public ApiResponse<ConversationResponse> getConversationById(@PathVariable String id) {
         return ApiResponse.success(conversationService.retrieveConversationById(id));
     }
 }

@@ -12,7 +12,7 @@ public interface ConversationService {
 
     CursorPageResponse<MessageResponse> getConversationHistory(String id, CursorPageRequest<Long> pageRequest);
 
-    List<Conversation> getAllMyChats();
+    List<ConversationResponse> getAllMyChats();
 
-    Conversation retrieveConversationById(String id);
+    ConversationResponse retrieveConversationById(String id);
 }
