@@ -28,9 +28,9 @@ public class CursorPageResponse<T> {
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class PageInfo {
+    public static class PageInfo<T> {
         @JsonProperty("next_cursor")
-        String nextCursor;
+        T nextCursor;
 
         @JsonProperty("has_next")
         boolean hasNext;

@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.OffsetDateTime;
@@ -16,11 +17,11 @@ import java.time.OffsetDateTime;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document("message")
+@Document("messages")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Message {
     @Id
-    Long Id;
+    Long id;
 
     @Field("sender_id")
     String senderId;
@@ -31,6 +32,10 @@ public class Message {
     @TextIndexed
     @Field("content")
     String content;
+
+    @DocumentReference
+    @Field("conversation_id")
+    Conversation conversationId;
 
     @CreatedDate
     @Field("created_at")

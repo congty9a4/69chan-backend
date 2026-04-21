@@ -7,6 +7,7 @@ import com.congty9a4.backend.entity.Message;
 import com.congty9a4.backend.mapper.MessageMapper;
 import com.congty9a4.backend.repository.mongo.MessageRepository;
 import com.congty9a4.backend.service.MessageService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.scheduling.annotation.Async;
@@ -17,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
 public class MessageServiceImpl implements MessageService {
 
@@ -64,13 +65,4 @@ public class MessageServiceImpl implements MessageService {
         messageRepository.deleteById(id);
     }
 
-    private MessageResponse toResponse(Message message) {
-        return new MessageResponse(
-                message.getId(),
-                message.getSenderId(),
-                message.getReceiverId(),
-                message.getContent(),
-                message.getCreatedAt()
-        );
-    }
 }
