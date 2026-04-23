@@ -1,4 +1,4 @@
-package com.congty9a4.backend.service;
+package com.congty9a4.backend.worker;
 
 import com.congty9a4.backend.dto.req.message.MessageCreateRequest;
 import com.congty9a4.backend.service.MessageService;
