@@ -25,6 +25,4 @@ public interface PostService {
     PageResponse<List<CommentResponse>> getComments(String postId, AppPageable pageable);
 
     PostResponse updatePost(String id, PostRequest req);
-
-    PageResponse<List<PostResponse>> getFeed(AppPageable pageable);
 }
