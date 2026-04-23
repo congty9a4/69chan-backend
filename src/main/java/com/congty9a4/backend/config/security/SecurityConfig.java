@@ -1,4 +1,6 @@
-package com.congty9a4.backend.config.security; import org.springframework.beans.factory.annotation.Autowired;
+package com.congty9a4.backend.config.security;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -11,43 +13,36 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(
-        securedEnabled = true,
-        jsr250Enabled = true
-)
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
 
-    @Autowired
-    private JwtService jwtService;
+        @Autowired
+        private JwtService jwtService;
 
+        private static final String[] WHITELIST = {
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/api/auth/**",
+                        "/api/users/create",
+                        "/api/sample/**",
+                        "/api/files/**",
+                        "/",
+                        "/api/v1/**",
+                        "/actuator/**"
+        };
 
-    private static final String[] WHITELIST = {
-             "/swagger-ui/**",
-             "/v3/api-docs/**",
-             "/api/auth/**",
-             "/api/users/create",
-            "/api/sample/**",
-            "/api/files/**",
-            "/",
-            "/api/v1/**",
-            "/actuator/**"
-     };
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers(WHITELIST).permitAll()
-                                .anyRequest().authenticated())
-                .addFilterAfter(new JwtAuthFilter(jwtService), BasicAuthenticationFilter.class)
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(ex ->
-                        ex.authenticationEntryPoint(new JwtAuthEntryPoint()));
-        return http.build();
-    }
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf(AbstractHttpConfigurer::disable)
+                                .authorizeHttpRequests(authorize -> authorize.requestMatchers(WHITELIST).permitAll()
+                                                .requestMatchers("/test-chat.html", "/ws-69chan/**").permitAll()
+                                                .anyRequest().authenticated())
+                                .addFilterAfter(new JwtAuthFilter(jwtService), BasicAuthenticationFilter.class)
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .exceptionHandling(ex -> ex.authenticationEntryPoint(new JwtAuthEntryPoint()));
+                return http.build();
+        }
 
 }
-
-
