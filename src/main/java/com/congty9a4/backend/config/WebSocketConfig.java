@@ -55,7 +55,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                             // Chuyền "true" vào để báo rằng đây bắt buộc phải là Access Token
                             jwtService.validateToken(token, true);
 
-                            // Nếu qua được ải trên (không văng Exception), thì tự tin móc ID ra dùng
+                            // Nếu qua được ải trên (không văng Exception), thì lấy ID ra dùng
                             String userId = jwtService.extractUserId(token);
 
                             // CẤP PHÉP VÀO TRONG

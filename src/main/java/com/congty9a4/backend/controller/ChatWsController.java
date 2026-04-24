@@ -34,15 +34,14 @@ public class ChatWsController {
         }
     }
 
-    // Gửi tin nhắn
     @MessageMapping("/chat.send")
     public void sendMessage(@Payload WsChatMessage payload, Principal principal) {
         String senderId = principal.getName();
 
-        // Tạo 1 ID duy nhất để tracking tin nhắn (dùng chung cho cả luồng)
+        // Tạo 1 ID duy nhất để tracking tin nhắn
         String messageId = UUID.randomUUID().toString();
 
-        // 1. Đẩy vào Redis Queue (Chuyển việc lưu DB cho Dev 2)
+        // 1. Đẩy vào Redis Queue
         messageQueueService.pushToQueue(senderId, payload);
 
         // 2. Gửi Real-time cho người nhận
@@ -51,10 +50,10 @@ public class ChatWsController {
                 "/queue/messages",
                 payload);
 
-        // 3. Phản hồi ACK (Đã gửi) cho người gửi bằng Object (Chuẩn bài nhất)
+        // 3. Phản hồi ACK (Đã gửi) cho người gửi bằng Object
         WsAckMessage ack = new WsAckMessage();
         ack.setMessageId(messageId);
-        ack.setStatus(MessageStatus.SENT); // Hoặc MessageStatus.SENT tùy enum của fen
+        ack.setStatus(MessageStatus.SENT);
         messagingTemplate.convertAndSendToUser(senderId, "/queue/acks", ack);
 
         log.info("Đã phát sóng tin nhắn từ {} tới {} trên kênh WebSocket", senderId, payload.getReceiverId());

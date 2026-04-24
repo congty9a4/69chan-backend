@@ -20,7 +20,6 @@ public class ChatMessageWorker {
     private final ObjectMapper objectMapper;
     private final MessageService messageService;
 
-    // Runs every 1 second to check for new messages in Redis
     @Scheduled(fixedDelay = 1000)
     public void processMessageQueue() {
         // Pop message from the right side of the Redis list (Queue)

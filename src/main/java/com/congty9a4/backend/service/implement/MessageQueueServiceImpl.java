@@ -1,6 +1,6 @@
 package com.congty9a4.backend.service.implement;
 
-import com.congty9a4.backend.dto.req.message.MessageCreateRequest; // DTO của Dev 2
+import com.congty9a4.backend.dto.req.message.MessageCreateRequest;
 import com.congty9a4.backend.dto.resp.WsChatMessage;
 import com.congty9a4.backend.service.MessageQueueService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,8 +22,6 @@ public class MessageQueueServiceImpl implements MessageQueueService {
     @Override
     public void pushToQueue(String senderId, WsChatMessage wsMsg) {
         try {
-            // Map dữ liệu từ WebSocket sang cấu trúc mà Dev 2 mong muốn
-            // (MessageCreateRequest)
             MessageCreateRequest dbReq = new MessageCreateRequest();
             dbReq.setSenderId(senderId);
             dbReq.setReceiverId(wsMsg.getReceiverId());

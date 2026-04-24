@@ -36,6 +36,7 @@ public class SecurityConfig {
                 http
                                 .csrf(AbstractHttpConfigurer::disable)
                                 .authorizeHttpRequests(authorize -> authorize.requestMatchers(WHITELIST).permitAll()
+                                                // Open for Test chat
                                                 .requestMatchers("/test-chat.html", "/ws-69chan/**").permitAll()
                                                 .anyRequest().authenticated())
                                 .addFilterAfter(new JwtAuthFilter(jwtService), BasicAuthenticationFilter.class)
