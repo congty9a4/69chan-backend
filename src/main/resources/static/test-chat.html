@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>69chan - STOMP Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #1877f2; }
+        .form-group { margin-bottom: 15px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; }
+        input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; width: 100%; margin-top: 5px; }
+        .btn-blue { background: #1877f2; } .btn-blue:hover { background: #166fe5; }
+        .btn-green { background: #42b72a; } .btn-green:hover { background: #36a420; }
+        .btn-red { background: #dc3545; } .btn-red:hover { background: #c82333; }
+        #log { height: 300px; overflow-y: auto; background: #282c34; color: #abb2bf; padding: 10px; font-family: monospace; margin-top: 15px; border-radius: 4px; }
+        .log-msg { color: #e5c07b; } .log-ack { color: #c678dd; } .log-err { color: #e06c75; } .log-ok { color: #98c379; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🛠️ Test STOMP End-to-End</h2>
+        
+        <div class="form-group">
+            <label>1. Cấu hình User của Tab này</label>
+            <input type="text" id="token" placeholder="Dán Token (JWT) thật vào đây...">
+            <button class="btn-blue" onclick="connect()">Mở Kết Nối</button>
+            <button class="btn-red" onclick="disconnect()">Ngắt Kết Nối</button>
+        </div>
+
+        <div class="form-group" style="border-top: 1px solid #eee; padding-top: 15px;">
+            <label>2. Gửi tin nhắn</label>
+            <input type="text" id="receiver" placeholder="ID của người nhận...">
+            <input type="text" id="msg" placeholder="Nội dung tin nhắn...">
+            <button class="btn-green" onclick="sendMsg()">Gửi Tin Nhắn</button>
+        </div>
+
+        <div id="log"></div>
+    </div>
+
+    <script>
+        var stompClient = null;
+
+        function connect() {
+            var token = document.getElementById('token').value.trim();
+            if (!token) { alert("Thiếu Token kìa fen!"); return; }
+
+            // Nếu đang kết nối rồi thì ngắt cái cũ đi trước khi mở cái mới
+            if (stompClient !== null) {
+                stompClient.disconnect();
+            }
+
+            var socket = new SockJS('http://localhost:8080/ws-69chan');
+            stompClient = Stomp.over(socket);
+            stompClient.debug = null; 
+
+            var headers = { 'Authorization': 'Bearer ' + token };
+
+            stompClient.connect(headers, function(frame) {
+                printLog("✅ Đã kết nối STOMP thành công!", "log-ok");
+                
+                // KHÓA NÚT KẾT NỐI LẠI ĐỂ KHỎI BẤM ĐÚP
+                document.querySelector('.btn-blue').disabled = true;
+                document.querySelector('.btn-blue').style.opacity = "0.5";
+                
+                stompClient.subscribe('/user/queue/messages', function(msg) {
+                    var payload = JSON.parse(msg.body);
+                    printLog("📩 [NHẬN]: " + payload.content, "log-msg");
+                });
+
+                stompClient.subscribe('/user/queue/acks', function(ack) {
+                    printLog("⚙️ [SERVER ACK]: " + ack.body, "log-ack");
+                });
+            }, function(error) {
+                printLog("❌ Lỗi kết nối: " + error, "log-err");
+            });
+        }
+
+        function sendMsg() {
+            if (!stompClient) { alert("Chưa kết nối mà!"); return; }
+            var receiver = document.getElementById('receiver').value.trim();
+            var text = document.getElementById('msg').value.trim();
+            if(!receiver || !text) return;
+
+            var payload = { receiverId: receiver, content: text, type: "TEXT" };
+            stompClient.send("/app/chat.send", {}, JSON.stringify(payload));
+            printLog("🚀 [GỬI]: " + text, "log-ok");
+            document.getElementById('msg').value = ''; // Xóa text sau khi gửi
+        }
+        
+        // Cập nhật lại hàm ngắt kết nối để mở khóa nút
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+                printLog("🛑 Đã ngắt kết nối.", "log-err");
+                
+                // MỞ KHÓA LẠI NÚT KẾT NỐI
+                document.querySelector('.btn-blue').disabled = false;
+                document.querySelector('.btn-blue').style.opacity = "1";
+            }
+        }
+
+        
+
+        function printLog(message, cssClass) {
+            var logDiv = document.getElementById('log');
+            logDiv.innerHTML += "<div class='" + cssClass + "'>" + message + "</div>";
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+    </script>
+</body>
+</html>
