@@ -26,7 +26,7 @@ public class GlobalExceptionalHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ErrorApiResponse handlingAppException(AppException ex) {
         ErrorCode errorCode = ex.getErrorCode();
-        log.error(ex.getMessage());
+        log.error("Application exception: {}", errorCode, ex);
         return ErrorApiResponse.builder()
                 .message(errorCode.getDetailedMessage())
                 .detail(ex.getMessage())
@@ -38,6 +38,7 @@ public class GlobalExceptionalHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ErrorApiResponse handlingNoResourceFound(NoResourceFoundException ex) {
         ErrorCode errorCode = ErrorCode.RESOURCE_NOT_FOUND;
+        log.warn("Resource not found: {} {}", ex.getHttpMethod(), ex.getResourcePath());
         return ErrorApiResponse.builder()
                 .message("Resource Not Found")
                 .detail(String.format("%s [%s -> %s]", errorCode.getDetailedMessage(),
@@ -57,6 +58,7 @@ public class GlobalExceptionalHandler {
         });
 
         ErrorCode errorCode = ErrorCode.INVALID_INPUT;
+        log.warn("Validation failed: {} field error(s)", errors.size());
 
         return ErrorApiResponse.builder()
                 .message("Invalid Request Data")
@@ -69,6 +71,7 @@ public class GlobalExceptionalHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ErrorApiResponse handlingMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         ErrorCode errorCode = ErrorCode.FILE_TOO_LARGE;
+        log.warn("File upload too large", ex);
 
         return ErrorApiResponse.builder()
                 .message("Invalid request data")
