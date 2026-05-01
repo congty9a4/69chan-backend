@@ -4,11 +4,13 @@ import com.congty9a4.backend.dto.req.message.MessageCreateRequest;
 import com.congty9a4.backend.dto.req.message.MessageUpdateRequest;
 import com.congty9a4.backend.dto.resp.MessageResponse;
 import com.congty9a4.backend.entity.Message;
+import com.congty9a4.backend.entity.enums.NotificationType;
 import com.congty9a4.backend.mapper.MessageMapper;
 import com.congty9a4.backend.repository.mongo.MessageRepository;
 import com.congty9a4.backend.service.MessageService;
+import com.congty9a4.backend.service.NotificationService;
+
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ public class MessageServiceImpl implements MessageService {
 
     MessageMapper messageMapper;
 
+    NotificationService notificationService;
+
     @Override
     @Async("taskExecutor")
     public CompletableFuture<MessageResponse> save(MessageCreateRequest request) {
@@ -35,6 +39,11 @@ public class MessageServiceImpl implements MessageService {
                 .content(request.getContent())
                 .build();
         Message saved = messageRepository.save(message);
+        notificationService.sendNotification(
+                request.getSenderId(),
+                request.getReceiverId(),
+                NotificationType.MESSAGE,
+                request.getConversationId());
         return CompletableFuture.completedFuture(messageMapper.toMessageResponse(saved));
     }
 
