@@ -7,11 +7,13 @@ import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.entity.Infochan;
 import com.congty9a4.backend.entity.Userchan;
+import com.congty9a4.backend.entity.enums.NotificationType;
 import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.jpa.UserRepository;
 import com.congty9a4.backend.service.EmailService;
+import com.congty9a4.backend.service.NotificationService;
 import com.congty9a4.backend.service.OtpService;
 import com.congty9a4.backend.service.RelationService;
 import com.congty9a4.backend.service.UserService;
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
 
     private final EmailService emailService;
     private final OtpService otpService;
+    private final NotificationService notificationService;
 
     UserRepository userRepository;
 
@@ -123,8 +126,15 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void handleFollow(String targetUserId) {
-        getUserById(UUID.fromString(targetUserId)); // check if user exists
-        relationService.follow(SecurityUtils.getCurrentUserId(), targetUserId);
+        getUserById(UUID.fromString(targetUserId));
+        String currentUserId = SecurityUtils.getCurrentUserId();
+        relationService.follow(currentUserId, targetUserId);
+
+        notificationService.sendNotification(
+                currentUserId,
+                targetUserId,
+                NotificationType.FOLLOW,
+                targetUserId);
     }
 
     @Override
@@ -161,4 +171,20 @@ public class UserServiceImpl implements UserService {
         emailService.sendOtpEmail(email, newOtp);
     }
 
+    @Override
+    public List<Infochan> getUsersInfoByIds(List<String> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return List.of();
+        }
+
+        List<UUID> uuidList = userIds.stream()
+                .map(UUID::fromString)
+                .toList();
+
+        List<Userchan> users = userRepository.findByIdIn(uuidList);
+
+        return users.stream()
+                .map(userMapper::toInfochan)
+                .toList();
+    }
 }
