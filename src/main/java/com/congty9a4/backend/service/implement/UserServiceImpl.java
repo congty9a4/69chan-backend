@@ -70,23 +70,32 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse createUser(UserCreationRequest userReq) {
-        if (userRepository.existsByEmail(userReq.getEmail()))
-            throw new AppException(ErrorCode.USER_ALREADY_EXISTS,
-                    "User already exists with email: " + userReq.getEmail());
+        var existingUserOpt = userRepository.findByEmail(userReq.getEmail());
+
+        if (existingUserOpt.isPresent()) {
+            Userchan existingUser = existingUserOpt.get();
+
+            if (existingUser.isVerified()) {
+                throw new AppException(ErrorCode.USER_ALREADY_EXISTS,
+                        "This email has been registered and verified: " + userReq.getEmail());
+            } else {
+                existingUser.setUsername(userReq.getUsername());
+                existingUser.setPassword(passwordEncoder.encode(userReq.getPassword()));
+                Userchan updatedUser = userRepository.save(existingUser);
+
+                return userMapper.toUserResponse(updatedUser);
+            }
+        }
 
         Userchan user = Userchan.builder()
                 .username(userReq.getUsername())
-                .password(userReq.getPassword())
+                .password(passwordEncoder.encode(userReq.getPassword()))
                 .email(userReq.getEmail())
                 .isVerified(false)
                 .build();
 
-        String rawPassword = user.getPassword();
-        String hashedPassword = passwordEncoder.encode(rawPassword);
-        user.setPassword(hashedPassword);
         Userchan savedUser = userRepository.save(user);
-        String otp = otpService.generateAndSaveOtp(savedUser.getEmail());
-        emailService.sendOtpEmail(savedUser.getEmail(), otp);
+
         return userMapper.toUserResponse(savedUser);
     }
 
