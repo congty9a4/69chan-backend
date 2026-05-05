@@ -28,7 +28,8 @@ public class SecurityConfig {
                         "/api/files/**",
                         "/",
                         "/api/v1/**",
-                        "/actuator/**"
+                        "/actuator/**",
+                        "/api/mail/**"
         };
 
         @Bean
@@ -37,7 +38,8 @@ public class SecurityConfig {
                                 .csrf(AbstractHttpConfigurer::disable)
                                 .authorizeHttpRequests(authorize -> authorize.requestMatchers(WHITELIST).permitAll()
                                                 // Open for Test chat
-                                                .requestMatchers("/test-chat.html", "/ws-69chan/**").permitAll()
+                                                .requestMatchers("/test-chat.html", "/test-ws.html", "/ws-69chan/**")
+                                                .permitAll()
                                                 .anyRequest().authenticated())
                                 .addFilterAfter(new JwtAuthFilter(jwtService), BasicAuthenticationFilter.class)
                                 .sessionManagement(session -> session

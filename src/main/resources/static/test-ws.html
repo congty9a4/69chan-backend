@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test WebSocket 69chan</title>
+    <!-- Import thư viện chuẩn của Spring Boot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        input { width: 400px; padding: 8px; margin-bottom: 10px; }
+        button { padding: 8px 15px; cursor: pointer; background: #007bff; color: white; border: none; }
+        #log { margin-top: 20px; padding: 10px; background: #f4f4f4; height: 300px; overflow-y: scroll; font-family: monospace; }
+    </style>
+</head>
+<body>
+
+    <h2>Test Notification Real-time 69chan</h2>
+    
+    <label>Nhập Token của User B (Người nhận thông báo):</label><br>
+    <input type="text" id="token" placeholder="eyJh... (Không cần chữ Bearer)"><br>
+    
+    <button onclick="connectWS()">Kết nối & Lắng nghe</button>
+
+    <div id="log">
+        <p><b>[Hệ thống]</b> Đang chờ kết nối...</p>
+    </div>
+
+    <script>
+        let stompClient = null;
+
+        function log(msg, color = "black") {
+            const div = document.getElementById('log');
+            div.innerHTML += `<p style="color: ${color}">> ${msg}</p>`;
+            div.scrollTop = div.scrollHeight; // Tự cuộn xuống
+        }
+
+        function connectWS() {
+            const token = document.getElementById('token').value;
+            if (!token) {
+                alert("Vui lòng nhập token!"); return;
+            }
+
+            // 1. Khởi tạo SockJS kết nối đến backend
+            const socket = new SockJS('http://localhost:8080/ws-69chan');
+            stompClient = Stomp.over(socket);
+
+            // Tắt log mặc định của thư viện cho đỡ rối
+            stompClient.debug = null; 
+
+            log("Đang gửi yêu cầu kết nối...", "blue");
+
+            // 2. Gọi hàm connect và truyền Token vào Header
+            stompClient.connect({ 'Authorization': 'Bearer ' + token }, 
+                function (frame) {
+                    log("✅ Đã kết nối thành công: " + frame, "green");
+
+                    // 3. Tiến hành Subscribe vào kênh của User
+                    stompClient.subscribe('/user/queue/notifications', function (response) {
+                        const data = JSON.parse(response.body);
+                        log("🔔 CÓ THÔNG BÁO MỚI TỪ SERVER:", "red");
+                        log(JSON.stringify(data, null, 2), "red");
+                    });
+
+                    log("🎧 Đã Subscribe kênh '/user/queue/notifications'. Đang lắng nghe...", "purple");
+                }, 
+                function(error) {
+                    log("❌ Kết nối thất bại: " + error, "red");
+                }
+            );
+        }
+    </script>
+</body>
+</html>

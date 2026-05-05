@@ -7,11 +7,13 @@ import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.entity.Infochan;
 import com.congty9a4.backend.entity.Userchan;
+import com.congty9a4.backend.entity.enums.NotificationType;
 import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.mapper.UserMapper;
 import com.congty9a4.backend.repository.jpa.UserRepository;
 import com.congty9a4.backend.service.EmailService;
+import com.congty9a4.backend.service.NotificationService;
 import com.congty9a4.backend.service.OtpService;
 import com.congty9a4.backend.service.RelationService;
 import com.congty9a4.backend.service.UserService;
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
 
     private final EmailService emailService;
     private final OtpService otpService;
+    private final NotificationService notificationService;
 
     UserRepository userRepository;
 
@@ -67,23 +70,32 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse createUser(UserCreationRequest userReq) {
-        if (userRepository.existsByEmail(userReq.getEmail()))
-            throw new AppException(ErrorCode.USER_ALREADY_EXISTS,
-                    "User already exists with email: " + userReq.getEmail());
+        var existingUserOpt = userRepository.findByEmail(userReq.getEmail());
+
+        if (existingUserOpt.isPresent()) {
+            Userchan existingUser = existingUserOpt.get();
+
+            if (existingUser.isVerified()) {
+                throw new AppException(ErrorCode.USER_ALREADY_EXISTS,
+                        "This email has been registered and verified: " + userReq.getEmail());
+            } else {
+                existingUser.setUsername(userReq.getUsername());
+                existingUser.setPassword(passwordEncoder.encode(userReq.getPassword()));
+                Userchan updatedUser = userRepository.save(existingUser);
+
+                return userMapper.toUserResponse(updatedUser);
+            }
+        }
 
         Userchan user = Userchan.builder()
                 .username(userReq.getUsername())
-                .password(userReq.getPassword())
+                .password(passwordEncoder.encode(userReq.getPassword()))
                 .email(userReq.getEmail())
                 .isVerified(false)
                 .build();
 
-        String rawPassword = user.getPassword();
-        String hashedPassword = passwordEncoder.encode(rawPassword);
-        user.setPassword(hashedPassword);
         Userchan savedUser = userRepository.save(user);
-        String otp = otpService.generateAndSaveOtp(savedUser.getEmail());
-        emailService.sendOtpEmail(savedUser.getEmail(), otp);
+
         return userMapper.toUserResponse(savedUser);
     }
 
@@ -123,8 +135,15 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void handleFollow(String targetUserId) {
-        getUserById(UUID.fromString(targetUserId)); // check if user exists
-        relationService.follow(SecurityUtils.getCurrentUserId(), targetUserId);
+        getUserById(UUID.fromString(targetUserId));
+        String currentUserId = SecurityUtils.getCurrentUserId();
+        relationService.follow(currentUserId, targetUserId);
+
+        notificationService.sendNotification(
+                currentUserId,
+                targetUserId,
+                NotificationType.FOLLOW,
+                targetUserId);
     }
 
     @Override
@@ -161,4 +180,20 @@ public class UserServiceImpl implements UserService {
         emailService.sendOtpEmail(email, newOtp);
     }
 
+    @Override
+    public List<Infochan> getUsersInfoByIds(List<String> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return List.of();
+        }
+
+        List<UUID> uuidList = userIds.stream()
+                .map(UUID::fromString)
+                .toList();
+
+        List<Userchan> users = userRepository.findByIdIn(uuidList);
+
+        return users.stream()
+                .map(userMapper::toInfochan)
+                .toList();
+    }
 }

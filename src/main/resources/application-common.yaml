@@ -99,3 +99,11 @@ cloudinary:
 
 google:
   client-id: ${GOOGLE_CLIENT_ID}
+
+resend:
+  from:
+    email: ${RESEND_FROM_DOMAIN}
+    name: ${RESEND_FROM_NAME}
+  api:
+    key: ${RESEND_API_KEY}
+    url: https://api.resend.com/emails

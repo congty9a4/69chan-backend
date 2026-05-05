@@ -134,4 +134,6 @@ public interface UserService {
     void verifyEmailOtp(String email, String otp);
 
     void resendVerificationOtp(String email);
+
+    List<Infochan> getUsersInfoByIds(List<String> userIds);
 }

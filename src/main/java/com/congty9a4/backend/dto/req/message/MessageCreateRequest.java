@@ -14,5 +14,7 @@ public class MessageCreateRequest {
 
     @NotBlank
     private String content;
-}
 
+    @NotBlank
+    String conversationId;
+}
