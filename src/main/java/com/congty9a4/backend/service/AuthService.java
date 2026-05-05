@@ -45,6 +45,8 @@ public class AuthService {
     final UserMapper userMapper;
     final UserRepository userRepository;
     final HttpServletRequest request;
+    private final EmailService emailService;
+    private final OtpService otpService;
 
     @NonFinal
     @Value("${google.client-id}")
@@ -101,13 +103,15 @@ public class AuthService {
 
         Userchan user = userService.getUserByEmail(email);
 
-        if (!user.isVerified()) {
-            throw new AppException(ErrorCode.INVALID_CREDENTIALS,
-                    "The account has not been email-verified! Please verify it before logging in.");
-        }
-
         if (!passwordEncoder.matches(requestedPassword, user.getPassword()))
             throw new AppException(ErrorCode.INVALID_CREDENTIALS, "Wrong password");
+
+        if (!user.isVerified()) {
+            String otp = otpService.generateAndSaveOtp(user.getEmail());
+            emailService.sendOtpEmail(user.getEmail(), otp);
+            throw new AppException(ErrorCode.USER_NOT_VERIFIED,
+                    "The account has not been verified. A new OTP has just been sent to your email!");
+        }
 
         String token = jwtService.createToken(user.getId().toString(), true);
         String refreshToken = jwtService.createToken(user.getId().toString(), false);

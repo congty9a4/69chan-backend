@@ -53,7 +53,7 @@
                 stompClient.disconnect();
             }
 
-            var socket = new SockJS('http://localhost:8080/ws-69chan');
+            var socket = new SockJS('https://six9chan-2.onrender.com/ws-69chan');
             stompClient = Stomp.over(socket);
             stompClient.debug = null; 
 

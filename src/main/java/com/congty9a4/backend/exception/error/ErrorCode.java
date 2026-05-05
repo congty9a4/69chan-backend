@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
-
 // add more!
 @Getter
 public enum ErrorCode {
@@ -19,7 +18,8 @@ public enum ErrorCode {
     EMAIL_ALREADY_EXISTS(40011, "A user with this email address already exists.", HttpStatus.BAD_REQUEST),
     PHONE_NUMBER_ALREADY_EXISTS(40012, "A user with this phone number already exists.", HttpStatus.BAD_REQUEST),
     SAME_PASSWORD(40013, "Your new password cannot be the same as your old password.", HttpStatus.BAD_REQUEST),
-    ACCOUNT_BLOCKED(40014, "Your account has been blocked. Please contact support for assistance.", HttpStatus.BAD_REQUEST),
+    ACCOUNT_BLOCKED(40014, "Your account has been blocked. Please contact support for assistance.",
+            HttpStatus.BAD_REQUEST),
     INVALID_EMAIL_FORMAT(40015, "The email address you entered is not valid.", HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND(40016, "The user you are looking for could not be found.", HttpStatus.BAD_REQUEST),
     GOOGLE_TOKEN_INVALID(40017, "The Google token is invalid or expired.", HttpStatus.BAD_REQUEST),
@@ -45,16 +45,17 @@ public enum ErrorCode {
     ALREADY_FRIENDS(40061, "You are already friends with this user.", HttpStatus.BAD_REQUEST),
     FRIEND_REQUEST_NOT_FOUND(40062, "Friend request not found.", HttpStatus.BAD_REQUEST),
     USER_BLOCKED(40063, "This user is blocked.", HttpStatus.BAD_REQUEST),
-    CANNOT_INTERACT_WITH_BLOCKED_USER(40064, "You cannot interact with a user you have blocked or who has blocked you.", HttpStatus.BAD_REQUEST),
+    CANNOT_INTERACT_WITH_BLOCKED_USER(40064, "You cannot interact with a user you have blocked or who has blocked you.",
+            HttpStatus.BAD_REQUEST),
     ALREADY_FOLLOWING(40065, "You are already following this user.", HttpStatus.BAD_REQUEST),
 
     // Chat & Messaging
     MESSAGE_NOT_FOUND(40070, "The message you are looking for could not be found.", HttpStatus.BAD_REQUEST),
     CONVERSATION_ALREADY_EXISTS(40071, "A conversation between these users already exists.", HttpStatus.BAD_REQUEST),
     CANNOT_SEND_MESSAGE(40072, "You cannot send a message to this user.", HttpStatus.BAD_REQUEST),
-    CANNOT_ACCESS_CONVERSATION(40073, "You do not have permission to access this conversation.", HttpStatus.BAD_REQUEST),
+    CANNOT_ACCESS_CONVERSATION(40073, "You do not have permission to access this conversation.",
+            HttpStatus.BAD_REQUEST),
     CONVERSATION_NOT_FOUND(40074, "The conversation you are looking for could not be found.", HttpStatus.BAD_REQUEST),
-
 
     // --- UNAUTHENTICATED (401) ---
     UNAUTHENTICATED(40100, "You must be logged in to perform this action.", HttpStatus.UNAUTHORIZED),
@@ -63,18 +64,22 @@ public enum ErrorCode {
 
     // --- FORBIDDEN (403) ---
     FORBIDDEN(40300, "You do not have permission to access this resource.", HttpStatus.FORBIDDEN),
+    USER_NOT_VERIFIED(40301, "Your account is not verified. A new OTP has been sent to your email.",
+            HttpStatus.FORBIDDEN),
 
     // --- NOT FOUND (404) ---
     RESOURCE_NOT_FOUND(40400, "No endpoint found for this request", HttpStatus.NOT_FOUND),
-    VERIFICATION_TOKEN_NOT_FOUND(40404, "The verification token is invalid or has expired.", HttpStatus.NOT_FOUND);
+    VERIFICATION_TOKEN_NOT_FOUND(40404, "The verification token is invalid or has expired.", HttpStatus.NOT_FOUND),
 
-
+    // --- TOO MANY REQUESTS (429) ---
+    TOO_MANY_REQUESTS(42900, "Too many requests. Please wait %s seconds before trying again.",
+            HttpStatus.TOO_MANY_REQUESTS);
 
     private final int code;
     private final String detailedMessage;
     private final HttpStatusCode statusCode;
 
-    ErrorCode(int code, String message, HttpStatusCode statusCode){
+    ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;
         this.detailedMessage = message;
         this.statusCode = statusCode;
