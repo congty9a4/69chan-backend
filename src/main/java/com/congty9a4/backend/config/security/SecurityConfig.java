@@ -29,7 +29,8 @@ public class SecurityConfig {
                         "/",
                         "/api/v1/**",
                         "/actuator/**",
-                        "/api/mail/**"
+                        "/api/mail/**",
+                        "/api/utils/**"
         };
 
         @Bean
