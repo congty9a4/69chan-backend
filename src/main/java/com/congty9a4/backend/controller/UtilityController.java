@@ -18,7 +18,7 @@ public class UtilityController {
 
     @GetMapping("/time")
     public Map<String, OffsetDateTime> getCurrentTime() {
-        return Map.of("time", LOCALE.now);
+        return Map.of("time", LOCALE.now());
     }
 }
 

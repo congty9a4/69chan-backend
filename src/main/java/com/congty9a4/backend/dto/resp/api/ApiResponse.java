@@ -23,7 +23,7 @@ public class ApiResponse<T> {
     T body;
 
     @Builder.Default
-    OffsetDateTime timestamp = LOCALE.now;
+    OffsetDateTime timestamp = LOCALE.now();
 
     public static <T> ApiResponse<T> success(T body) {
         return ApiResponse.<T>builder()
