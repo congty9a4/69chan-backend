@@ -18,7 +18,7 @@ public class MongoConfig {
 
     @Bean(name = "auditingDateTimeProvider")
     public DateTimeProvider dateTimeProvider() {
-        return () -> Optional.of(LOCALE.now);
+        return () -> Optional.of(LOCALE.now());
     }
 
 

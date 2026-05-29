@@ -47,8 +47,8 @@ public class JwtService {
 
         return Jwts.builder()
                 .subject(userId)
-                .issuedAt(Date.from(LOCALE.now.toInstant()))
-                .expiration(Date.from(LOCALE.now.toInstant().plusSeconds(expiration)))
+                .issuedAt(Date.from(LOCALE.now().toInstant()))
+                .expiration(Date.from(LOCALE.now().toInstant().plusSeconds(expiration)))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .claim("is_access_token", isAccessToken)
                 .id(UUID.randomUUID().toString())

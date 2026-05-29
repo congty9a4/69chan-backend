@@ -261,7 +261,7 @@ public class PostServiceImpl implements PostService {
             String fileName = url.substring(url.lastIndexOf('/') + 1);
             String type = MEDIA.getType(fileName);
             String publicId = fileName.substring(0, fileName.lastIndexOf('.'));
-            mediaFiles.add(MediaInfo.builder().id(publicId).url(url).mediaType(type).uploadedAt(LOCALE.now).build());
+            mediaFiles.add(MediaInfo.builder().id(publicId).url(url).mediaType(type).uploadedAt(LOCALE.now()).build());
         });
 
         return mediaFiles;

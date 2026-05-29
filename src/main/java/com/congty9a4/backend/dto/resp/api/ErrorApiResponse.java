@@ -30,5 +30,5 @@ public class ErrorApiResponse {
     Map<String, String> errors;
 
     @Builder.Default
-    OffsetDateTime timestamp = LOCALE.now;
+    OffsetDateTime timestamp = LOCALE.now();
 }
