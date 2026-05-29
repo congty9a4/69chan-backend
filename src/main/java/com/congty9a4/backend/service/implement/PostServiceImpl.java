@@ -13,8 +13,8 @@ import com.congty9a4.backend.entity.enums.NotificationType;
 import com.congty9a4.backend.entity.enums.PostPrivacy;
 import com.congty9a4.backend.entity.post.MediaInfo;
 import com.congty9a4.backend.entity.post.Post;
-import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
+import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.mapper.CommentMapper;
 import com.congty9a4.backend.mapper.PostMapper;
 import com.congty9a4.backend.mapper.UserMapper;
@@ -24,9 +24,9 @@ import com.congty9a4.backend.repository.mongo.PostRepository;
 import com.congty9a4.backend.service.NotificationService;
 import com.congty9a4.backend.service.PostService;
 import com.congty9a4.backend.service.UserService;
+import com.congty9a4.backend.service.storage.CloudStorageService;
 import com.congty9a4.backend.util.AppPageable;
 import com.congty9a4.backend.util.PaginationHelper;
-
 import com.congty9a4.backend.util.SecurityUtils;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -60,7 +60,7 @@ public class PostServiceImpl implements PostService {
 
     UserMapper userMapper;
 
-    com.congty9a4.backend.service.storage.CloudStorageService cloudStorageService;
+    CloudStorageService cloudStorageService;
 
     UserService userService;
 

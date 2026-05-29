@@ -7,17 +7,18 @@ import com.congty9a4.backend.dto.resp.PageResponse;
 import com.congty9a4.backend.dto.resp.ProfileResponse;
 import com.congty9a4.backend.entity.Profile;
 import com.congty9a4.backend.entity.Userchan;
-import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.exception.error.AppException;
+import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.mapper.ProfileMapper;
 import com.congty9a4.backend.repository.jpa.ProfileRepository;
 import com.congty9a4.backend.repository.jpa.UserRepository;
-import com.congty9a4.backend.service.storage.CloudStorageService;
 import com.congty9a4.backend.service.ProfileService;
+import com.congty9a4.backend.service.storage.CloudStorageService;
 import com.congty9a4.backend.util.AppPageable;
 import com.congty9a4.backend.util.PaginationHelper;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,20 +28,21 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class ProfileServiceImpl implements ProfileService {
 
-    @Autowired
-    private ProfileRepository profileRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    ProfileRepository profileRepository;
 
-    @Autowired
-    private ProfileMapper profileMapper;
+    UserRepository userRepository;
 
-    @Autowired
-    private PaginationHelper paginationHelper;
-    @Autowired
+
+    ProfileMapper profileMapper;
+
+
+    PaginationHelper paginationHelper;
+
     private CloudStorageService cloudStorageService;
 
     @Override
