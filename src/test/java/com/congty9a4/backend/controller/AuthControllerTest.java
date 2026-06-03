@@ -3,7 +3,9 @@ package com.congty9a4.backend.controller;
 import com.congty9a4.backend.dto.req.auth.LoginRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
 import com.congty9a4.backend.service.AuthService;
+import com.congty9a4.backend.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -22,7 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = AuthController.class,
         excludeAutoConfiguration = {SecurityAutoConfiguration.class})
-public class AuthControllerTest {
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+class AuthControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,6 +35,9 @@ public class AuthControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockitoBean
+    UserService userService;
 
     @Test
     void login_whenSuccess_thenReturnToken() throws Exception {
@@ -50,7 +56,7 @@ public class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.token").value("test-token"));
+                .andExpect(jsonPath("$.body.access_token").value("test-token"));
     }
 
     @Test
@@ -64,7 +70,7 @@ public class AuthControllerTest {
         // When & Then
         mockMvc.perform(get("/api/auth/guest"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.token").value("guest-token"));
+                .andExpect(jsonPath("$.body.access_token").value("guest-token"));
     }
 }
 
