@@ -64,13 +64,8 @@ app:
       url: ${SWAGGER_SERVER_URL:0.0.0.0}
 
 # Storage Configuration
-# Choose between 'gcs' (Google Cloud Storage) or 'cloudinary'
 storage:
   provider: ${STORAGE_PROVIDER:cloudinary}
-
-# gcs:
-#   bucket-name: 69chan-dev-store-media-files
-#   sub-directory: media
 
 jwt:
   expiration:

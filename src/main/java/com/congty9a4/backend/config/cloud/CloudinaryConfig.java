@@ -8,24 +8,24 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-@ConditionalOnProperty(name = "storage.provider", havingValue = "cloudinary")
+@ConditionalOnProperty(name = "storage.provider", havingValue = "cloudinary", matchIfMissing = true)
 public class CloudinaryConfig {
 
     @Value("${cloudinary.cloud-name}")
-    String CLOUD_NAME;
+    String cloudName;
 
     @Value("${cloudinary.api-key}")
-    String API_KEY;
+    String apiKey;
 
     @Value("${cloudinary.api-secret}")
-    String API_SECRET;
+    String apiSecret;
 
     @Bean
     public com.cloudinary.Cloudinary cloudinary() {
         return new com.cloudinary.Cloudinary(
                 com.cloudinary.utils.ObjectUtils.asMap(
-                        "cloud_name", CLOUD_NAME,
-                        "api_key", API_KEY,
-                        "api_secret", API_SECRET));
+                        "cloud_name", cloudName,
+                        "api_key", apiKey,
+                        "api_secret", apiSecret));
     }
 }

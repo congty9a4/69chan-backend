@@ -17,10 +17,7 @@ import java.util.concurrent.CompletableFuture;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CloudStorageService Tests")
@@ -52,14 +49,15 @@ class CloudStorageServiceTest {
     void uploadFile_should_returnUrl_when_fileIsValid() {
         // Arrange
         String expectedUrl = "http://example.com/hello.txt";
-        when(storageService.uploadFile(any(MultipartFile.class))).thenReturn(expectedUrl);
+        when(asyncFileUploader.uploadFileAsync(any(MultipartFile.class)))
+                .thenReturn(CompletableFuture.completedFuture(expectedUrl));
 
         // Act
         String actualUrl = cloudStorageService.uploadFile(file);
 
         // Assert
         assertEquals(expectedUrl, actualUrl);
-        verify(storageService, times(1)).uploadFile(file);
+        verify(asyncFileUploader, times(1)).uploadFileAsync(file);
     }
 
     @Test

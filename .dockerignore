@@ -15,7 +15,6 @@
 
 # Build artifacts
 target/
-!target/backend-3.4.1.jar
 build/
 out/
 bin/
@@ -50,5 +49,4 @@ src/test/
 *~
 
 gcp-credentials.base64
-gcs_credentials.json
 
