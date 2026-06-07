@@ -5,11 +5,8 @@ import com.congty9a4.backend.dto.req.CursorPageRequest;
 import com.congty9a4.backend.entity.Conversation;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.exception.error.ErrorCode;
-import com.congty9a4.backend.mapper.ConversationMapper;
-import com.congty9a4.backend.mapper.MessageMapper;
 import com.congty9a4.backend.repository.mongo.ConversationRepository;
 import com.congty9a4.backend.repository.mongo.MessageRepository;
-import com.congty9a4.backend.service.UserService;
 import com.congty9a4.backend.service.implement.ConversationServiceImpl;
 import com.congty9a4.backend.util.SecurityUtils;
 import lombok.experimental.FieldDefaults;
@@ -22,7 +19,10 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.UUID;
 
 import static lombok.AccessLevel.PRIVATE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,18 +40,8 @@ class ConversationServiceTest {
     @Mock
     MessageRepository messageRepository;
 
-    @Mock
-    MessageMapper messageMapper;
-
-    @Mock
-    ConversationMapper conversationMapper;
-
-    @Mock
-    UserService userService;
-
     @InjectMocks
     ConversationServiceImpl conversationService;
-
 
     @Test
     void getConversationHistory_withNullCursor_shouldReturnLastMessageId() {
@@ -67,7 +57,7 @@ class ConversationServiceTest {
         Conversation conv = Conversation.builder()
                 .id(convId)
                 .lastMessageId(lastMessageId)
-                .participantIds(Arrays.asList(currentUserId))
+                .participantIds(Collections.singletonList(currentUserId))
                 .build();
 
         try (MockedStatic<SecurityUtils> securityUtils = Mockito.mockStatic(SecurityUtils.class)) {
