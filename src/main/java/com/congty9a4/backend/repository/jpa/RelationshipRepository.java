@@ -19,6 +19,8 @@ public interface RelationshipRepository extends JpaRepository<Relationship, Inte
     @Query("DELETE FROM Relationship r WHERE r.objectId = :userId AND r.relation = 'follower' AND r.subjectId = :targetUserId")
     void unfollow(@Param("userId") String userId, @Param("targetUserId") String targetUserId);
 
-    @Query("SELECT r.subjectId FROM Relationship r WHERE r.objectId = :userId AND r.relation = 'follower'")
+    @Query("SELECT r.subjectId FROM Relationship r WHERE r.objectId = :userId AND r.relation = 'FOLLOWER'")
     Set<String> findAllFollowingByUserId(@Param("userId") String userId);
+
+    void deleteAllByObjectId(String objectId);
 }

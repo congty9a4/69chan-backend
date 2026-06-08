@@ -25,6 +25,12 @@ public class CloudStorageService {
         return url;
     }
 
+    public List<String> bulkSyncUpload(List<MultipartFile> files) {
+        if (files == null || files.isEmpty()) {
+            return List.of();
+        }
+        return files.stream().map(this::uploadFile).collect(Collectors.toList());
+    }
     public List<String> bulkUpload(List<MultipartFile> files) {
         if (files == null || files.isEmpty()) {
             return List.of();

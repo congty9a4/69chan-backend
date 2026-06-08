@@ -6,12 +6,7 @@ import com.congty9a4.backend.dto.req.user.UserCreationRequest;
 import com.congty9a4.backend.dto.resp.AuthResponse;
 import com.congty9a4.backend.dto.resp.UserResponse;
 import com.congty9a4.backend.dto.resp.api.ApiResponse;
-import com.congty9a4.backend.entity.Userchan;
-import com.congty9a4.backend.exception.error.AppException;
-import com.congty9a4.backend.exception.error.ErrorCode;
-import com.congty9a4.backend.repository.jpa.UserRepository;
 import com.congty9a4.backend.service.AuthService;
-import com.congty9a4.backend.service.OtpService;
 import com.congty9a4.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @Tag(name = "Authentication", description = "Authentication and authorization APIs")
 public class AuthController {
-    private final OtpService otpService;
-    private final UserRepository userRepository;
 
     private AuthService authService;
 

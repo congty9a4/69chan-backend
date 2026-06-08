@@ -20,7 +20,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "storage.provider", havingValue = "cloudinary")
+@ConditionalOnProperty(name = "storage.provider", havingValue = "cloudinary", matchIfMissing = true)
 public class CloudinaryService implements StorageService {
 
     private final Cloudinary cloudinary;
@@ -41,9 +41,7 @@ public class CloudinaryService implements StorageService {
                     )
             );
 
-            String publicUrl = (String) uploadResult.get("secure_url");
-
-            return publicUrl;
+            return (String) uploadResult.get("secure_url");
 
         } catch (IOException e) {
             log.error("Failed to upload file to Cloudinary: {}", file.getOriginalFilename(), e);

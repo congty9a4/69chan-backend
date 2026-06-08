@@ -228,12 +228,8 @@ JWT_SECRET=your_super_secret_key_min_256_bits
 # Swagger / app URL
 SWAGGER_SERVER_URL=http://localhost:8080
 
-# Optional storage providers
-STORAGE_PROVIDER=gcs
-GOOGLE_APPLICATION_CREDENTIALS=path/to/gcs_credentials.json
-
-# Or Cloudinary
-# STORAGE_PROVIDER=cloudinary
+# Storage
+STORAGE_PROVIDER=cloudinary
 # CLOUDINARY_CLOUD_NAME=your_cloud
 # CLOUDINARY_API_KEY=your_key
 # CLOUDINARY_API_SECRET=your_secret
