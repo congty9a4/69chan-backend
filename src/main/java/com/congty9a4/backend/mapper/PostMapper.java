@@ -3,6 +3,7 @@ package com.congty9a4.backend.mapper;
 import com.congty9a4.backend.dto.req.post.PostRequest;
 import com.congty9a4.backend.dto.resp.PostResponse;
 import com.congty9a4.backend.entity.Infochan;
+import com.congty9a4.backend.entity.Userchan;
 import com.congty9a4.backend.entity.post.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -34,6 +35,15 @@ public interface PostMapper {
 
         return response;
 
+    }
+
+    default PostResponse toPostResponse(Post post, Userchan userchan) {
+        PostResponse response = toPostResponse(post);
+
+        if (userchan != null) {
+            response.setInfochan(userchan.toInfochan());
+        }
+        return response;
     }
 
     void update(@MappingTarget Post post, PostRequest req);

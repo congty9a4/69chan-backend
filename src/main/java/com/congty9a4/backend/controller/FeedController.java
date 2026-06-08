@@ -4,17 +4,16 @@ package com.congty9a4.backend.controller;
 import com.congty9a4.backend.dto.req.CursorPageRequest;
 import com.congty9a4.backend.dto.resp.CursorPageResponse;
 import com.congty9a4.backend.dto.resp.PostResponse;
-import com.congty9a4.backend.service.FanoutService;
+import com.congty9a4.backend.service.feeds.FeedService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.*;
-
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/feeds")
@@ -23,8 +22,7 @@ import java.nio.charset.StandardCharsets;
 @Tag(name = "Feeds API")
 public class FeedController {
 
-    FanoutService fanoutService;
-
+    FeedService feedService;
 
     @GetMapping
     @Operation(summary = "Get home feed with cursor-based pagination")
@@ -34,12 +32,12 @@ public class FeedController {
             @RequestParam(required = false) String after) {
 
 
-        CursorPageRequest pageRequest = CursorPageRequest.builder()
+        CursorPageRequest<String> pageRequest = CursorPageRequest.<String>builder()
                 .limit(limit)
                 .cursor(after)
                 .build();
 
-        return fanoutService.getHomeFeed(pageRequest);
+        return feedService.fetchFeed(pageRequest);
     }
 
 

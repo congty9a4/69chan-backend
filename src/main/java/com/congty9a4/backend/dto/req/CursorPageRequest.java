@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
 
 
 @Setter
@@ -31,6 +32,10 @@ public class CursorPageRequest<T> {
 
     public enum Direction {
         NEXT, PREV
+    }
+
+    public PageRequest toPageRequest() {
+        return PageRequest.of(0, limit + 1);
     }
 }
 

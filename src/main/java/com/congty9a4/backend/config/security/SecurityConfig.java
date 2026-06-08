@@ -1,6 +1,6 @@
 package com.congty9a4.backend.config.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -14,9 +14,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+@AllArgsConstructor
 public class SecurityConfig {
 
-        @Autowired
         private JwtService jwtService;
 
         private static final String[] WHITELIST = {
@@ -29,7 +29,9 @@ public class SecurityConfig {
                         "/",
                         "/api/v1/**",
                         "/actuator/**",
-                        "/api/mail/**"
+                        "/api/mail/**",
+                "/api/utils/**",
+                "/docs"
         };
 
         @Bean

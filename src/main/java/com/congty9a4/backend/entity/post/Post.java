@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -21,6 +22,11 @@ import java.util.Set;
 @AllArgsConstructor
 @Document("posts")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@CompoundIndex(
+        name = "idx_feed_cursor",
+        def = "{'user_id': 1, 'is_deleted': 1, 'created_at': -1}",
+        background = true
+)
 public class Post {
     @Id
     String id;

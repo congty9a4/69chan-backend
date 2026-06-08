@@ -5,7 +5,6 @@ import com.congty9a4.backend.dto.resp.ConversationResponse;
 import com.congty9a4.backend.dto.resp.CursorPageResponse;
 import com.congty9a4.backend.dto.resp.MessageResponse;
 import com.congty9a4.backend.entity.Conversation;
-import com.congty9a4.backend.entity.Message;
 import com.congty9a4.backend.exception.error.AppException;
 import com.congty9a4.backend.exception.error.ErrorCode;
 import com.congty9a4.backend.mapper.ConversationMapper;
@@ -18,7 +17,6 @@ import com.congty9a4.backend.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,7 +45,8 @@ public class ConversationServiceImpl implements ConversationService {
         List<MessageResponse> messages = messageRepository.retrieveHistory(id, pageRequest.getCursor(), PageRequest.of(0, pageRequest.getLimit() + 1))
                 .stream().map(messageMapper::toMessageResponse).toList();
 
-        var pageInfo = CursorPageResponse.PageInfo.<Long>builder().nextCursor(messages.getLast().id()).build();
+        Long nextCursor = messages.isEmpty() ? null : messages.getLast().id();
+        var pageInfo = CursorPageResponse.PageInfo.<Long>builder().nextCursor(nextCursor).build();
 
         return CursorPageResponse.<MessageResponse>builder()
                 .data(messages)
@@ -76,7 +75,7 @@ public class ConversationServiceImpl implements ConversationService {
                 .orElseThrow(() -> new AppException(ErrorCode.CONVERSATION_NOT_FOUND));
     }
 
-    private Boolean checkConversationAccess(Conversation conversation) {
+    private boolean checkConversationAccess(Conversation conversation) {
         String userId = SecurityUtils.getCurrentUserId();
         return conversation.getParticipantIds().contains(userId);
     }

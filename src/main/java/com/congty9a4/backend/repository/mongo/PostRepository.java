@@ -14,7 +14,7 @@ public interface PostRepository extends MongoRepository<Post, String>{
     @Query("{'user_id': ?0}")
     Page<Post> findAllByUserId(String userId, Pageable pageable);
 
-    @Query("{ $text:  {$search :  ?0}}")
+    @Query("{ '$text':  {$search :  ?0}}")
     List<Post> postByKeywords(String query);
 
 
@@ -24,4 +24,5 @@ public interface PostRepository extends MongoRepository<Post, String>{
     @Query(value = "{'user_id': {$in: ?0}, 'is_deleted': false, 'createdAt.dateTime': {$lt: ?1}}", sort = "{'created_at': -1}")
     List<Post> getUserFeedsAfterCursor(Set<String> userIds, Instant cursor, Pageable pageable);
 
+    void deleteAllByUserIdIn(List<String> userIds);
 }
